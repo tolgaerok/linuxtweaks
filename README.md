@@ -2,11 +2,11 @@
 
 ### UNDER CONSTRUCTION
 
-*Tolga Erok*
+> *Tolga Erok*
 
-*17/3/2025*
+> *17/3/2025*
 
-> My personal collection of various inhouse scripts tested and successful on the following:>>
+> My personal collection of various inhouse scripts
 
 
 #
@@ -16,7 +16,17 @@
 | Tweak      | Tested | Pass | Link  |
 |------------|:------:|:----:|:-----:|
 | **CAKE**   |  Yes   | Yes  | [About Cake - Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-cake.md) |
-| **BIGLINUX** |  Yes   | Yes  | [Coming Soon](#) | 
+| **HOST** |  Yes   | Yes  | [Coming Soon](#) | 
+| **NSSWITCH** |  Yes   | Yes  | [Coming Soon](#) | 
+| **RESOLVED-DNS** |  Yes   | Yes  | [Coming Soon](#) | 
+| **SAMBA** |  Yes   | Yes  | [Coming Soon](#) | 
+| **WSSD** |  Yes   | Yes  | [Coming Soon](#) | 
+| **a** |  Yes   | Yes  | [Coming Soon](#) | 
+| **b** |  Yes   | Yes  | [Coming Soon](#) | 
+| **c** |  Yes   | Yes  | [Coming Soon](#) | 
+| **d** |  Yes   | Yes  | [Coming Soon](#) | 
+| **e** |  Yes   | Yes  | [Coming Soon](#) | 
+| **f** |  Yes   | Yes  | [Coming Soon](#) | 
 
 
 
