@@ -13,7 +13,7 @@
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Kubuntu_Icon.png" width="50" height="50" alt="Kubuntu Logo"></td>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Ubuntu_and_Ubuntu_Server_Icon.png/48px-Ubuntu_and_Ubuntu_Server_Icon.png" width="50" height="50" alt="Ubuntu Logo"></td>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Fedora_logo_%282021%29.svg/250px-Fedora_logo_%282021%29.svg.png" width="130" height="50" alt="Fedora Logo"></td>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Debian-OpenLogo.svg/110px-Debian-OpenLogo.svg.png" width="55" height="50" alt="Debian Logo"></td>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Debian-OpenLogo.svg/110px-Debian-OpenLogo.svg.png" width="55" height="75" alt="Debian Logo"></td>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/NixOS_logo.svg/220px-NixOS_logo.svg.png" width="130" height="50" alt="NixOS Logo"></td>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Archlinux-logo-standard-version.svg/250px-Archlinux-logo-standard-version.svg.png" width="130" height="50" alt="Arch Linux Logo"></td>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Logo_manjaro_rounded_2022.svg/250px-Logo_manjaro_rounded_2022.svg.png" width="130" height="50" alt="Manjaro Logo"></td>
