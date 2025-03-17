@@ -69,7 +69,7 @@ I believe this script is a  solid way to automate CAKE QoS settingsfor your netw
 If your interested, copy && paste the following link into your browser:
 
 ```bash
-https://github.com/tolgaerok/tolga-scripts/blob/main/ARCH/BIGLINUX/NETWORKING/CAKE/cake-V6-0a.sh
+https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/CAKE/cake-V6-0a.sh
 ```
 
 #
