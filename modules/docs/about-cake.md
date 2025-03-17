@@ -66,12 +66,21 @@ From my experience, CAKE can significantly improve network performance by reduci
 
 I believe this script is a  solid way to automate CAKE QoS settingsfor your network without needing to manually set it each time. It dynamically detects your interface, applies the best traffic shaping settings, and ensures it stays persistent across reboots and wake-ups. From what I’ve seen, these tweaks can  help with gaming, video calls, and general network performance , especially if your connection suffers from high latency or congestion.  
 
-If your interested, copy && paste the following link into your browser:
+
+#
+![alt text](images/cake/cake1.png) 
+![alt text](images/cake/cake2.png)
+
+#
+
+### *To view source code:*
 
 ```bash
 https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/CAKE/cake-V6-0a.sh
 ```
 
-#
-![alt text](images/cake/cake1.png) 
-![alt text](images/cake/cake2.png)
+### *To `run` from the remote location:*
+
+```bash
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/CAKE/cake-V6-0a.sh | bash
+```
