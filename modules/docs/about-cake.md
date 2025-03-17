@@ -86,4 +86,4 @@ curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/to
 ```
 
 #
-[Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
+[📚 Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
