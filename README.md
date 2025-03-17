@@ -31,7 +31,7 @@
 
 
 #
-#
+TEST PURPOSES: [Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
 #
 
 
@@ -55,3 +55,4 @@
 | SOLUS | YES      |    Yes |
 
 
+TEST PURPOSES: [Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
