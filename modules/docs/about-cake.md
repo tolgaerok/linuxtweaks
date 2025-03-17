@@ -84,3 +84,6 @@ https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/CAKE/ca
 ```bash
 curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/CAKE/cake-V6-0a.sh | bash
 ```
+
+#
+[Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
