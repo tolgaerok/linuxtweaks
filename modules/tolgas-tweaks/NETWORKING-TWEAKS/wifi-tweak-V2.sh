@@ -18,8 +18,19 @@ fi
 echo "Debug: Showing interfaces..."
 ip -o link show
 
-# detect active interface
-interface=$(ip -o link show | awk '!/lo/ {print $2; exit}' | sed 's/://')  # Skip loopback interface
+# Try to detect the first non-loopback active interface
+# interface=$(ip -o link show | awk '!/lo/ {print $2; exit}' | sed 's/://')  # Skip loopback interface
+# Detect active network interface (wired or wireless, non-loopback)
+interface=$(ip -o link show | awk -F': ' '
+    $2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print $2; exit}')
+
+if [ -z "$interface" ]; then
+    echo -e "${RED}No active network interface found. Exiting.${NC}"
+    exit 1
+fi
+
+echo -e "${BLUE}Detected active network interface: ${interface}${NC}"
+
 echo "Debug: Detected interface - $interface"
 
 if [ -z "$interface" ]; then
@@ -61,12 +72,12 @@ if [ ! -f "$iwlwifi_conf" ]; then
 fi
 sudo tee -a "$iwlwifi_conf" >/dev/null <<<"options iwlwifi 11n_disable=8"
 
-# Reload iwlwifi if the interface is not active
+# Reload iwlwifi Module if the interface is not active
 if ! ip link show "$interface" | grep -q "UP"; then
     echo "Interface $interface is not up, skipping iwlwifi module reload."
 else
     echo "Interface $interface is up, skipping iwlwifi module reload to avoid disconnection."
-    # avoid disconnection; skipping it
+    # Reloading iwlwifi module could cause disconnection; skipping it
 fi
 
 # NM Wi-Fi Configuration
