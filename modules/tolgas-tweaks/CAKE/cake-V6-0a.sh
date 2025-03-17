@@ -63,6 +63,10 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/bin/bash -c "interface=\$(ip link show | awk -F': ' '/wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}'); if [ -n \"\$interface\" ]; then sudo tc qdisc replace dev \"\$interface\" root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18; fi"
+
+# fq_codel version
+# ExecStart=/bin/bash -c "interface=\$(ip link show | awk -F': ' '/wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}'); if [ -n \"\$interface\" ]; then sudo tc qdisc replace dev \"\$interface\" root fq_codel; fi"
+
 RemainAfterExit=yes
 
 [Install]
@@ -79,6 +83,9 @@ After=suspend.target
 [Service]
 Type=oneshot
 ExecStart=/bin/bash -c "interface=\$(ip link show | awk -F': ' '/wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}'); if [ -n \"\$interface\" ]; then sudo tc qdisc replace dev \"\$interface\" root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18; fi"
+
+# fq_codel version
+# ExecStart=/bin/bash -c "interface=\$(ip link show | awk -F': ' '/wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}'); if [ -n \"\$interface\" ]; then sudo tc qdisc replace dev \"\$interface\" root fq_codel; fi"
 
 [Install]
 WantedBy=suspend.target
