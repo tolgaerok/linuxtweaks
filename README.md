@@ -20,7 +20,7 @@
 | 📡 **NSSWITCH** |  Yes   | Yes  | [Coming Soon](#) | 
 | 📡 **RESOLVED-DNS** |  Yes   | Yes  | [Coming Soon](#) | 
 | 🖧 **SAMBA** |  Yes   | Yes  | [Coming Soon](#) | 
-| 💾 **WSSD** |  Yes   | Yes  | [Coming Soon](#) | 
+| 🖧  **WSSD** |  Yes   | Yes  | [Coming Soon](#) | 
 | **a** |  Yes   | Yes  | [Coming Soon](#) | 
 | **b** |  Yes   | Yes  | [Coming Soon](#) | 
 | **c** |  Yes   | Yes  | [Coming Soon](#) | 
