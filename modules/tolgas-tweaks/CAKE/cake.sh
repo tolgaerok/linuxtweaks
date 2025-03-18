@@ -17,7 +17,7 @@ NC="\033[0m"
 if command -v dnf &>/dev/null; then
     PM="dnf"
     INSTALL_CMD="sudo dnf install -y iproute-tc"
-elif command -v pacman &>/dev/null; then
+    elif command -v pacman &>/dev/null; then
     PM="pacman"
     INSTALL_CMD="sudo pacman -Sy --needed iproute2"
 else
@@ -32,7 +32,7 @@ if ! command -v tc &>/dev/null; then
     hash -r
 fi
 
-# detect tc path 
+# detect tc path
 TC_PATH=$(command -v tc)
 if [ -z "$TC_PATH" ]; then
     echo -e "${RED}Failed to find tc after installation. Exiting.${NC}"
@@ -41,7 +41,7 @@ fi
 
 # Detect active network interface
 interface=$(ip -o link show | awk -F': ' '
-    $2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print $2; exit}')
+$2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print $2; exit}')
 
 if [ -z "$interface" ]; then
     echo -e "${RED}No active network interface found. Exiting.${NC}"
@@ -121,7 +121,7 @@ fi
 if ! grep -q 'alias cake-status=' "$BASHRC"; then
     echo -e "${BLUE}Adding 'cake-status' alias to .bashrc...${NC}"
     echo "alias cake-status=\"sudo systemctl status $SERVICE_NAME --no-pager && sudo systemctl status $SERVICE_NAME2 --no-pager\"" >> "$BASHRC"
-    else
+else
     echo -e "${YELLOW}'cake-status' alias already exists in .bashrc, skipping...${NC}"
 fi
 
