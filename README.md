@@ -122,3 +122,5 @@ TEST PURPOSES: [Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob
 
 
 TEST PURPOSES: [Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
+
+![alt text](image.png)
