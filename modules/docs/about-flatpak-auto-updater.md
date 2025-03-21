@@ -21,38 +21,34 @@ Tolga Erok
 
 ![alt text](images/flatpak-autoupdate/flatpak-auto-update.png)
 
-The provided bla bla bla
+# **Flatpak Auto-Update Script: What It Does**  
 
-- BLa Bla
+Manually running `flatpak update` all the time can be a bit of a hassle, especially if you forget about it or just don’t want to bother. This script takes care of that by setting up a **systemd service and timer** to keep Flatpak apps updated automatically. Once you run it, updates will happen on a schedule, without any extra effort.  
 
-# *Summary*
-Overall, bla bla
+### **How It Works**  
 
-## *`How to run?`*
+When you run the script, it does a few things:  
 
-1. Make sure `git` is usable. If not, *install it:*
+1. **Checks if you're running it as root** – Systemd services need root access to be installed, so if you’re not using `sudo`, it won’t continue.  
+2. **Verifies that Flatpak is installed** – No point in setting up an update system if Flatpak isn’t there. If it’s missing, the script will let you know and exit.  
+3. **Creates a systemd service** – This service runs `flatpak update -y`, which updates all Flatpak apps without asking for confirmation.  
+4. **Sets up a systemd timer** – This controls when the update service runs. The schedule is:  
+   - **15 seconds after boot** (so updates are checked right away when you start your system).  
+   - **Every six hours** (at midnight, 6 AM, noon, and 6 PM).  
+   - **Whenever the system wakes from suspend** (so updates don’t get skipped if your PC was asleep).  
+5. **Enables and starts the timer** – It makes sure the systemd timer is active immediately and running on schedule.  
+6. **Shows the status** – At the end, it prints out the systemd status for both the service and timer, so you can see what’s happening and when the next update is scheduled.  
 
-```sh
-sudo apt-get install git -y
-```
+### **Is This for You?**  
 
-2. Open Terminal, type:
+If you want Flatpak apps to stay updated automatically and don’t want to think about it, this script is exactly what you need. It’s ideal for people who:  
+✔️ Use Flatpak often and want the latest versions of apps without manually updating.  
+✔️ Prefer systemd over cron jobs or other scheduling methods.  
+✔️ Keep their system on most of the time or use suspend instead of shutting down.  
 
-```sh
-git clone https://github.com/tolgaerok/Debian-tolga.git
-cd ./Debian-tolga
-```
+However, if you like to review updates before installing them, don’t use Flatpak much, or already have another update method in place, you might not need this.  
 
-3. Run it:
-
-```sh
-chmod u+x ./install.sh
-./install.sh
-
-or run my online debian updater:
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/Debian-tolga/main/SCRIPTS/DEBIAN-UPDATER.sh)"
-
-```
+For those who just want their apps to stay fresh without the extra effort, this script does the job.
 
 ## *Other repositories in my git hub:*
 
