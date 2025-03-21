@@ -48,7 +48,7 @@ if grep -q "Nothing to do" /tmp/flatpak_update.log; then \
     # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update" "No updates available"; \
     # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update Status" "No updates available"; \
     # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -i /home/tolga/MyGit/linuxtweaks/modules/docs/images/md-pics/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
-    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -i /usr/local/bin/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
+    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
 else \
    # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update" "Updates installed successfully"; \
     sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update Status" "Updates installed successfully"; \
