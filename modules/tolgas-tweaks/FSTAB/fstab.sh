@@ -15,7 +15,6 @@ echo "Starting Samba mount setup at $(date)" | tee -a "$LOG_FILE"
 directories=(
     "/mnt/Mint"
     "/mnt/Public"
-    "/mnt/Public1"
     "/mnt/QNAP"
     "/mnt/Relationships"
 )
