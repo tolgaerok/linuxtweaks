@@ -2,9 +2,8 @@
 
 # **Flatpak Auto-Update SystemD Script**  
 
-> Tolga Erok
-
-> 21/3/2025
+- *Tolga Erok*
+- *22/3/2025*
 
 
 
