@@ -42,6 +42,8 @@ When you run the script, it does a few things:
 
 ### **Is This for You?**  
 
+![alt text](images/flatpak-autoupdate/notification-working.png)
+
 If you want Flatpak apps to stay updated automatically and don’t want to think about it, this script is exactly what you need. It’s ideal for people who:  
 
   ✔️ Use Flatpak often and want the latest versions of apps without manually updating.  
