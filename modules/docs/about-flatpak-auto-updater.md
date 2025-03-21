@@ -7,15 +7,19 @@ Tolga Erok
 ```
 <div align="left">
   <table style="border-collapse: collapse; width: 100%; border: none;">
-    <td align="center" style="border: none;">
-        <a href="https://www.debian.org">
-          <img src="https://flathub.org/img/distro/debian.svg" alt="Debian" style="width: 100%;">
-          <br>Debian
+    <tr> 
+      <td align="center" style="border: none;">
+        <a href="https://github.com/tolgaerok/linuxtweaks">
+          <img src="modules/docs/images/md-pics/tolga-profile-5.png" alt="LinuxTweaks" style="width: 100%;">
+          <br>LinuxTweaks
         </a>
       </td>
     </tr>
   </table>
 </div>
+
+
+![alt text](images/flatpak-autoupdate/flatpak-auto-update.png)
 
 The provided bla bla bla
 
