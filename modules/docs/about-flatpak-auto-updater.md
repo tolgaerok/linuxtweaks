@@ -43,9 +43,10 @@ When you run the script, it does a few things:
 ### **Is This for You?**  
 
 If you want Flatpak apps to stay updated automatically and don’t want to think about it, this script is exactly what you need. It’s ideal for people who:  
-✔️ Use Flatpak often and want the latest versions of apps without manually updating.  
-✔️ Prefer systemd over cron jobs or other scheduling methods.  
-✔️ Keep their system on most of the time or use suspend instead of shutting down.  
+
+  ✔️ Use Flatpak often and want the latest versions of apps without manually updating.  
+  ✔️ Prefer systemd over cron jobs or other scheduling methods.  
+  ✔️ Keep their system on most of the time or use suspend instead of shutting down.  
 
 However, if you like to review updates before installing them, don’t use Flatpak much, or already have another update method in place, you might not need this.  
 
