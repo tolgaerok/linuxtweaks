@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Tolga Erok
 # Date: 21/3/2025
-# Version: 3.1a
+# Version: 3.2
 
 # SCOPE:
 # Run 15 seconds after boot.
@@ -31,7 +31,7 @@ fi
 
 # systemd service file
 echo "[Unit]
-Description=Tolga's Flatpak Automatic Update V3.1a
+Description=Tolga's Flatpak Automatic Update V3.2
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target
@@ -45,18 +45,16 @@ for i in {1..3}; do \
     /usr/bin/flatpak update -y && break || (echo "Retrying Flatpak update..." && sleep 10); \
 done | tee /tmp/flatpak_update.log; \
 if grep -q "Nothing to do" /tmp/flatpak_update.log; then \
-    # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update" "No updates available"; \
-    # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update Status" "No updates available"; \
-    # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -i /home/tolga/MyGit/linuxtweaks/modules/docs/images/md-pics/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
-    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
+    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/tolga-profile-5.png "Flatpak Update Status:" "No updates available"; \
 else \
-   # sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update" "Updates installed successfully"; \
-    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "Flatpak Update Status" "Updates installed successfully"; \
-fi'" | tee "$SERVICE_FILE" >/dev/null
+    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Installing Flatpaks" -i /usr/local/bin/tolga-profile-5.png"Flatpak Update Status:" "Updates installed successfully"; \
+fi
+
+# systemctl daemon-reload && systemctl start tolga-flatpak-update.service && systemctl enable --now tolga-flatpak-update.timer && systemctl restart tolga-flatpak-update.timer && echo -e "\nFlatpak update service status:" && systemctl status tolga-flatpak-update.service --no-pager && echo -e "\nFlatpak update timer status:" && systemctl status tolga-flatpak-update.timer --no-pager && echo -e "\nNext scheduled Flatpak update timer:" && systemctl list-timers --no-pager | grep "tolga-flatpak-update"'" | tee "$SERVICE_FILE" >/dev/null
 
 # systemd timer file
 echo "[Unit]
-Description=Tolga's Flatpak Automatic Update Trigger V3.1a
+Description=Tolga's Flatpak Automatic Update Trigger V3.2
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target suspend.target
