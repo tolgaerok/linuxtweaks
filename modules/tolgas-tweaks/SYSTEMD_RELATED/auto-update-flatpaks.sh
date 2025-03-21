@@ -55,7 +55,7 @@ WantedBy=timers.target suspend.target" | tee "$TIMER_FILE" >/dev/null
 
 # Reload systemd
 systemctl daemon-reload
-# systemctl start tolga-flatpak-update.service   # Optional: Remove this if you don't want an immediate run
+systemctl start tolga-flatpak-update.service   
 systemctl enable --now tolga-flatpak-update.timer
 systemctl restart tolga-flatpak-update.timer  
 
