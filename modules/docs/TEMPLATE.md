@@ -90,7 +90,18 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/Debian-tolga/m
 
 
 
-
+<div align="left">
+  <table style="border-collapse: collapse; width: 100%; border: none;">
+    <tr> 
+      <td align="center" style="border: none;">
+        <a href="https://github.com/tolgaerok/linuxtweaks">
+          <img src="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/refs/heads/main/modules/docs/images/md-pics/tolga-profile-5.png" alt="LinuxTweaks" style="width: 100%;">
+          <br>LinuxTweaks
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 
 

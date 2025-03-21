@@ -6,53 +6,48 @@
 
 > 21/3/2025
 
-<div align="left">
-  <table style="border-collapse: collapse; width: 100%; border: none;">
-    <tr> 
-      <td align="center" style="border: none;">
-        <a href="https://github.com/tolgaerok/linuxtweaks">
-          <img src="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/refs/heads/main/modules/docs/images/md-pics/tolga-profile-5.png" alt="LinuxTweaks" style="width: 100%;">
-          <br>LinuxTweaks
-        </a>
-      </td>
-    </tr>
-  </table>
-</div>
 
 
-![alt text](images/flatpak-autoupdate/flatpak-auto-update.png)
 
-# **What It Does**  
 
-Manually running `flatpak update` all the time can be a bit of a hassle, especially if you forget about it or just don’t want to bother. This script takes care of that by setting up a **systemd service and timer** to keep Flatpak apps updated automatically. Once you run it, updates will happen on a schedule, without any extra effort.  
+<p align="center">
+  <img src="images/flatpak-autoupdate/flatpak-auto-update.png" alt="alt text">
+</p>
 
-### **How It Works**  
+<p align="center">
+  <img src="images/flatpak-autoupdate/notification-working.png" alt="alt text">
+</p>
 
-When you run the script, it does a few things:  
+<p align="center">
+  <i>For those who just want their apps to stay fresh without the extra effort, this script does the job.</i>
+</p>
 
-1. **Checks if you're running it as root** – Systemd services need root access to be installed, so if you’re not using `sudo`, it won’t continue.  
-2. **Verifies that Flatpak is installed** – No point in setting up an update system if Flatpak isn’t there. If it’s missing, the script will let you know and exit.  
-3. **Creates a systemd service** – This service runs `flatpak update -y`, which updates all Flatpak apps without asking for confirmation.  
-4. **Sets up a systemd timer** – This controls when the update service runs. The schedule is:  
-   - **15 seconds after boot** (so updates are checked right away when you start your system).  
-   - **Every six hours** (at midnight, 6 AM, noon, and 6 PM).  
-   - **Whenever the system wakes from suspend** (so updates don’t get skipped if your PC was asleep).  
-5. **Enables and starts the timer** – It makes sure the systemd timer is active immediately and running on schedule.  
-6. **Shows the status** – At the end, it prints out the systemd status for both the service and timer, so you can see what’s happening and when the next update is scheduled.  
+## Simplifying Updates for You
 
-### **Is This for You?**  
+From my experience, manually checking for Flatpak updates can be tedious, especially if you forget or don’t feel like dealing with it. This script automates the process, saving you time and ensuring your Flatpak apps are always up to date without any `hassle`.
+Why Use It?
 
-![alt text](images/flatpak-autoupdate/notification-working.png)
+I believe this script could really help users who prefer a `set-and-forget` method to keep their apps updated. Instead of manually running flatpak update, it handles everything through a simple `systemd service` and `timer`. It checks for updates as soon as your *system boots, every six hours, and when your PC wakes from suspend.*
 
-If you want Flatpak apps to stay updated automatically and don’t want to think about it, this script is exactly what you need. It’s ideal for people who:  
+If you’re like me and appreciate automating routine tasks, you’ll likely find this useful. The script also ensures that updates occur even if your machine was asleep, keeping everything current.
+How It Works
 
-  ✔️ Use Flatpak often and want the latest versions of apps without manually updating.  
-  ✔️ Prefer systemd over cron jobs or other scheduling methods.  
-  ✔️ Keep their system on most of the time or use suspend instead of shutting down.  
+-    Checks if Flatpak is installed: Before running anything, the script checks if Flatpak is installed on your system.
+-    Creates a `systemd service`: This runs the `flatpak update -y` command to update all your Flatpak apps without asking for confirmation.
+-    Sets up a timer: The update process is scheduled to run right after boot, every `six` hours, and after waking up from `suspend`. This means you don’t have to worry about forgetting to check.
+-    Enables and starts the timer: It sets everything in motion right away, making sure the updates happen automatically.
+-    Displays status: At the end of the process, it shows you the status of both the service and timer, so you know when the next update is coming.
 
-However, if you like to review updates before installing them, don’t use Flatpak much, or already have another update method in place, you might not need this.  
+## Who Should Use This?
 
-For those who just want their apps to stay fresh without the extra effort, this script does the job.
+If you use Flatpak often and like the idea of keeping your apps up to date automatically, this script is a perfect fit. It’s especially helpful if you don’t want to think about updating and prefer using `systemd` over `cron` jobs. 
+
+I feel it’s a solid choice for people who keep their system on all the `time` or use `suspend`.
+
+*However, if you’re someone who prefers reviewing updates before installation or doesn’t use Flatpak much, this may not be necessary for you.*
+
+
+
 
 ### 🔗 *To view source code:*
 
