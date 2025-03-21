@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Tolga Erok
 # Date: 21/3/2025
-# Version: 3
+# Version: 3.0
 
 # SCOPE:
 # Run 15 seconds after boot.
@@ -27,7 +27,7 @@ fi
 
 # systemd service file
 echo "[Unit]
-Description=Tolga's Flatpak Automatic Update V2.1
+Description=Tolga's Flatpak Automatic Update V3.0
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target
@@ -39,7 +39,7 @@ ExecStart=/usr//bin/flatpak update -y
 
 # systemd timer file
 echo "[Unit]
-Description=Tolga's Flatpak Automatic Update Trigger V2.1
+Description=Tolga's Flatpak Automatic Update Trigger V3.0
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target suspend.target
