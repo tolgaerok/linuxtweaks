@@ -17,19 +17,19 @@
 
 | Tweak      | Tested | Pass | Link  |
 |------------|:------:|:----:|------------|
-| 📡 **CAKE (Protocol)**   |  Yes   | Yes  | [Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-cake.md) |
-| 🌐 **FlatPak AutoUpdater**   |  Yes   | Yes  | [Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-flatpak-auto-updater.md) |
-| 🏠 **HOST** |  Yes   | Yes  | [Coming Soon](#) | 
-| 📡 **NSSWITCH** |  Yes   | Yes  | [Coming Soon](#) | 
-| 📡 **RESOLVED-DNS** |  Yes   | Yes  | [Coming Soon](#) | 
-| 🖧  **WSSD** |  Yes   | Yes  | [Coming Soon](#) | 
-| 🖧 **SAMBA** |  Yes   | Yes  | [Coming Soon](#) | 
-| **a** |  Yes   | Yes  | [Coming Soon](#) | 
-| **b** |  Yes   | Yes  | [Coming Soon](#) | 
-| **c** |  Yes   | Yes  | [Coming Soon](#) | 
-| **d** |  Yes   | Yes  | [Coming Soon](#) | 
-| **e** |  Yes   | Yes  | [Coming Soon](#) | 
-| **f** |  Yes   | Yes  | [Coming Soon](#) | 
+| 📡 **CAKE (Protocol)**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-cake.md) |
+| 🌐 **FlatPak AutoUpdater**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-flatpak-auto-updater.md) |
+| 🏠 **HOST** |  Yes   | Yes  | [TO-DO](#) | 
+| 📡 **NSSWITCH** |  Yes   | Yes  | [TO-DO](#) | 
+| 📡 **RESOLVED-DNS** |  Yes   | Yes  | [TO-DO](#) | 
+| 🖧  **WSSD** |  Yes   | Yes  | [TO-DO](#) | 
+| 🖧 **SAMBA** |  Yes   | Yes  | [TO-DO](#) | 
+| **a** |  Yes   | Yes  | [TO-DO](#) | 
+| **b** |  Yes   | Yes  | [TO-DO](#) | 
+| **c** |  Yes   | Yes  | [TO-DO](#) | 
+| **d** |  Yes   | Yes  | [TO-DO](#) | 
+| **e** |  Yes   | Yes  | [TO-DO](#) | 
+| **f** |  Yes   | Yes  | [TO-DO](#) | 
 
 
 
