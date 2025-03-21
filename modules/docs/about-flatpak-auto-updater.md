@@ -1,10 +1,11 @@
 
 
-# `Flatpak AutoUpdate SystemD Tweak`
-```sh
-Tolga Erok
-21/3/2025
-```
+# **Flatpak Auto-Update SystemD Script**  
+
+> Tolga Erok
+
+> 21/3/2025
+
 <div align="left">
   <table style="border-collapse: collapse; width: 100%; border: none;">
     <tr> 
@@ -21,7 +22,7 @@ Tolga Erok
 
 ![alt text](images/flatpak-autoupdate/flatpak-auto-update.png)
 
-# **Flatpak Auto-Update Script: What It Does**  
+# **What It Does**  
 
 Manually running `flatpak update` all the time can be a bit of a hassle, especially if you forget about it or just don’t want to bother. This script takes care of that by setting up a **systemd service and timer** to keep Flatpak apps updated automatically. Once you run it, updates will happen on a schedule, without any extra effort.  
 
