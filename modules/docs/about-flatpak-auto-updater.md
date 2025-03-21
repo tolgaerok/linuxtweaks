@@ -25,12 +25,14 @@
 ## Simplifying Updates for You
 
 From my experience, manually checking for Flatpak updates can be tedious, especially if you forget or don’t feel like dealing with it. This script automates the process, saving you time and ensuring your Flatpak apps are always up to date without any `hassle`.
-Why Use It?
+
+## Why Use It?
 
 I believe this script could really help users who prefer a `set-and-forget` method to keep their apps updated. Instead of manually running flatpak update, it handles everything through a simple `systemd service` and `timer`. It checks for updates as soon as your *system boots, every six hours, and when your PC wakes from suspend.*
 
 If you’re like me and appreciate automating routine tasks, you’ll likely find this useful. The script also ensures that updates occur even if your machine was asleep, keeping everything current.
-How It Works
+
+## How It Works
 
 -    Checks if Flatpak is installed: Before running anything, the script checks if Flatpak is installed on your system.
 -    Creates a `systemd service`: This runs the `flatpak update -y` command to update all your Flatpak apps without asking for confirmation.
@@ -40,9 +42,7 @@ How It Works
 
 ## Who Should Use This?
 
-If you use Flatpak often and like the idea of keeping your apps up to date automatically, this script is a perfect fit. It’s especially helpful if you don’t want to think about updating and prefer using `systemd` over `cron` jobs. 
-
-I feel it’s a solid choice for people who keep their system on all the `time` or use `suspend`.
+If you use Flatpak often and like the idea of keeping your apps up to date automatically, this script is a perfect fit. It’s especially helpful if you don’t want to think about updating and prefer using `systemd` over `cron` jobs. I feel it’s a solid choice for people who keep their system on all the `time` or use `suspend`.
 
 *However, if you’re someone who prefers reviewing updates before installation or doesn’t use Flatpak much, this may not be necessary for you.*
 
