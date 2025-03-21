@@ -34,11 +34,11 @@ If you’re like me and appreciate automating routine tasks, you’ll likely fin
 
 ## How It Works
 
--    Checks if Flatpak is installed: Before running anything, the script checks if Flatpak is installed on your system.
+-    `Checks` if Flatpak is installed: Before running anything, the script checks if Flatpak is installed on your system.
 -    Creates a `systemd service`: This runs the `flatpak update -y` command to update all your Flatpak apps without asking for confirmation.
--    Sets up a timer: The update process is scheduled to run right after boot, every `six` hours, and after waking up from `suspend`. This means you don’t have to worry about forgetting to check.
--    Enables and starts the timer: It sets everything in motion right away, making sure the updates happen automatically.
--    Displays status: At the end of the process, it shows you the status of both the service and timer, so you know when the next update is coming.
+-    Sets up a `timer`: The update process is scheduled to run right after boot, every `six` hours, and after waking up from `suspend`. This means you don’t have to worry about forgetting to check.
+-    `Enables` and `starts` the `timer`: It sets everything in motion right away, making sure the updates happen automatically.
+-    `Displays status`: At the end of the process, it shows you the status of both the service and timer, so you know when the next update is coming.
 
 ## Who Should Use This?
 
