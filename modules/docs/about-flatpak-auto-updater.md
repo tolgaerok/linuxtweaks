@@ -10,7 +10,7 @@ Tolga Erok
     <tr> 
       <td align="center" style="border: none;">
         <a href="https://github.com/tolgaerok/linuxtweaks">
-          <img src="modules/docs/images/md-pics/tolga-profile-5.png" alt="LinuxTweaks" style="width: 100%;">
+          <img src="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/refs/heads/main/modules/docs/images/md-pics/tolga-profile-5.png" alt="LinuxTweaks" style="width: 100%;">
           <br>LinuxTweaks
         </a>
       </td>
