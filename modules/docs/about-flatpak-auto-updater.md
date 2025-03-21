@@ -50,6 +50,21 @@ However, if you like to review updates before installing them, don’t use Flatp
 
 For those who just want their apps to stay fresh without the extra effort, this script does the job.
 
+### 🔗 *To view source code:*
+
+```bash
+https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/SYSTEMD_RELATED/auto-update-flatpaks.sh
+```
+
+### 🔗 *To `run` from the remote location:*
+
+```bash
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/SYSTEMD_RELATED/auto-update-flatpaks.sh
+```
+
+#
+[📚 Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
+
 ## *Other repositories in my git hub:*
 
 <div align="center">
