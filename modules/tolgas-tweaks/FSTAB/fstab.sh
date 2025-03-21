@@ -56,3 +56,13 @@ echo "Verifying mounts..." | tee -a "$LOG_FILE"
 mount | tee -a "$LOG_FILE"
 
 echo "Samba mount setup completed at $(date)" | tee -a "$LOG_FILE"
+
+# NOTES
+# //192.168.0.14/media/WPS/TEST              /media/WPS cifs credentials=/etc/samba/credentials2.txt,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0
+# //jack-sparrow.local/Public/PC-PORTAL/      /home/tolga/Documents/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0
+
+# sudo systemctl daemon-reload && sudo mount -a
+
+# sudo umount -l /media/WPS
+# └➤  sudo fuser -km /media/WPS^C
+# sudo lsof +D /media/WPS
