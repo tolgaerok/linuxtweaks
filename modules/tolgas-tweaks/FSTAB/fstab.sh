@@ -13,10 +13,11 @@ echo "Starting Samba mount setup at $(date)" | tee -a "$LOG_FILE"
 
 # List of directories to create
 directories=(
-    "/mnt/Relationships"
+    "/mnt/Mint"
     "/mnt/Public"
-    "/mnt/QNAP"
     "/mnt/Public1"
+    "/mnt/QNAP"
+    "/mnt/Relationships"
 )
 
 # Create directories and set permissions
@@ -29,9 +30,10 @@ done
 
 # Samba mount entries for /etc/fstab
 fstab_entries=(
-    "//jack-sparrow.local/Public/RELATIONSHIPS /mnt/Relationships cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,readbuffer=131072,writebuffer=131072,cache=strict,actimeo=30,noserverino,noatime,multichannel,rsize=1048576,wsize=1048576 0 0"
-    "//jack-sparrow.local/Public/ /mnt/Public cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,readbuffer=131072,writebuffer=131072,cache=strict,actimeo=30,noserverino,noatime,multichannel,rsize=1048576,wsize=1048576 0 0"
-    "//jack-sparrow.local/ /mnt/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,readbuffer=131072,writebuffer=131072,cache=strict,actimeo=30,noserverino,noatime,multichannel,rsize=1048576,wsize=1048576 0 0"
+    "//192.168.0.17/Public/RELATIONSHIPS        /mnt/Relationships cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/credentials2.txt,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
+    "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
 )
 
 # Backup /etc/fstab before making changes
