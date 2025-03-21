@@ -76,14 +76,15 @@ I believe this script is a  solid way to automate CAKE QoS settingsfor your netw
 ### 🔗 *To view source code:*
 
 ```bash
-https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/CAKE/cake.sh
+https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/NETWORKING-TWEAKS/cake.sh
 ```
 
 ### 🔗 *To `run` from the remote location:*
 
 ```bash
-curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/CAKE/cake.sh | bash
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/NETWORKING-TWEAKS/cake.sh
 ```
 
 #
 [📚 Back to Main Menu](https://github.com/tolgaerok/linuxtweaks/blob/main/README.md)
+
