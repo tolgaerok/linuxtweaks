@@ -34,7 +34,17 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr//bin/flatpak update -y
+ExecStart=/bin/bash -c '
+export DISPLAY=:0;
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus;
+for i in {1..3}; do
+  /usr/bin/flatpak update -y && break || (echo "Retrying Flatpak update..." && sleep 10);
+done | tee /tmp/flatpak_update.log;
+if grep -q "Nothing to do" /tmp/flatpak_update.log; then
+  notify-send "Flatpak Update" "No updates available";
+else
+  notify-send "Flatpak Update" "Updates installed successfully";
+fi'
 " | tee "$SERVICE_FILE" >/dev/null
 
 # systemd timer file
@@ -53,11 +63,11 @@ Persistent=true
 [Install]
 WantedBy=timers.target suspend.target" | tee "$TIMER_FILE" >/dev/null
 
-# Reload systemd
+# Reload systemd and apply changes
 systemctl daemon-reload
 systemctl start tolga-flatpak-update.service
 systemctl enable --now tolga-flatpak-update.timer
-systemctl restart tolga-flatpak-update.timer  
+systemctl restart tolga-flatpak-update.timer
 
 # status of both with no pager!
 echo -e "\nFlatpak update service status:"
