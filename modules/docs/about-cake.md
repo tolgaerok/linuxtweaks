@@ -82,7 +82,7 @@ https://github.com/tolgaerok/linuxtweaks/blob/main/modules/tolgas-tweaks/NETWORK
 ### 🔗 *To `run` from the remote location:*
 
 ```bash
-curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/NETWORKING-TWEAKS/cake.sh
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/modules/tolgas-tweaks/NETWORKING-TWEAKS/cake.sh | sudo bash
 ```
 
 #
