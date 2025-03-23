@@ -35,6 +35,14 @@ fstab_entries=(
     "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/credentials2.txt,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
     "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
     "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "#"
+    "#     To Reload FSTB"
+    "#      sudo systemctl daemon-reload && sudo mount -a"
+    "#"
+    "#     To KILL mounts"
+    "#      sudo fuser -km /media/WPS"
+    "#      sudo lsof +D /media/WPS"
+    "#      sudo umount -l /media/WPS"
 )
 
 # Backup /etc/fstab before making changes
