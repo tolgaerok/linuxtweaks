@@ -11,6 +11,22 @@ sudo chmod 666 "$LOG_FILE"
 
 echo "Starting Samba mount setup at $(date)" | tee -a "$LOG_FILE"
 
+# credential file paths
+QNAP_CREDENTIALS="/etc/samba/QNAP_credentials.conf"
+WINDOWS_CREDENTIALS="/etc/samba/Windows_credentials.conf"
+
+# QNAP credentials
+echo -e "username=admin\npassword=ibm450" | sudo tee "$QNAP_CREDENTIALS" >/dev/null
+
+# Windows credentials
+echo -e "username=tolga\npassword=ibm450" | sudo tee "$WINDOWS_CREDENTIALS" >/dev/null
+
+# Set permissions
+sudo chmod 600 "$QNAP_CREDENTIALS" "$WINDOWS_CREDENTIALS"
+sudo chown root:root "$QNAP_CREDENTIALS" "$WINDOWS_CREDENTIALS"
+
+echo "Credential files have been created and secured."
+
 # List of directories to create
 directories=(
     "/mnt/Mint"
@@ -30,11 +46,11 @@ done
 
 # Samba mount entries for /etc/fstab
 fstab_entries=(
-    "//192.168.0.1/tolga                        /mnt/Optus cifs credentials=/etc/samba/credentials2.txt,vers=1.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
-    "//192.168.0.17/Public/RELATIONSHIPS        /mnt/Relationships cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
-    "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/credentials2.txt,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
-    "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
-    "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "//192.168.0.1/tolga                        /mnt/Optus cifs credentials=/etc/samba/Windows_credentials.conf,vers=1.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
+    "//192.168.0.17/Public/RELATIONSHIPS        /mnt/Relationships cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/Windows_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
+    "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
     "#"
     "#     To Reload FSTB"
     "#      sudo systemctl daemon-reload && sudo mount -a"
@@ -65,12 +81,4 @@ mount | tee -a "$LOG_FILE"
 
 echo "Samba mount setup completed at $(date)" | tee -a "$LOG_FILE"
 
-# NOTES
-# //192.168.0.14/media/WPS/TEST              /media/WPS cifs credentials=/etc/samba/credentials2.txt,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0
-# //jack-sparrow.local/Public/PC-PORTAL/      /home/tolga/Documents/QNAP cifs credentials=/etc/samba/credentials,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0
-
-# sudo systemctl daemon-reload && sudo mount -a
-
-# sudo umount -l /media/WPS
-# └➤  sudo fuser -km /media/WPS^C
-# sudo lsof +D /media/WPS
+sleep 1
