@@ -46,11 +46,13 @@ done
 
 # Samba mount entries for /etc/fstab
 fstab_entries=(
-    "//192.168.0.1/tolga                        /mnt/Optus cifs credentials=/etc/samba/Windows_credentials.conf,vers=1.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
-    "//192.168.0.17/Public/RELATIONSHIPS        /mnt/Relationships cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
-    "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/Windows_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8 0 0"
-    "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
-    "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8  0 0"
+    ""
+    "# --------------------------  NETWORK SHARES ------------------------------------ #"
+    "//192.168.0.1/tolga                        /mnt/Optus cifs credentials=/etc/samba/Windows_credentials.conf,vers=1.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,cache=loose,noserverino 0 0"
+    "//192.168.0.17/Public/RELATIONSHIPS        /mnt/Relationships cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,cache=loose,noserverino 0 0"
+    "//192.168.0.18/Documents                   /mnt/Mint cifs credentials=/etc/samba/Windows_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,cache=loose,noserverino 0 0"
+    "//jack-sparrow.local/Public                /mnt/Public cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,cache=loose,noserverino 0 0"
+    "//jack-sparrow.local/Public/PC-PORTAL      /mnt/QNAP cifs credentials=/etc/samba/QNAP_credentials.conf,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,iocharset=utf8,cache=loose,noserverino 0 0"
     "#"
     "#     To Reload FSTB"
     "#      sudo systemctl daemon-reload && sudo mount -a"
