@@ -76,6 +76,8 @@ done
 
 # Mount all entries from /etc/fstab
 echo "Mounting all entries from /etc/fstab..." | tee -a "$LOG_FILE"
+sudo systemctl disable systemd-networkd-wait-online
+sudo systemctl mask systemd-networkd-wait-online
 sudo systemctl daemon-reload && sudo mount -a
 
 # Verify if mounts are successful
