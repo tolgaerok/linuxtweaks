@@ -33,7 +33,7 @@ directories=(
     "/mnt/Public"
     "/mnt/QNAP"
     "/mnt/Relationships"
-    "mnt/Optus"
+    "/mnt/Optus"
 )
 
 # Create directories and set permissions
