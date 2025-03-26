@@ -24,9 +24,11 @@ from PyQt6.QtCore import Qt, QTimer
 
 # my custom systemD services to monitor
 SERVICES = [
+    "A",
     "tolga-apply-cake-qdisc-wake.service",
     "tolga-apply-cake-qdisc.service",
     "tolga-flatpak-update.service",
+    "z",
 ]
 
 # Icons for tray && tooltip
@@ -46,13 +48,13 @@ def check_service_status(service):
             ["systemctl", "is-enabled", service], capture_output=True, text=True
         ).stdout.strip()
         if active_status == "active" and enabled_status == "enabled":
-            return ICON_GREEN, "  Active"
+            return ICON_GREEN, " Active   "
         elif enabled_status == "disabled":
-            return ICON_AMBER, "  Disabled"
+            return ICON_AMBER, " Disabled"
         else:
-            return ICON_RED, "  Inactive"
+            return ICON_RED, " Inactive"
     except Exception:
-        return ICON_RED, "  Error"
+        return ICON_RED, " Error"
 
 
 class LinuxTweakMonitor(QWidget):
@@ -86,9 +88,21 @@ class LinuxTweakMonitor(QWidget):
     def refresh_status(self):
         """update service status in my list box"""
         self.service_list.clear()
+
+        # put my service list into an arry
+        service_statuses = []
         for service in SERVICES:
             icon, status = check_service_status(service)
-            self.service_list.addItem(f"{icon} {service}: {status}")
+            # self.service_list.addItem(f"{icon} {service}: {status}")
+            service_statuses.append((service, icon, status))
+
+        # sort my services by name first > then by status: Active -> Inactive -> Disabled
+        service_statuses.sort(key=lambda x: ("Active" not in x[2], "Disabled" in x[2]))
+
+        # add my sorted services to the list box
+        for service, icon, status in service_statuses:
+            self.service_list.addItem(f"{icon}{status} :  {service}")
+
         self.tray_icon.update_status()
 
     def manage_service(self, action):
@@ -100,11 +114,13 @@ class LinuxTweakMonitor(QWidget):
 
         # service_name = selected_item.text().split(" ")[1]
         service_name = selected_item.text().split(" ")[1].strip(":")
+        
         subprocess.run(["systemctl", "daemon-reload"], check=True, capture_output=True)
         subprocess.run(["systemctl", action, service_name], capture_output=True)
         subprocess.run(
             ["systemctl", "is-enabled", service_name], check=True, capture_output=True
         )
+        
         self.refresh_status()
         QTimer.singleShot(100, self.tray_icon.update_status)
         # self.timer.stop()
@@ -184,7 +200,7 @@ class LinuxTweakTray:
     def run(self):
         self.app.exec()
 
-
+# Main menu
 if __name__ == "__main__":
     tray = LinuxTweakTray()
     tray.run()
