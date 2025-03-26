@@ -25,11 +25,9 @@ from PyQt6.QtCore import Qt, QTimer
 
 # my custom systemD services to monitor
 SERVICES = [
-    "A",
     "tolga-apply-cake-qdisc-wake.service",
     "tolga-apply-cake-qdisc.service",
     "tolga-flatpak-update.service",
-    "z",
 ]
 
 # Icons for tray && tooltip
