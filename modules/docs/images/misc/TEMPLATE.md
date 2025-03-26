@@ -131,6 +131,89 @@ Server/Hosting:
 Communication:
 📞 📱 📨 📡 📶 💬 💬 📠
 
+Status Indicators (Green, Amber, Red)
+
+    🟢 (Green Circle - Success/Active)
+
+    🟡 (Amber/Yellow Circle - Warning/Pending)
+
+    🔴 (Red Circle - Error/Failed)
+
+    ✅ (Green Check - Success/Complete)
+
+    ⚠️ (Warning - Caution)
+
+    ❌ (Red Cross - Error/Denied)
+
+    🔵 (Blue Circle - Info/Processing)
+
+    🟣 (Purple Circle - Alternative Status)
+
+    ⚫ (Black Circle - Offline/Shutdown)
+
+    ⚪ (White Circle - Standby)
+
+More Useful Icons
+System & Hardware
+
+    🖲️ (Trackball)
+
+    🎛️ (Control Knobs)
+
+    📀 (CD/DVD)
+
+    🔋 (Battery)
+
+    🔌 (Plug)
+
+    💽 (Mini Disk)
+
+    🎚️ (Slider Controls)
+
+Development & Scripting
+
+    🏗️ (Under Construction)
+
+    🔄 (Sync/Refresh)
+
+    ⚙️ (Settings/Configuration)
+
+    🎯 (Target/Goal)
+
+    🏆 (Achievement/Success)
+
+    🚀 (Launch/Deployment)
+
+    📝 (Notes/Logs)
+
+Networking & Connectivity
+
+    🌎 (Global Network)
+
+    🔗 (Link)
+
+    🛰️ (Satellite)
+
+    📶 (Wi-Fi/Cell Signal)
+
+    🔀 (Switching/Load Balancing)
+
+    🔃 (Reconnecting)
+
+Security & Access
+
+    🛡️ (Shield)
+
+    🔏 (Secure Lock)
+
+    👀 (Watching/Monitoring)
+
+    🔍 (Inspect/Investigate)
+
+    🏴‍☠️ (Hacker/Pirate)
+
+
+    
 | Kubuntu | Ubuntu | Fedora | Debian | NixOS | Arch Linux | Manjaro |
 | ------- | ------ | ------ | ------ | ----- | ---------- | ------- |
 
