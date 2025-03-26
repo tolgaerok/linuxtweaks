@@ -5,6 +5,7 @@
 # APP IMAGE LOCATION:      /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
 # APP LOCATION:            /usr/local/bin/LinuxTweaks/LinuxTweaks.py
 # PYTHON ONLINE FORMATTER: https://codebeautify.org/python-formatter-beautifier#
+# SYMLINK:                 sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
 
 import sys
 import subprocess
