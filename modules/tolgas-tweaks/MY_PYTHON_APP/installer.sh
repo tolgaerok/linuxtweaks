@@ -52,7 +52,7 @@ install_packages() {
     fedora | rhel | rocky | almalinux)
         install_command="sudo dnf install -y ${missing_packages[*]}"
         ;;
-    arch | manjaro | Biglinux) # BigLinux is now supported under the Arch case
+    arch | manjaro | Biglinux) 
         install_command="sudo pacman -S --noconfirm ${missing_packages[*]}"
         ;;
     debian | ubuntu | pop | linuxmint)
