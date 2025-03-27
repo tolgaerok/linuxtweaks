@@ -7,6 +7,7 @@
 # PYTHON ONLINE FORMATTER: https://codebeautify.org/python-formatter-beautifier#
 # SYMLINK:                 sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
 
+
 import sys
 import subprocess
 from PyQt6.QtWidgets import (
@@ -23,14 +24,14 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt, QTimer
 
-# my custom systemD services to monitor
+# My custom systemd services to monitor
 SERVICES = [
     "tolga-apply-cake-qdisc-wake.service",
     "tolga-apply-cake-qdisc.service",
-    "tolga-flatpak-update.service",    
+    "tolga-flatpak-update.service",
 ]
 
-# Icons for tray && tooltip
+# my icons for tray & tooltip
 APP_ICON = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
 ICON_AMBER = "🛡️"
 ICON_GREEN = "✔️"
@@ -46,6 +47,7 @@ def check_service_status(service):
         enabled_status = subprocess.run(
             ["systemctl", "is-enabled", service], capture_output=True, text=True
         ).stdout.strip()
+
         if active_status == "active" and enabled_status == "enabled":
             return ICON_GREEN, " Active   "
         elif enabled_status == "disabled":
@@ -64,11 +66,11 @@ class LinuxTweakMonitor(QWidget):
         self.setGeometry(100, 100, 350, 300)
         self.layout = QVBoxLayout()
 
-        # my service List
+        # My service list
         self.service_list = QListWidget()
         self.layout.addWidget(self.service_list)
 
-        # buttons
+        # Buttons
         self.start_button = QPushButton("Start Service")
         self.stop_button = QPushButton("Stop Service")
         self.restart_button = QPushButton("Restart Service")
@@ -76,7 +78,7 @@ class LinuxTweakMonitor(QWidget):
         self.layout.addWidget(self.stop_button)
         self.layout.addWidget(self.restart_button)
 
-        # action buttons
+        # Button actions
         self.start_button.clicked.connect(lambda: self.manage_service("start"))
         self.stop_button.clicked.connect(lambda: self.manage_service("stop"))
         self.restart_button.clicked.connect(lambda: self.manage_service("restart"))
@@ -85,20 +87,19 @@ class LinuxTweakMonitor(QWidget):
         self.refresh_status()
 
     def refresh_status(self):
-        """update service status in my list box"""
+        """Update service status in my list box"""
         self.service_list.clear()
 
-        # put my service list into an arry
+        # Put my service list into an array
         service_statuses = []
         for service in SERVICES:
             icon, status = check_service_status(service)
-            # self.service_list.addItem(f"{icon} {service}: {status}")
             service_statuses.append((service, icon, status))
 
-        # sort my services by name first > then by status: Active -> Inactive -> Disabled
+        # Sort my services by name first > then by status: Active -> Inactive -> Disabled
         service_statuses.sort(key=lambda x: ("Active" not in x[2], "Disabled" in x[2]))
 
-        # add my sorted services to the list box
+        # Add my sorted services to the list box
         for service, icon, status in service_statuses:
             self.service_list.addItem(f"{icon}{status} :  {service}")
 
@@ -111,8 +112,6 @@ class LinuxTweakMonitor(QWidget):
             QMessageBox.warning(self, "No Service Selected", "Please select a service.")
             return
 
-        # service_name = selected_item.text().split(" ")[1]
-        # service_name = selected_item.text().split(" ")[1].strip(":")
         service_name = selected_item.text().split(":")[-1].strip()
 
         subprocess.run(["systemctl", "daemon-reload"], check=True, capture_output=True)
@@ -120,11 +119,9 @@ class LinuxTweakMonitor(QWidget):
         subprocess.run(
             ["systemctl", "is-enabled", service_name], check=True, capture_output=True
         )
-        
+
         self.refresh_status()
         QTimer.singleShot(100, self.tray_icon.update_status)
-        # self.timer.stop()
-        # self.timer.start(1000)
 
 
 class LinuxTweakTray:
@@ -135,7 +132,7 @@ class LinuxTweakTray:
         self.tray = QSystemTrayIcon(QIcon(APP_ICON))
         self.tray.setToolTip("Flatpak Service Monitor")
 
-        # check if the icon is loaded correctly in taskbar
+        # Check if my icon is loaded correctly in taskbar
         if self.tray.icon().isNull():
             print("Error: Icon is invalid!")
         else:
@@ -143,7 +140,7 @@ class LinuxTweakTray:
 
         self.menu = QMenu()
 
-        # actions
+        # Actions
         self.show_app_action = QAction("Open Service Monitor")
         self.show_app_action.triggered.connect(self.open_app)
 
@@ -164,7 +161,7 @@ class LinuxTweakTray:
         # Main window
         self.window = LinuxTweakMonitor(self)
 
-        # check && update status every 5 seconds
+        # Check & update status every 5 seconds
         self.update_status()
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_status)
@@ -174,31 +171,61 @@ class LinuxTweakTray:
         print("Tray shown.")
 
     def update_status(self):
-        """update my tray icon and tooltip"""
-        statuses = [check_service_status(service) for service in SERVICES]
-        tooltip_text = "\n".join(
-            [
-                f"{icon} {service}: {status}"
-                for service, (icon, status) in zip(SERVICES, statuses)
-            ]
-        )
+        """Update my tray icon and group services by status"""
+        service_statuses = [
+            (service, *check_service_status(service)) for service in SERVICES
+        ]
 
-        # always show my LinuxTweaks app icon in the tray
-        self.tray.setToolTip(tooltip_text)
-        self.tray.setIcon(QIcon(APP_ICON))  # lock to show my LT icon
+        # Group by status
+        active_services = [
+            f"{icon}{status} : {service}"
+            for service, icon, status in service_statuses
+            if "Active" in status
+        ]
+        disabled_services = [
+            f"{icon}{status} : {service}"
+            for service, icon, status in service_statuses
+            if "Disabled" in status
+        ]
+        inactive_services = [
+            f"{icon}{status} : {service}"
+            for service, icon, status in service_statuses
+            if "Inactive" in status or "Error" in status
+        ]
+
+        # build tooltip text groups
+        tooltip_text = ""
+
+        if active_services:
+            tooltip_text += "Active Services:\n" + "\n".join(active_services) + "\n\n"
+        if disabled_services:
+            tooltip_text += "Disabled Services:\n" + "\n".join(disabled_services) + "\n\n"
+        if inactive_services:
+            tooltip_text += "Inactive Services:\n" + "\n".join(inactive_services) + "\n\n"
+
+        # if no inactive or disabled services, show "All Good"
+        if not disabled_services and not inactive_services:
+            tooltip_text = "✔️ All Good"
+
+        # keep icon locked to my LinuxTweaks icon
+        self.tray.setToolTip(tooltip_text.strip())
+        
+        # Always show my LT icon
+        self.tray.setIcon(QIcon(APP_ICON))  
 
     def tray_clicked(self, reason):
-        """handle clicks on tray icon"""
+        """Handle clicks on tray icon"""
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
             self.open_app()
 
     def open_app(self):
-        """show the service monitor window"""
+        """Show the service monitor window"""
         self.window.refresh_status()
         self.window.show()
 
     def run(self):
         self.app.exec()
+
 
 # Main menu
 if __name__ == "__main__":
