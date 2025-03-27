@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# Tolga Erok - 27-3-2025
-# Dependency Checker for my LinuxTweakTray App
+# Tolga Erok 
+# 27-3-2025
+
+# Dependency Checker, autostarter and installer with symlink for my LinuxTweakTray App
 
 # dependencies
 needed_packages=("python3" "python3-pyqt6" "systemd")
+
+# config
+local_dir="$HOME/.config/autostart"
+desktop_file="$local_dir/linuxtweaks.desktop"
 
 # detect OS
 detect_distro() {
@@ -21,7 +27,7 @@ is_installed() {
     fedora | rhel | rocky | almalinux)
         rpm -q "$1" &>/dev/null
         ;;
-    arch | manjaro | Biglinux) 
+    arch | manjaro | Biglinux)
         pacman -Q "$1" &>/dev/null
         ;;
     debian | ubuntu | pop | linuxmint)
@@ -86,4 +92,28 @@ for pkg in "${needed_packages[@]}"; do
 done
 
 install_packages
-echo -e "\n✅ All dependencies are now installed."
+mkdir -p "$local_dir"
+
+# .desktop file
+cat <<EOL >"$desktop_file"
+[Desktop Entry]
+Type=Application
+Exec=/usr/local/bin/linuxtweaks
+Name=LinuxTweaks
+Comment=LinuxTweaks Service Monitor by Tolga Erok
+Icon=/usr/local/bin/LinuxTweaks/images/LinuxTweak.png
+Terminal=false
+X-GNOME-Autostart-enabled=true
+EOL
+
+# Make .desktop file executable
+chmod +x "$desktop_file"
+
+# copy my app from git hub to:
+# APP IMAGE LOCATION:      /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
+# APP LOCATION:            /usr/local/bin/LinuxTweaks/LinuxTweaks.py
+
+# SYMLINK
+# sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
+
+echo -e "\n✅ All dependencies and LinuxTweaks has been added to autostart are now installed."
