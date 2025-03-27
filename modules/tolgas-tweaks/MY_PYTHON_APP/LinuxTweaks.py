@@ -27,7 +27,7 @@ from PyQt6.QtCore import Qt, QTimer
 SERVICES = [
     "tolga-apply-cake-qdisc-wake.service",
     "tolga-apply-cake-qdisc.service",
-    "tolga-flatpak-update.service",
+    "tolga-flatpak-update.service",    
 ]
 
 # Icons for tray && tooltip
@@ -112,8 +112,9 @@ class LinuxTweakMonitor(QWidget):
             return
 
         # service_name = selected_item.text().split(" ")[1]
-        service_name = selected_item.text().split(" ")[1].strip(":")
-        
+        # service_name = selected_item.text().split(" ")[1].strip(":")
+        service_name = selected_item.text().split(":")[-1].strip()
+
         subprocess.run(["systemctl", "daemon-reload"], check=True, capture_output=True)
         subprocess.run(["systemctl", action, service_name], capture_output=True)
         subprocess.run(
