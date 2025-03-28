@@ -25,17 +25,17 @@ from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt, QTimer
 
 # My custom systemd services to monitor
-SERVICES = [
+services = [
     "tolga-apply-cake-qdisc-wake.service",
     "tolga-apply-cake-qdisc.service",
     "tolga-flatpak-update.service",
 ]
 
 # my icons for tray & tooltip
-APP_ICON = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
-ICON_AMBER = "🛡️"
-ICON_GREEN = "✔️"
-ICON_RED = "⚠️"
+app_icon = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
+icon_amber = "🛡️"
+icon_green = "✔️"
+icon_red = "⚠️"
 
 
 def check_service_status(service):
@@ -49,13 +49,13 @@ def check_service_status(service):
         ).stdout.strip()
 
         if active_status == "active" and enabled_status == "enabled":
-            return ICON_GREEN, " Active   "
+            return icon_green, " Active   "
         elif enabled_status == "disabled":
-            return ICON_AMBER, " Disabled"
+            return icon_amber, " Disabled"
         else:
-            return ICON_RED, " Inactive"
+            return icon_red, " Inactive"
     except Exception:
-        return ICON_RED, " Error"
+        return icon_red, " Error"
 
 
 class LinuxTweakMonitor(QWidget):
@@ -92,7 +92,7 @@ class LinuxTweakMonitor(QWidget):
 
         # Put my service list into an array
         service_statuses = []
-        for service in SERVICES:
+        for service in services:
             icon, status = check_service_status(service)
             service_statuses.append((service, icon, status))
 
@@ -129,7 +129,7 @@ class LinuxTweakTray:
         self.app = QApplication(sys.argv)
 
         # Load my app icon into tray
-        self.tray = QSystemTrayIcon(QIcon(APP_ICON))
+        self.tray = QSystemTrayIcon(QIcon(app_icon))
         self.tray.setToolTip("Flatpak Service Monitor")
 
         # Check if my icon is loaded correctly in taskbar
@@ -173,7 +173,7 @@ class LinuxTweakTray:
     def update_status(self):
         """Update my tray icon and group services by status"""
         service_statuses = [
-            (service, *check_service_status(service)) for service in SERVICES
+            (service, *check_service_status(service)) for service in services
         ]
 
         # Group by status
@@ -197,11 +197,11 @@ class LinuxTweakTray:
         tooltip_text = ""
 
         if active_services:
-            tooltip_text += "Active Services:\n" + "\n".join(active_services) + "\n\n"
+            tooltip_text += "Active services:\n" + "\n".join(active_services) + "\n\n"
         if disabled_services:
-            tooltip_text += "Disabled Services:\n" + "\n".join(disabled_services) + "\n\n"
+            tooltip_text += "Disabled services:\n" + "\n".join(disabled_services) + "\n\n"
         if inactive_services:
-            tooltip_text += "Inactive Services:\n" + "\n".join(inactive_services) + "\n\n"
+            tooltip_text += "Inactive services:\n" + "\n".join(inactive_services) + "\n\n"
 
         # if no inactive or disabled services, show "All Good"
         if not disabled_services and not inactive_services:
@@ -211,7 +211,7 @@ class LinuxTweakTray:
         self.tray.setToolTip(tooltip_text.strip())
         
         # Always show my LT icon
-        self.tray.setIcon(QIcon(APP_ICON))  
+        self.tray.setIcon(QIcon(app_icon))  
 
     def tray_clicked(self, reason):
         """Handle clicks on tray icon"""
