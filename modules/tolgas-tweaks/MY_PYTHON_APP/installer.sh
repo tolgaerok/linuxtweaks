@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Tolga Erok
 # 27-3-2025
+# Version: 2.0
 
 # Dependency Checker, autostarter and installer with sysmlink for my LinuxTweakTray App
 
