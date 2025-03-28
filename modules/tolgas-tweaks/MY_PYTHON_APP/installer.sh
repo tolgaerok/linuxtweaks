@@ -60,7 +60,6 @@ setup_sysmlink() {
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
-# create .desktop into autostart and local user desktop
 setup_autostart() {
     mkdir -p "$(dirname "$desktop_file")"
 
@@ -77,19 +76,20 @@ EOL
     chmod +x "$desktop_file"
 
     # Get the actual non-root user
-    local_user=$(logname 2>/dev/null || echo $SUDO_USER)
-    local_user_desktop="/home/$local_user/Desktop"
+    LOGGED_IN_USER=$(logname 2>/dev/null || echo $SUDO_USER)
+    USER_DESKTOP="/home/$LOGGED_IN_USER/Desktop"
 
-    if [ -d "$local_user_desktop" ]; then
-        desktop_shortcut="$local_user_desktop/linuxtweaks.desktop"
-        echo "📁 Copying .desktop file to $local_user_desktop..."
+    if [ -d "$USER_DESKTOP" ]; then
+        desktop_shortcut="$USER_DESKTOP/linuxtweaks.desktop"
+        echo "📁 Copying .desktop file to $USER_DESKTOP..."
         sudo cp "$desktop_file" "$desktop_shortcut"
         sudo chmod +x "$desktop_shortcut"
-        sudo chown "$local_user:$local_user" "$desktop_shortcut"
+        sudo chown "$LOGGED_IN_USER:$LOGGED_IN_USER" "$desktop_shortcut"
     else
-        echo "⚠ Desktop directory ($local_user_desktop) does not exist. Skipping desktop shortcut creation."
+        echo "⚠ Desktop directory ($USER_DESKTOP) does not exist. Skipping desktop shortcut creation."
     fi
 }
+
 
 # main menu
 install_dependencies

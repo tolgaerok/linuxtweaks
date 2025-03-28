@@ -199,9 +199,13 @@ class LinuxTweakTray:
         if active_services:
             tooltip_text += "Active services:\n" + "\n".join(active_services) + "\n\n"
         if disabled_services:
-            tooltip_text += "Disabled services:\n" + "\n".join(disabled_services) + "\n\n"
+            tooltip_text += (
+                "Disabled services:\n" + "\n".join(disabled_services) + "\n\n"
+            )
         if inactive_services:
-            tooltip_text += "Inactive services:\n" + "\n".join(inactive_services) + "\n\n"
+            tooltip_text += (
+                "Inactive services:\n" + "\n".join(inactive_services) + "\n\n"
+            )
 
         # if no inactive or disabled services, show "All Good"
         if not disabled_services and not inactive_services:
@@ -209,9 +213,9 @@ class LinuxTweakTray:
 
         # keep icon locked to my LinuxTweaks icon
         self.tray.setToolTip(tooltip_text.strip())
-        
+
         # Always show my LT icon
-        self.tray.setIcon(QIcon(app_icon))  
+        self.tray.setIcon(QIcon(app_icon))
 
     def tray_clicked(self, reason):
         """Handle clicks on tray icon"""
