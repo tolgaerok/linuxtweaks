@@ -60,13 +60,14 @@ setup_sysmlink() {
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
-# create .desktop file
+# create .desktop into autostart and local user desktop
 setup_autostart() {
     mkdir -p "$(dirname "$desktop_file")"
+
     cat <<EOL >"$desktop_file"
 [Desktop Entry]
 Type=Application
-Exec=$symlink
+Exec=$sysmlink
 Name=LinuxTweaks
 Comment=LinuxTweaks Service Monitor by Tolga Erok
 Icon=$app_dir/images/LinuxTweak.png
@@ -75,10 +76,19 @@ X-GNOME-Autostart-enabled=true
 EOL
     chmod +x "$desktop_file"
 
-    # Also copy .desktop file to the logged-in user's Desktop
-    echo "📁 Copying .desktop file to Desktop..."
-    cp "$desktop_file" "$desktop_shortcut"
-    chmod +x "$desktop_shortcut"
+    # Get the actual non-root user
+    local_user=$(logname 2>/dev/null || echo $SUDO_USER)
+    local_user_desktop="/home/$local_user/Desktop"
+
+    if [ -d "$local_user_desktop" ]; then
+        desktop_shortcut="$local_user_desktop/linuxtweaks.desktop"
+        echo "📁 Copying .desktop file to $local_user_desktop..."
+        sudo cp "$desktop_file" "$desktop_shortcut"
+        sudo chmod +x "$desktop_shortcut"
+        sudo chown "$local_user:$local_user" "$desktop_shortcut"
+    else
+        echo "⚠ Desktop directory ($local_user_desktop) does not exist. Skipping desktop shortcut creation."
+    fi
 }
 
 # main menu
