@@ -66,7 +66,7 @@ setup_autostart() {
     cat <<EOL >"$desktop_file"
 [Desktop Entry]
 Type=Application
-Exec=$sysmlink
+Exec=$symlink
 Name=LinuxTweaks
 Comment=LinuxTweaks Service Monitor by Tolga Erok
 Icon=$app_dir/images/LinuxTweak.png
@@ -74,6 +74,11 @@ Terminal=false
 X-GNOME-Autostart-enabled=true
 EOL
     chmod +x "$desktop_file"
+
+    # Also copy .desktop file to the logged-in user's Desktop
+    echo "📁 Copying .desktop file to Desktop..."
+    cp "$desktop_file" "$desktop_shortcut"
+    chmod +x "$desktop_shortcut"
 }
 
 # main menu
