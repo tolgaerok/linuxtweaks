@@ -76,20 +76,19 @@ EOL
     chmod +x "$desktop_file"
 
     # Get the actual non-root user
-    LOGGED_IN_USER=$(logname 2>/dev/null || echo $SUDO_USER)
-    USER_DESKTOP="/home/$LOGGED_IN_USER/Desktop"
+    logged_in_user=$(logname 2>/dev/null || echo $SUDO_USER)
+    logged_in_user_desktop="/home/$logged_in_user/Desktop"
 
-    if [ -d "$USER_DESKTOP" ]; then
-        desktop_shortcut="$USER_DESKTOP/linuxtweaks.desktop"
-        echo "📁 Copying .desktop file to $USER_DESKTOP..."
+    if [ -d "$logged_in_user_desktop" ]; then
+        desktop_shortcut="$logged_in_user_desktop/linuxtweaks.desktop"
+        echo "📁 Copying .desktop file to $logged_in_user_desktop..."
         sudo cp "$desktop_file" "$desktop_shortcut"
         sudo chmod +x "$desktop_shortcut"
-        sudo chown "$LOGGED_IN_USER:$LOGGED_IN_USER" "$desktop_shortcut"
+        sudo chown "$logged_in_user:$logged_in_user" "$desktop_shortcut"
     else
-        echo "⚠ Desktop directory ($USER_DESKTOP) does not exist. Skipping desktop shortcut creation."
+        echo "⚠ Desktop directory ($logged_in_user_desktop) does not exist. Skipping desktop shortcut creation."
     fi
 }
-
 
 # main menu
 install_dependencies
