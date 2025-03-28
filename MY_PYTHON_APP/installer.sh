@@ -6,12 +6,12 @@
 # Dependency Checker, autostarter and installer with sysmlink for my LinuxTweakTray App
 
 # Config
-linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
-tmp_clone_dir="$HOME/linuxtweaks"
 app_dir="/usr/local/bin/LinuxTweaks"
 app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
+linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
+tmp_clone_dir="$HOME/linuxtweaks"
 
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
