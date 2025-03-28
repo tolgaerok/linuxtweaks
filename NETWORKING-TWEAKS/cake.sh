@@ -17,7 +17,7 @@ NC="\033[0m"
 if command -v dnf &>/dev/null; then
     PM="dnf"
     INSTALL_CMD="sudo dnf install -y iproute-tc"
-    elif command -v pacman &>/dev/null; then
+elif command -v pacman &>/dev/null; then
     PM="pacman"
     INSTALL_CMD="sudo pacman -Sy --needed iproute2"
 else
@@ -100,29 +100,48 @@ sudo tc qdisc show dev "$interface"
 # Add function & alias to .bashrc only if not already present in user bashrc
 BASHRC="$HOME/.bashrc"
 
-if ! grep -q "function cake()" "$BASHRC"; then
-    echo -e "${BLUE}Adding 'cake' function to .bashrc...${NC}"
+# Add cake-restart function if not present
+if ! grep -q "function cake-restart()" "$BASHRC"; then
+    echo -e "${BLUE}Adding 'cake-restart' function to .bashrc...${NC}"
     cat >>"$BASHRC" <<EOF
 
 # Apply CAKE qdisc easily - Tolga Erok
-function cake() {
-  interface=\$(ip link show | awk -F': ' '/wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}')
-  sudo systemctl daemon-reload
-  sudo systemctl restart $SERVICE_NAME
-  sudo tc -s qdisc show dev \$interface
-  sudo systemctl status $SERVICE_NAME --no-pager
-  sudo systemctl status $SERVICE_NAME2 --no-pager
+function cake-restart() {
+    # Detect active network interface
+    interface=\$(ip -o link show | awk -F': ' '
+    \$2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}')
+    
+    if [[ -z "\$interface" ]]; then
+        echo -e "${RED}Error: No active network interface detected!${NC}"
+        return 1
+    fi
+
+    echo -e "${BLUE}Restarting CAKE qdisc for interface: \$interface${NC}"
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart "$SERVICE_NAME"
+    sudo systemctl restart "$SERVICE_NAME2"
+
+    echo -e "${BLUE}Verifying qdisc configuration for \$interface:${NC}"
+    sudo tc -s qdisc show dev "\$interface"
+
+    echo -e "${BLUE}Systemd service statuses:${NC}"
+    sudo systemctl status "$SERVICE_NAME" --no-pager
+    sudo systemctl status "$SERVICE_NAME2" --no-pager
 }
+
 EOF
-else
-    echo -e "${YELLOW}'cake' function already exists in .bashrc, skipping...${NC}"
 fi
 
+# Add aliases if not present
 if ! grep -q 'alias cake-status=' "$BASHRC"; then
     echo -e "${BLUE}Adding 'cake-status' alias to .bashrc...${NC}"
     echo "alias cake-status=\"sudo systemctl status $SERVICE_NAME --no-pager && sudo systemctl status $SERVICE_NAME2 --no-pager\"" >> "$BASHRC"
-else
-    echo -e "${YELLOW}'cake-status' alias already exists in .bashrc, skipping...${NC}"
+fi
+
+if ! grep -q 'alias cake-restart=' "$BASHRC"; then
+    echo -e "${BLUE}Adding 'cake-restart' alias to .bashrc...${NC}"
+    echo "alias cake-restart=\"cake-restart\"" >> "$BASHRC"
 fi
 
 echo -e "${YELLOW}Reloading .bashrc...${NC}"
