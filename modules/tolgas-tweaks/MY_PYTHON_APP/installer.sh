@@ -1,119 +1,85 @@
 #!/usr/bin/env bash
-# Tolga Erok 
+# Tolga Erok
 # 27-3-2025
 
-# Dependency Checker, autostarter and installer with symlink for my LinuxTweakTray App
+# Dependency Checker, autostarter and installer with sysmlink for my LinuxTweakTray App
 
-# dependencies
-needed_packages=("python3" "python3-pyqt6" "systemd")
+# Config
+linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
+tmp_clone_dir="$HOME/linuxtweaks"
+app_dir="/usr/local/bin/LinuxTweaks"
+app_executable="$app_dir/LinuxTweaks.py"
+desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
+sysmlink="/usr/local/bin/linuxtweaks"
 
-# config
-local_dir="$HOME/.config/autostart"
-desktop_file="$local_dir/linuxtweaks.desktop"
+# check dependencies are installed (DNF or Pacman)
+install_dependencies() {
+    local packages=("python3" "python3-pyqt6" "git")
+    for pkg in "${packages[@]}"; do
+        if ! command -v "$pkg" &>/dev/null; then
+            echo "Installing $pkg..."
+            if command -v dnf &>/dev/null; then
+                sudo dnf install -y "$pkg"
+            elif command -v pacman &>/dev/null; then
+                sudo pacman -S --noconfirm "$pkg"
+            else
+                echo "Unsupported package manager. Install $pkg manually."
+                exit 1
+            fi
+        fi
+    done
+}
 
-# detect OS
-detect_distro() {
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        echo "$ID"
+# clone or update the repo
+setup_repo() {
+    if [ -d "$tmp_clone_dir" ]; then
+        echo "Updating repository..."
+        git -C "$tmp_clone_dir" pull
     else
-        echo "unknown"
+        echo "Cloning repository..."
+        git clone "$linuxtweaks_repo" "$tmp_clone_dir"
     fi
 }
 
-# check if a package is installed
-is_installed() {
-    case "$DISTRO" in
-    fedora | rhel | rocky | almalinux)
-        rpm -q "$1" &>/dev/null
-        ;;
-    arch | manjaro | Biglinux)
-        pacman -Q "$1" &>/dev/null
-        ;;
-    debian | ubuntu | pop | linuxmint)
-        dpkg -l "$1" &>/dev/null
-        ;;
-    *)
-        return 1
-        ;;
-    esac
+# Copy LinuxTweaks folder from repo to local machine
+deploy_app() {
+    echo "Copying LinuxTweaks contents to $app_dir..."
+    sudo mkdir -p "$app_dir"
+    sudo cp -r "$tmp_clone_dir/modules/tolgas-tweaks/MY_PYTHON_APP/"* "$app_dir/"
+    sudo chmod -R +x "$app_dir"
 }
 
-# install missing packages
-install_packages() {
-    if [ ${#missing_packages[@]} -eq 0 ]; then
-        echo "✔️ All dependencies are installed."
-        exit 0
+# create sysmlink (remove if one exists)
+setup_sysmlink() {
+    if [ -L "$sysmlink" ] || [ -f "$sysmlink" ]; then
+        echo "Removing existing sysmlink: $sysmlink"
+        sudo rm -f "$sysmlink"
     fi
-
-    echo -e "\n⚠️ Missing dependencies: ${missing_packages[*]}"
-
-    case "$DISTRO" in
-    fedora | rhel | rocky | almalinux)
-        install_command="sudo dnf install -y ${missing_packages[*]}"
-        ;;
-    arch | manjaro | Biglinux) 
-        install_command="sudo pacman -S --noconfirm ${missing_packages[*]}"
-        ;;
-    debian | ubuntu | pop | linuxmint)
-        install_command="sudo apt install -y ${missing_packages[*]}"
-        ;;
-    *)
-        echo "❌ Unsupported distro. Install manually: ${missing_packages[*]}"
-        exit 1
-        ;;
-    esac
-
-    read -rp "Do you want to install missing packages? (y/N): " CONFIRM
-    if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
-        eval "$install_command"
-    else
-        echo "❌ Dependencies not installed. Exiting."
-        exit 1
-    fi
+    echo "Creating new sysmlink..."
+    sudo ln -s "$app_executable" "$sysmlink"
 }
 
-# main
-DISTRO=$(detect_distro)
-echo "🔍 Detected system: ${DISTRO^}"
-
-# check if systemctl is available
-if ! command -v systemctl &>/dev/null; then
-    echo "❌ systemctl is missing! Ensure you are running a systemd-based system."
-    exit 1
-fi
-
-# check missing packages
-missing_packages=()
-for pkg in "${needed_packages[@]}"; do
-    if ! is_installed "$pkg"; then
-        missing_packages+=("$pkg")
-    fi
-done
-
-install_packages
-mkdir -p "$local_dir"
-
-# .desktop file
-cat <<EOL >"$desktop_file"
+# create .desktop file
+setup_autostart() {
+    mkdir -p "$(dirname "$desktop_file")"
+    cat <<EOL >"$desktop_file"
 [Desktop Entry]
 Type=Application
-Exec=/usr/local/bin/linuxtweaks
+Exec=$sysmlink
 Name=LinuxTweaks
 Comment=LinuxTweaks Service Monitor by Tolga Erok
-Icon=/usr/local/bin/LinuxTweaks/images/LinuxTweak.png
+Icon=$app_dir/images/LinuxTweak.png
 Terminal=false
 X-GNOME-Autostart-enabled=true
 EOL
+    chmod +x "$desktop_file"
+}
 
-# Make .desktop file executable
-chmod +x "$desktop_file"
+# main menu
+install_dependencies
+setup_repo
+deploy_app
+setup_sysmlink
+setup_autostart
 
-# copy my app from git hub to:
-# APP IMAGE LOCATION:      /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
-# APP LOCATION:            /usr/local/bin/LinuxTweaks/LinuxTweaks.py
-
-# SYMLINK
-# sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
-
-echo -e "\n✅ All dependencies and LinuxTweaks has been added to autostart are now installed."
+echo "✅ LinuxTweaks installed, sysmlinked, and added to autostart."
