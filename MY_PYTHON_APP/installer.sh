@@ -46,7 +46,7 @@ setup_repo() {
 deploy_app() {
     echo "Copying LinuxTweaks contents to $app_dir..."
     sudo mkdir -p "$app_dir"
-    sudo cp -r "$tmp_clone_dir/modules/tolgas-tweaks/MY_PYTHON_APP/"* "$app_dir/"
+    sudo cp -r "$tmp_clone_dir/MY_PYTHON_APP/"* "$app_dir/"
     sudo chmod -R +x "$app_dir"
 }
 

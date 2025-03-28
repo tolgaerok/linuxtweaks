@@ -17,8 +17,8 @@
 
 | Tweak      | Tested | Pass | Link  |
 |------------|:------:|:----:|------------|
-| 📡 **CAKE (Protocol)**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-cake.md) |
-| 🌐 **FlatPak AutoUpdater**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/modules/docs/about-flatpak-auto-updater.md) |
+| 📡 **CAKE (Protocol)**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-cake.md) |
+| 🌐 **FlatPak AutoUpdater**   |  Yes   | Yes  | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-flatpak-auto-updater.md) |
 | 🏠 **HOST** |  Yes   | Yes  | [TO-DO](#) | 
 | 📡 **NSSWITCH** |  Yes   | Yes  | [TO-DO](#) | 
 | 📡 **RESOLVED-DNS** |  Yes   | Yes  | [TO-DO](#) | 
