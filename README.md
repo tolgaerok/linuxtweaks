@@ -17,7 +17,15 @@
 ## Structure
  ![alt text](MY_PYTHON_APP/docs/images/misc/structure_image.png)
 
-# Install and or check for Updates
+# Install and to check for Updates
+
+### *IMPORTANT:*
+🔗 *Please run my uninstaller first as I do many modifications and change the structure of the classes the python script reads from:*
+ ```bash
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/uninstaller.sh | sudo bash
+```
+
+🔗 *Installer*
  ```bash
  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 ```
