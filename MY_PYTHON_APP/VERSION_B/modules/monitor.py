@@ -7,9 +7,15 @@
 # SYMLINK:                 sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
 # Installer:               curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
+import logging
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QListWidget, QPushButton, QMessageBox
 from PyQt6.QtCore import QTimer
 from modules.services import check_service_status, manage_service
+
+# logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 class LinuxTweakMonitor(QWidget):
@@ -43,6 +49,7 @@ class LinuxTweakMonitor(QWidget):
 
     def refresh_status(self):
         """Update service status in the list box"""
+        logging.info("Refreshing service status...")
         self.service_list.clear()
 
         service_statuses = []
@@ -54,8 +61,9 @@ class LinuxTweakMonitor(QWidget):
         service_statuses.sort(key=lambda x: ("Active" not in x[2], "Disabled" in x[2]))
 
         for service, icon, status in service_statuses:
-            self.service_list.addItem(f"{icon}{status} :  {service}")
+            self.service_list.addItem(f"{icon}{status} : {service}")
 
+        logging.info("Service status updated.")
         self.tray_icon.update_status()
 
     def handle_service(self, action):
@@ -65,7 +73,11 @@ class LinuxTweakMonitor(QWidget):
             QMessageBox.warning(self, "No Service Selected", "Please select a service.")
             return
 
-        service_name = selected_item.text().split(":")[-1].strip()
+        service_name = (
+            selected_item.text().split(":", 1)[-1].strip()
+        )  
+        logging.info(f"Executing '{action}' on service: {service_name}")
+
         manage_service(action, service_name)
 
         self.refresh_status()

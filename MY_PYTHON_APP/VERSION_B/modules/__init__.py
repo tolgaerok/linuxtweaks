@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Tolga Erok
 # 26-3-2025
 
@@ -8,24 +7,7 @@
 # SYMLINK:                 sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
 # Installer:               curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
-import sys
-from PyQt6.QtWidgets import QApplication
-from modules.tray import SystemTray
-
-# my services to monitor
-services = [
-    "tolga-apply-cake-qdisc-wake.service",
-    "tolga-apply-cake-qdisc.service",
-    "tolga-flatpak-update.service",
-]
-
-
-def main():
-    app = QApplication(sys.argv)
-    tray_icon = SystemTray(app, services)
-    tray_icon.show()
-    sys.exit(app.exec())
-
-
-if __name__ == "__main__":
-    main()
+from .services import check_service_status, manage_service
+from .monitor import LinuxTweakMonitor
+from .tray import SystemTray
+from .icons import icon_green, icon_amber, icon_red
