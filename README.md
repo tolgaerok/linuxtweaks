@@ -17,6 +17,7 @@
 ## Structure
  ![alt text](MY_PYTHON_APP/docs/images/misc/structure_image.png)
 
+# Install and or check for Updates
  ```bash
  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 ```
