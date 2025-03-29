@@ -19,6 +19,21 @@ curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_
  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 ```
 
+Or for more convience, copy and paste the following into your terminal and this will create an alias called `linuxtweaks_update` 
+
+```bash
+echo "alias linuxtweaks_update='
+  echo \"Running uninstaller...\";
+  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/uninstaller.sh | sudo bash;
+  echo \"Uninstall complete. Now checking for updates...\";
+  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Close and reopen your terminal and type and then hit enter key:
+```bash
+linuxtweaks_update
+```
  My python linuxtweaks app
  ## Screenshots
  ![text](MY_PYTHON_APP/docs/images/misc/app_hover.png)           
