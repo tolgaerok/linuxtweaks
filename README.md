@@ -8,6 +8,12 @@
 
  My personal collection of various inhouse scripts
 
+ My python linuxtweaks app
+
+ ```bash
+ curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
+```
+
  
 
 

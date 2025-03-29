@@ -4,6 +4,7 @@
 # Version: 2.0
 
 # Dependency Checker, autostarter and installer with sysmlink for my LinuxTweakTray App
+# curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
 # Config
 app_dir="/usr/local/bin/LinuxTweaks"
