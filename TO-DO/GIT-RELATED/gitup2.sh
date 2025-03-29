@@ -8,9 +8,9 @@ DATE_CREATED="19/12/2024"
 
 # Configuration
 # ----------------------------------------------------------------------------
-REPO_DIR="/home/tolga/MyGit/linuxtweaks"  # Updated to point to linuxtweaks repo
-COMMIT_MSG_TEMPLATE="(ツ)_/¯ Edit: %s"
-GIT_REMOTE_URL="git@github.com:tolgaerok/linuxtweaks.git"  # Updated to linuxtweaks URL
+repo_dir="/home/tolga/MyGit/linuxtweaks"  # Updated to point to linuxtweaks repo
+commit_msg_template="(ツ)_/¯ Edit: %s"
+git_remote_URL="git@github.com:tolgaerok/linuxtweaks.git"  # Updated to linuxtweaks URL
 CREDENTIAL_CACHE_TIMEOUT=3600
 
 # Functions
@@ -23,15 +23,15 @@ setup_git_config() {
 }
 
 ensure_git_initialized() {
-  if [ ! -d "$REPO_DIR/.git" ]; then
-    echo "Initializing Git repository in $REPO_DIR..."
-    git init "$REPO_DIR"
-    git -C "$REPO_DIR" remote add origin "$GIT_REMOTE_URL"
+  if [ ! -d "$repo_dir/.git" ]; then
+    echo "Initializing Git repository in $repo_dir..."
+    git init "$repo_dir"
+    git -C "$repo_dir" remote add origin "$git_remote_URL"
   fi
 }
 
 check_remote_url() {
-  remote_url=$(git -C "$REPO_DIR" remote get-url origin)
+  remote_url=$(git -C "$repo_dir" remote get-url origin)
   if [[ $remote_url != *"git@github.com"* ]]; then
     echo "Error: Remote URL is not set to SSH. Please configure SSH key-based authentication."
     echo "Setup instructions:"
@@ -44,7 +44,7 @@ check_remote_url() {
 }
 
 upload_files() {
-  if [ -d "$REPO_DIR/.git/rebase-merge" ]; then
+  if [ -d "$repo_dir/.git/rebase-merge" ]; then
     echo "Error: Rebase in progress. Resolve with 'git rebase --continue' or 'git rebase --abort'."
     exit 1
   fi
@@ -55,7 +55,7 @@ upload_files() {
   git status
 
   if git status --porcelain | grep -qE '^\s*[MARCDU]'; then
-    commit_msg=$(printf "$COMMIT_MSG_TEMPLATE" "$(date '+%d-%m-%Y %I:%M:%S %p')")
+    commit_msg=$(printf "$commit_msg_template" "$(date '+%d-%m-%Y %I:%M:%S %p')")
     echo "Changes detected, committing with message: $commit_msg"
     git commit -am "$commit_msg"
 
@@ -80,7 +80,7 @@ start_time=$(date +%s)
 setup_git_config
 ensure_git_initialized
 check_remote_url
-cd "$REPO_DIR" || exit
+cd "$repo_dir" || exit
 upload_files
 
 end_time=$(date +%s)
