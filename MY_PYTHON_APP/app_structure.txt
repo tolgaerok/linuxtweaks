@@ -1,0 +1,16 @@
+Tolga Erok
+29-3-2025
+
+Goal: 
+    Eventually I want a cleaner structure where all classes and helper functions are inside a modules folder, 
+    while main.py stays in the root and imports the class in.
+
+
+LinuxTweaks/
+│── main.py               # main app entry point
+│── modules/              # All classes & helper functions in this folder
+│   │── __init__.py       # makes `modules/` a package
+│   │── services.py       # service status checks & management
+│   │── monitor.py        # LinuxTweakMonitor class (UI)
+│   │── tray.py           # system tray handling
+│   │── icons.py          # stores icon variables
