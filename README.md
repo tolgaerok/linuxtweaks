@@ -9,6 +9,13 @@
  My personal collection of various inhouse scripts
 
  My python linuxtweaks app
+ ## Screenshots
+ ![text](MY_PYTHON_APP/docs/images/misc/app_hover.png)           
+ ![text](MY_PYTHON_APP/docs/images/misc/right_click.png)           
+ ![text](MY_PYTHON_APP/docs/images/misc/systmo_moniter.png)
+
+## Structure
+ ![alt text](MY_PYTHON_APP/docs/images/misc/structure_image.png)
 
  ```bash
  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
