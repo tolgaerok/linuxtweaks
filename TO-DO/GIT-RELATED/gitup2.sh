@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tolga Erok
-# 
+# for my linuxtweaks repo
 
 # Metadata
 # ----------------------------------------------------------------------------
