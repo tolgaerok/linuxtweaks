@@ -6,15 +6,15 @@
 # Setup Git Repository and GitHub SSH Authentication
 
 ### --- > Configuration
-REPO_NAME1="tolga-scripts"
-REPO_NAME2="linuxtweaks"
-GIT_USER_NAME="Tolga Erok"
-GIT_USER_EMAIL="kingtolga@gmail.com"
-GITHUB_USERNAME="tolgaerok"
-LOCAL_REPO_DIR="/home/tolga/MyGit"
-SSH_KEY_COMMENT="${GIT_USER_EMAIL}"
+repo_name1="tolga-scripts"
+repo_name2="linuxtweaks"
+git_user_name="Tolga Erok"
+git_user_email="kingtolga@gmail.com"
+github_username="tolgaerok"
+local_repo_dir="/home/tolga/MyGit"
+ssh_key_comment="${git_user_email}"
 
-# Ensure Git is installed
+# check Git is installed
 if ! command -v git &>/dev/null; then
     echo "Git is not installed. Installing Git..."
     sudo apt-get install git -y  # Change for your distro
@@ -26,7 +26,7 @@ else
     echo "Git is already installed."
 fi
 
-# Ensure SSH is configured
+# check that SSH is configured
 if ! ssh-add -l &>/dev/null; then
     echo "SSH agent is not running, starting it..."
     eval "$(ssh-agent -s)"
@@ -35,26 +35,26 @@ else
     echo "SSH agent is already running."
 fi
 
-### --- > Create Directory and Clone Repository (if needed)
+### --- > Create Dir and Clone Repository
 echo "Creating directory for Git repository..."
-mkdir -p "${LOCAL_REPO_DIR}"
-cd "${LOCAL_REPO_DIR}" || exit 1
+mkdir -p "${local_repo_dir}"
+cd "${local_repo_dir}" || exit 1
 
-# Clone repositories if they do not exist
-if [ ! -d "${LOCAL_REPO_DIR}/${REPO_NAME1}" ]; then
-    echo "Cloning repository: ${REPO_NAME1}..."
-    git clone git@github.com:${GITHUB_USERNAME}/${REPO_NAME1}.git
+# lone repositories if they do not exist
+if [ ! -d "${local_repo_dir}/${repo_name1}" ]; then
+    echo "Cloning repository: ${repo_name1}..."
+    git clone git@github.com:${github_username}/${repo_name1}.git
 fi
 
-if [ ! -d "${LOCAL_REPO_DIR}/${REPO_NAME2}" ]; then
-    echo "Cloning repository: ${REPO_NAME2}..."
-    git clone git@github.com:${GITHUB_USERNAME}/${REPO_NAME2}.git
+if [ ! -d "${local_repo_dir}/${repo_name2}" ]; then
+    echo "Cloning repository: ${repo_name2}..."
+    git clone git@github.com:${github_username}/${repo_name2}.git
 fi
 
 ### --- > Set Global Git Configuration
 echo "Configuring global Git settings..."
-git config --global user.email "${GIT_USER_EMAIL}"
-git config --global user.name "${GIT_USER_NAME}"
+git config --global user.email "${git_user_email}"
+git config --global user.name "${git_user_name}"
 git config --global init.defaultBranch main
 git config --global credential.helper cache
 git config --global credential.helper 'cache --timeout=25000'
@@ -63,7 +63,7 @@ git config --global push.default simple
 ### --- > Setup SSH Key for GitHub Authentication
 echo "Generating SSH key for GitHub authentication..."
 if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -t rsa -b 4096 -C "${SSH_KEY_COMMENT}" -f ~/.ssh/id_rsa -N ""
+    ssh-keygen -t rsa -b 4096 -C "${ssh_key_comment}" -f ~/.ssh/id_rsa -N ""
 fi
 
 ### --- > Display and Configure SSH
@@ -76,14 +76,14 @@ ssh-add ~/.ssh/id_rsa
 ### --- > Configure Local Repositories for SSH
 echo "Configuring local repositories for SSH..."
 
-# Set remote for REPO_NAME1
-cd "${LOCAL_REPO_DIR}/${REPO_NAME1}" || exit 1
-git remote set-url origin "git@github.com:${GITHUB_USERNAME}/${REPO_NAME1}.git"
+# Set remote for repo_name1
+cd "${local_repo_dir}/${repo_name1}" || exit 1
+git remote set-url origin "git@github.com:${github_username}/${repo_name1}.git"
 git remote -v
 
-# Set remote for REPO_NAME2
-cd "${LOCAL_REPO_DIR}/${REPO_NAME2}" || exit 1
-git remote set-url origin "git@github.com:${GITHUB_USERNAME}/${REPO_NAME2}.git"
+# Set remote for repo_name2
+cd "${local_repo_dir}/${repo_name2}" || exit 1
+git remote set-url origin "git@github.com:${github_username}/${repo_name2}.git"
 git remote -v
 
 ### --- > Test SSH Connection
