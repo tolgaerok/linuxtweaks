@@ -34,7 +34,7 @@ services = [
 # my icons for tray & tooltip
 app_icon = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
 icon_amber = "🛡️"
-icon_green = "🧡"
+icon_green = "❤️✔️"
 icon_red = "⚠️"
 
 
