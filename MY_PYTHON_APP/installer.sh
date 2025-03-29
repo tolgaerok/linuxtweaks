@@ -16,18 +16,25 @@ tmp_clone_dir="$HOME/linuxtweaks"
 
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
-    local packages=("python3" "python3-pyqt6" "git")
+    if command -v dnf &>/dev/null; then
+        packages=("python3" "python3-qt6" "git")
+        install_cmd="sudo dnf install -y"
+        check_cmd="dnf list installed"
+    elif command -v pacman &>/dev/null; then
+        packages=("python" "python-pyqt6" "git")
+        install_cmd="sudo pacman -S --noconfirm"
+        check_cmd="pacman -Q"
+    else
+        echo "Unsupported package manager. Install dependencies manually."
+        exit 1
+    fi
+
     for pkg in "${packages[@]}"; do
-        if ! command -v "$pkg" &>/dev/null; then
+        if ! $check_cmd "$pkg" &>/dev/null; then
             echo "Installing $pkg..."
-            if command -v dnf &>/dev/null; then
-                sudo dnf install -y "$pkg"
-            elif command -v pacman &>/dev/null; then
-                sudo pacman -S --noconfirm "$pkg"
-            else
-                echo "Unsupported package manager. Install $pkg manually."
-                exit 1
-            fi
+            $install_cmd "$pkg"
+        else
+            echo "$pkg is already installed."
         fi
     done
 }
