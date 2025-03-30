@@ -19,7 +19,7 @@ curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_
  curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 ```
 
-Or for more convience, copy and paste the following into your terminal and this will create an alias called `linuxtweaks_update` 
+### *Or for more convience, copy and paste the following into your terminal and this will create an alias called `linuxtweaks_update`*
 
 ```bash
 echo "alias linuxtweaks_update='
@@ -30,10 +30,22 @@ echo "alias linuxtweaks_update='
 source ~/.bashrc
 ```
 
-Close and reopen your terminal and type and then hit enter key:
+### *Close and reopen your terminal and type and then hit enter key:*
 ```bash
 linuxtweaks_update
 ```
+
+### *Btrfs maintaince*
+```bash
+echo 'alias scrub="echo -e \"🔍 Running Btrfs Maintenance...\" && \
+sudo btrfs scrub start -B / && echo -e \"✅ Scrub completed!\" && \
+sudo btrfs balance start -v / && echo -e \"✅ Balance completed!\" && \
+sudo fstrim -av && echo -e \"🚀 Trim completed\\!\""' >> ~/.bashrc
+
+source ~/.bashrc
+
+```
+
  My python linuxtweaks app
  ## Screenshots
  ![text](MY_PYTHON_APP/docs/images/misc/app_hover.png)           
