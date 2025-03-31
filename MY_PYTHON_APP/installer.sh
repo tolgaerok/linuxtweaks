@@ -107,6 +107,14 @@ EOL
     fi
 }
 
+# run my app automatically after installation
+run_app() {
+    echo "🚀 Running LinuxTweaks..."
+    # run my app in the background
+    python3 "$app_executable" &
+}
+
+
 # main menu
 install_dependencies
 setup_repo
@@ -114,5 +122,7 @@ deploy_app
 setup_sysmlink
 setup_autostart
 
+# run my app after installation
+run_app
+
 echo "✅ LinuxTweaks installed, symlinked, and added to autostart."
-linuxtweaks
