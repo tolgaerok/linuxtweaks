@@ -1,34 +1,62 @@
 Tolga Erok
 26-3-2025
-Version:    30
+Version:    3.0
+-----------------------------------------
 
 Change Log
 
 March 27, 2025  
-- Created the initial version of the LinuxTweaks installer and uninstaller  
-- The installer checks for required dependencies (Python3, PyQt6, Git) and installs them using `dnf` or `pacman`, depending on the package manager  
-- The repository is either cloned or updated in a temporary directory  
-- Copied application files to `/usr/local/bin/LinuxTweaks` and created a symlink in `/usr/local/bin/linuxtweaks`  
-- Added an autostart entry to `~/config/autostart/linuxtweaksdesktop` and created a desktop shortcut  
-- The uninstaller was created to stop the app process, remove the application files, symlink, autostart entry, cloned repo, and desktop shortcut
+- Initial version of LinuxTweaks installer and uninstaller created  
+- Installer checks for dependencies (Python3, PyQt6, Git) and installs them via `dnf` or `pacman`  
+- Repository cloned or updated in the temporary directory  
+- Application files copied to `/usr/local/bin/LinuxTweaks`, symlink created at `/usr/local/bin/linuxtweaks`  
+- Autostart entry added to `~/config/autostart/linuxtweaksdesktop`, desktop shortcut created  
+- Uninstaller created to stop the app process and remove application files, symlink, autostart entry, cloned repo, and desktop shortcut  
+
+Failed/Inactive State:  
+- Installer failed to properly check and install dependencies on some systems  
+- Some users experienced issues with repo cloning due to directory permission errors  
+- Symlink creation failed in certain cases where directory paths were not correctly handled  
+- Autostart entry and desktop shortcut not created on some systems due to missing user permissions
+
+-----------------------------------------
 
 March 28, 2025  
 - Fixed issues with file permissions in the temporary clone directory  
-- Improved the cloning and updating of the repository by adding checks to ensure an existing repository is properly updated  
-- Ensured that the cloned repository was cleaned up correctly after deployment  
-- Adjusted permissions for all copied files to ensure they are executable  
-- Made sure the autostart entries and desktop shortcut directories were created correctly
+- Improved repo cloning and updating by adding checks for existing repositories  
+- Ensured proper cleanup of cloned repository after deployment  
+- Adjusted permissions to ensure all copied files are executable  
+- Improved directory creation for autostart entries and desktop shortcuts  
+
+Failed/Inactive State:  
+- Issues persisted with file permissions in the temporary clone directory, causing installer failures  
+- Repository cleanup didn't occur in some cases after the deployment  
+- Permissions for the copied files were incorrectly set, causing issues with executable files not running
+
+-----------------------------------------
 
 March 31, 2025  
-- Updated the script to ensure the symlink for `linuxtweaks` is created properly in `/usr/local/bin`  
-- Fixed a bug where the symlink pointed to the wrong location, causing execution issues  
-- Adjusted system path permissions to allow for the automatic execution of `linuxtweaks` through the symlink  
-- Improved the installer script to handle directory permissions more efficiently and avoid execution errors  
-- Fixed minor issues with desktop shortcut creation and permissions  
-- Simplified the uninstaller by removing unnecessary checks and directly cleaning up installed files
+- Updated script for proper symlink creation of `linuxtweaks` in `/usr/local/bin`  
+- Fixed bug where symlink pointed to the wrong location  
+- Adjusted system path permissions for automatic execution of `linuxtweaks` via symlink  
+- Updated installer script for better directory permissions, avoiding execution errors  
+- Fixed issues with desktop shortcut creation and permissions  
+- Simplified the uninstaller for a more efficient cleanup process  
+
+Failed/Inactive State:  
+- Symlink was not always created correctly, causing execution failures  
+- Automatic execution failed due to incorrect system path permissions  
+- Autostart entry creation failed in certain desktop environments, leading to the app not starting automatically after installation
+
+-----------------------------------------
 
 April 1, 2025  
-- Modified the installer to create symlinks and execute the app automatically after installation using a more robust method (Still a bug) 
-- Added final checks to the installer to ensure the symlink and autostart entry are created correctly  
-- Debugged and resolved issues that prevented the Python application from automatically starting after installation (Still a bug)   
-- Cleaned up redundant code and streamlined the overall script for better maintainability (On-going)
+- Modified installer to create symlinks and auto-execute the app after installation with a more robust method  
+- Added final checks to ensure symlink and autostart entry are created correctly  
+- Resolved issues that prevented automatic startup of the Python application after installation  
+- Cleaned up redundant code, improving maintainability  
+
+Failed/Inactive State:  
+- Symlink creation and auto-execution method was unstable, resulting in inconsistent app launches after installation  
+- The uninstaller occasionally left residual files on the system, causing issues when reinstalling  
+- Some redundant steps in the installer caused performance issues
