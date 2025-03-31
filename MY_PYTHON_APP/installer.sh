@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tolga Erok
 # 27-3-2025
-# Version: 2.0
+# Version: 3.0
 
 # Dependency Checker, autostarter and installer with symlink for my LinuxTweakTray App
 # curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
@@ -12,7 +12,7 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-tmp_clone_dir="/tmp/linuxtweaks" # Clone into /tmp
+tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
@@ -69,10 +69,10 @@ deploy_app() {
 # create sysmlink (remove if one exists)
 setup_sysmlink() {
     if [ -L "$sysmlink" ] || [ -f "$sysmlink" ]; then
-        echo "Removing existing symlink: $sysmlink"
+        echo "Removing existing sysmlink: $sysmlink"
         sudo rm -f "$sysmlink"
     fi
-    echo "Creating new symlink..."
+    echo "Creating new sysmlink..."
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
@@ -83,7 +83,7 @@ setup_autostart() {
     cat <<EOL >"$desktop_file"
 [Desktop Entry]
 Type=Application
-Exec=$sysmlink
+Exec=python3 $app_executable
 Name=LinuxTweaks
 Comment=LinuxTweaks Service Monitor by Tolga Erok
 Icon=$app_dir/images/LinuxTweak.png
@@ -110,8 +110,8 @@ EOL
 # run the app automatically after installation
 run_app() {
     echo "🚀 Running LinuxTweaks..."
-    # Ensure the app is run correctly in the background
-    nohup python3 "$app_executable" >"$app_dir/linuxtweaks.log" 2>&1 &
+    # Execute the Python app in the background
+    nohup python3 "$app_executable" > /dev/null 2>&1 &
 }
 
 # main menu
@@ -121,7 +121,7 @@ deploy_app
 setup_sysmlink
 setup_autostart
 
-# run my app after installation
+# Run the app after installation
 run_app
 
-echo "✅ LinuxTweaks installed, symlinked, and added to autostart."
+echo "✅ LinuxTweaks installed, symlinked, added to autostart, and is now running."
