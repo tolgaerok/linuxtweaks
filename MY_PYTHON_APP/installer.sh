@@ -12,7 +12,7 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
+tmp_clone_dir="/tmp/linuxtweaks" # Clone into /tmp
 
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
@@ -107,13 +107,12 @@ EOL
     fi
 }
 
-# run my app automatically after installation
+# run the app automatically after installation
 run_app() {
     echo "🚀 Running LinuxTweaks..."
-    # run my app in the background
-    python3 "$app_executable" &
+    # Ensure the app is run correctly in the background
+    nohup python3 "$app_executable" >"$app_dir/linuxtweaks.log" 2>&1 &
 }
-
 
 # main menu
 install_dependencies
