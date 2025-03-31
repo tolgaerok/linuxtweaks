@@ -41,7 +41,15 @@ install_dependencies() {
 
 # clone or update the repo
 setup_repo() {
-    if [ -d "$tmp_clone_dir" ]; then
+    # Ensure the temp directory exists and is accessible
+    sudo mkdir -p "$tmp_clone_dir"
+    sudo chown -R "$USER:$USER" "$tmp_clone_dir"
+    cd "$tmp_clone_dir" || {
+        echo "❌ Failed to enter $tmp_clone_dir"
+        exit 1
+    }
+
+    if [ -d "$tmp_clone_dir/.git" ]; then
         echo "Updating repository..."
         git -C "$tmp_clone_dir" pull
     else
