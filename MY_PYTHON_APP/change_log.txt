@@ -1,0 +1,34 @@
+Tolga Erok
+26-3-2025
+Version:    30
+
+Change Log
+
+March 27, 2025  
+- Created the initial version of the LinuxTweaks installer and uninstaller  
+- The installer checks for required dependencies (Python3, PyQt6, Git) and installs them using `dnf` or `pacman`, depending on the package manager  
+- The repository is either cloned or updated in a temporary directory  
+- Copied application files to `/usr/local/bin/LinuxTweaks` and created a symlink in `/usr/local/bin/linuxtweaks`  
+- Added an autostart entry to `~/config/autostart/linuxtweaksdesktop` and created a desktop shortcut  
+- The uninstaller was created to stop the app process, remove the application files, symlink, autostart entry, cloned repo, and desktop shortcut
+
+March 28, 2025  
+- Fixed issues with file permissions in the temporary clone directory  
+- Improved the cloning and updating of the repository by adding checks to ensure an existing repository is properly updated  
+- Ensured that the cloned repository was cleaned up correctly after deployment  
+- Adjusted permissions for all copied files to ensure they are executable  
+- Made sure the autostart entries and desktop shortcut directories were created correctly
+
+March 31, 2025  
+- Updated the script to ensure the symlink for `linuxtweaks` is created properly in `/usr/local/bin`  
+- Fixed a bug where the symlink pointed to the wrong location, causing execution issues  
+- Adjusted system path permissions to allow for the automatic execution of `linuxtweaks` through the symlink  
+- Improved the installer script to handle directory permissions more efficiently and avoid execution errors  
+- Fixed minor issues with desktop shortcut creation and permissions  
+- Simplified the uninstaller by removing unnecessary checks and directly cleaning up installed files
+
+April 1, 2025  
+- Modified the installer to create symlinks and execute the app automatically after installation using a more robust method (Still a bug) 
+- Added final checks to the installer to ensure the symlink and autostart entry are created correctly  
+- Debugged and resolved issues that prevented the Python application from automatically starting after installation (Still a bug)   
+- Cleaned up redundant code and streamlined the overall script for better maintainability (On-going)
