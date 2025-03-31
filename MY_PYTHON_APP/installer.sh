@@ -3,7 +3,7 @@
 # 27-3-2025
 # Version: 2.0
 
-# Dependency Checker, autostarter and installer with sysmlink for my LinuxTweakTray App
+# Dependency Checker, autostarter and installer with symlink for my LinuxTweakTray App
 # curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
 # Config
@@ -12,7 +12,7 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-tmp_clone_dir="$HOME/linuxtweaks"
+tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
@@ -69,13 +69,14 @@ deploy_app() {
 # create sysmlink (remove if one exists)
 setup_sysmlink() {
     if [ -L "$sysmlink" ] || [ -f "$sysmlink" ]; then
-        echo "Removing existing sysmlink: $sysmlink"
+        echo "Removing existing symlink: $sysmlink"
         sudo rm -f "$sysmlink"
     fi
-    echo "Creating new sysmlink..."
+    echo "Creating new symlink..."
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
+# setup autostart
 setup_autostart() {
     mkdir -p "$(dirname "$desktop_file")"
 
@@ -113,4 +114,4 @@ deploy_app
 setup_sysmlink
 setup_autostart
 
-echo "✅ LinuxTweaks installed, sysmlinked, and added to autostart."
+echo "✅ LinuxTweaks installed, symlinked, and added to autostart."
