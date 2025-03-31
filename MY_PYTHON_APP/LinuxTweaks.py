@@ -33,10 +33,12 @@ services = [
 ]
 
 # my icons for tray & tooltip
-# ✔️  ❌️ ⭕️ ✴️ ✳️
+# https://en.wikipedia.org/wiki/List_of_emojis#endnote_U1F602_grey
+# https://getemoji.com/
+# ✔️ ✅️ ☑️ ❌️ ❎️  ⭕️ ✴️ ✳️ 🛠️ 🛡️ 🧡 ❤️ ❓️❔️❕️❗️ ☹️ ☺️ 🖐️ ☎️ 🟢 🔴 🟠
 
 app_icon = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
-icon_amber = "🖐️"
+icon_amber = "🛠️"
 icon_green = "✔️"
 icon_red = "❌️"
 
