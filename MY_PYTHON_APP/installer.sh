@@ -115,3 +115,4 @@ setup_sysmlink
 setup_autostart
 
 echo "✅ LinuxTweaks installed, symlinked, and added to autostart."
+linuxtweaks
