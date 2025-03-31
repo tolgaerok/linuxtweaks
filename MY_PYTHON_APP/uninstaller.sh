@@ -13,6 +13,9 @@ desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 sysmlink="/usr/local/bin/linuxtweaks"
 tmp_clone_dir="$HOME/linuxtweaks"
 
+# Move to a safe directory before deleting anything
+cd ~ || exit 1
+
 # kill process
 echo "Stopping LinuxTweaks if running..."
 pkill -f "$app_executable" 2>/dev/null && echo "✅ Process stopped." || echo "ℹ No running process found."
