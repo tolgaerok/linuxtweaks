@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Tolga Erok
 # 27-3-2025
 # Version: 1.0
