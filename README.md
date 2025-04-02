@@ -122,7 +122,7 @@ Failed/Inactive State:
 
 
 
- 
+#### *To fully download from remote to local:*
 ```bash
 git fetch --all
 git reset --hard origin/main
