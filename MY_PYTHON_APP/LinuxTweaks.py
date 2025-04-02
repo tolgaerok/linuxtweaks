@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Tolga Erok
 # 26-3-2025
-# Version:                  3.0
+# Version:                  3.1a
 
 # APP IMAGE LOCATION:      /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
 # APP LOCATION:            /usr/local/bin/LinuxTweaks/LinuxTweaks.py
@@ -9,8 +9,6 @@
 # SYMLINK:                 sudo ln -s /usr/local/bin/LinuxTweaks/LinuxTweaks.py /usr/local/bin/linuxtweaks
 # Installer:               curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
-import sys
-import subprocess
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -24,6 +22,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt, QTimer
+import subprocess
+import sys
 
 # My custom systemd services to monitor
 services = [
@@ -31,11 +31,6 @@ services = [
     "tolga-apply-cake-qdisc.service",
     "tolga-flatpak-update.service",
 ]
-
-# my icons for tray & tooltip
-# https://en.wikipedia.org/wiki/List_of_emojis#endnote_U1F602_grey
-# https://getemoji.com/
-# ✔️ ✅️ ☑️ ❌️ ❎️  ⭕️ ✴️ ✳️ 🛠️ 🛡️ 🧡 ❤️ ❓️❔️❕️❗️ ☹️ ☺️ 🖐️ ☎️ 🟢 🔴 🟠
 
 app_icon = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
 icon_amber = "🛠️"
@@ -144,6 +139,11 @@ class LinuxTweakMonitor(QWidget):
         self.refresh_status()
         QTimer.singleShot(100, self.tray_icon.update_status)
 
+    def closeEvent(self, event):
+        """Override close event to hide window instead of quitting the app."""
+        event.ignore()  # Prevent the window from closing
+        self.hide()  # Hide the window instead
+
 
 class LinuxTweakTray:
     def __init__(self):
@@ -176,9 +176,11 @@ class LinuxTweakTray:
 
         self.window = LinuxTweakMonitor(self)
         self.update_status()
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_status)
-        self.timer.start(5000)
+
+        # Timer for auto-refreshing the tooltip every 5 seconds
+        self.tooltip_timer = QTimer()
+        self.tooltip_timer.timeout.connect(self.update_tooltip)
+        self.tooltip_timer.start(5000)  # 5 seconds interval
 
         self.tray.show()
         print("Tray shown.")
@@ -219,6 +221,10 @@ class LinuxTweakTray:
 
         self.tray.setToolTip(tooltip_text.strip())
         self.tray.setIcon(QIcon(app_icon))
+
+    def update_tooltip(self):
+        """Auto-refresh the tooltip text every 5 seconds"""
+        self.update_status()
 
     def tray_clicked(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:

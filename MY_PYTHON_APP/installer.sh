@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tolga Erok
 # 27-3-2025
-# Version: 3.0
+# Version: 3.3
 
 # Dependency Checker, autostarter, and installer with symlink for my LinuxTweakTray App
 # curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
@@ -12,7 +12,9 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-tmp_clone_dir="/tmp/linuxtweaks" # Clone into /tmp
+
+# Clone into /tmp
+tmp_clone_dir="/tmp/linuxtweaks"
 
 install_dependencies() {
     if command -v dnf &>/dev/null; then
@@ -37,11 +39,11 @@ install_dependencies() {
         fi
     done
 
-    # Check if PyQt6 is installed, if not, install using pip3
+    # see if PyQt6 is installed, if not, install using pip3 (beta)
     if ! python3 -c "import PyQt6" &>/dev/null; then
         echo "PyQt6 not found. Installing via pip3..."
 
-        # Install as the current user if running as root
+        # Install as the current user as my installer script is run as sudo
         if [ "$(id -u)" -eq 0 ]; then
             echo "Running as root. Installing PyQt6 for the current user..."
             # Install for the user using pip3
@@ -55,9 +57,9 @@ install_dependencies() {
     fi
 }
 
-# Clone or update the repo
+# clone and or update the repo
 setup_repo() {
-    # Ensure the temp directory exists and is accessible
+    # make sure the temp dir exists and is accessible
     sudo mkdir -p "$tmp_clone_dir"
     sudo chown -R "$USER:$USER" "$tmp_clone_dir"
     cd "$tmp_clone_dir" || {
@@ -74,7 +76,7 @@ setup_repo() {
     fi
 }
 
-# Copy LinuxTweaks folder from repo to local machine
+# copy LinuxTweaks folder from my repo to local machine
 deploy_app() {
     echo "Copying LinuxTweaks contents to $app_dir..."
     sudo mkdir -p "$app_dir"
@@ -82,7 +84,7 @@ deploy_app() {
     sudo chmod -R +x "$app_dir"
 }
 
-# Create sysmlink (remove if one exists)
+# create sysmlink (remove if one exists)
 setup_sysmlink() {
     if [ -L "$sysmlink" ] || [ -f "$sysmlink" ]; then
         echo "Removing existing sysmlink: $sysmlink"
@@ -92,7 +94,7 @@ setup_sysmlink() {
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
-# Setup autostart
+# setup autostart
 setup_autostart() {
     mkdir -p "$(dirname "$desktop_file")"
 
