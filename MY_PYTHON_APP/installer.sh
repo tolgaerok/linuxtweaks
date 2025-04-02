@@ -14,30 +14,51 @@ linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
 tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 
-# Check and install dependencies (DNF or Pacman)
+# Check and install dependencies
 install_dependencies() {
     if command -v dnf &>/dev/null; then
         packages=("python3" "python3-pyqt6" "git")
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
+
+        # Install packages using dnf if not installed
+        for pkg in "${packages[@]}"; do
+            if ! $check_cmd "$pkg" &>/dev/null; then
+                echo "Installing $pkg..."
+                $install_cmd "$pkg"
+            else
+                echo "$pkg is already installed."
+            fi
+        done
+
+        # Ensure PyQt6 is installed for Python3 on Fedora-based systems
+        if ! python3 -c "import PyQt6" &>/dev/null; then
+            echo "PyQt6 is not installed. Installing PyQt6..."
+            sudo dnf install -y python3-pyqt6
+        else
+            echo "PyQt6 is already installed for Python3."
+        fi
+
     elif command -v pacman &>/dev/null; then
         packages=("python" "python-pyqt6" "git")
         install_cmd="sudo pacman -S --noconfirm"
         check_cmd="pacman -Q"
+        
+        for pkg in "${packages[@]}"; do
+            if ! $check_cmd "$pkg" &>/dev/null; then
+                echo "Installing $pkg..."
+                $install_cmd "$pkg"
+            else
+                echo "$pkg is already installed."
+            fi
+        done
+
     else
         echo "Unsupported package manager. Install dependencies manually."
         exit 1
     fi
-
-    for pkg in "${packages[@]}"; do
-        if ! $check_cmd "$pkg" &>/dev/null; then
-            echo "Installing $pkg..."
-            $install_cmd "$pkg"
-        else
-            echo "$pkg is already installed."
-        fi
-    done
 }
+
 
 # Clone or update the repo
 setup_repo() {
