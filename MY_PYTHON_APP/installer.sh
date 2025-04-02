@@ -47,7 +47,7 @@ install_dependencies() {
                 echo "Installing pip..."
                 sudo dnf install -y python3-pip
             fi
-            pip install --user PyQt6
+            pip3 install --user PyQt6
         else
             echo "PyQt6 is available for Python3."
         fi
