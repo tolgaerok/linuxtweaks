@@ -31,7 +31,7 @@ install_dependencies() {
             fi
         done
 
-        # Install python3-pyqt6
+        # Install python3-pyqt6 if not installed
         if ! $check_cmd "python3-pyqt6" &>/dev/null; then
             echo "Installing python3-pyqt6..."
             sudo dnf install -y python3-pyqt6
@@ -47,6 +47,7 @@ install_dependencies() {
                 echo "Installing pip..."
                 sudo dnf install -y python3-pip
             fi
+            # Install PyQt6 using --user to install to the current user's local directory
             pip3 install --user PyQt6
         else
             echo "PyQt6 is available for Python3."
@@ -56,7 +57,7 @@ install_dependencies() {
         packages=("python" "python-pyqt6" "git")
         install_cmd="sudo pacman -S --noconfirm"
         check_cmd="pacman -Q"
-        
+
         for pkg in "${packages[@]}"; do
             if ! $check_cmd "$pkg" &>/dev/null; then
                 echo "Installing $pkg..."
