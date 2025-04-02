@@ -17,11 +17,11 @@ tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 # Check and install dependencies
 install_dependencies() {
     if command -v dnf &>/dev/null; then
-        packages=("python3" "python3-pyqt6" "git")
+        packages=("python3" "git")
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
 
-        # Install packages using dnf if not installed
+        # Install base packages using dnf if not installed
         for pkg in "${packages[@]}"; do
             if ! $check_cmd "$pkg" &>/dev/null; then
                 echo "Installing $pkg..."
@@ -31,12 +31,25 @@ install_dependencies() {
             fi
         done
 
-        # Ensure PyQt6 is installed for Python3 on Fedora-based systems
-        if ! python3 -c "import PyQt6" &>/dev/null; then
-            echo "PyQt6 is not installed. Installing PyQt6..."
+        # Install python3-pyqt6
+        if ! $check_cmd "python3-pyqt6" &>/dev/null; then
+            echo "Installing python3-pyqt6..."
             sudo dnf install -y python3-pyqt6
         else
-            echo "PyQt6 is already installed for Python3."
+            echo "python3-pyqt6 is already installed."
+        fi
+
+        # Check if PyQt6 is working with Python
+        if ! python3 -c "import PyQt6" &>/dev/null; then
+            echo "PyQt6 is not available. Installing via pip..."
+            # Ensure pip is installed, then install PyQt6 via pip
+            if ! command -v pip &>/dev/null; then
+                echo "Installing pip..."
+                sudo dnf install -y python3-pip
+            fi
+            pip install --user PyQt6
+        else
+            echo "PyQt6 is available for Python3."
         fi
 
     elif command -v pacman &>/dev/null; then
