@@ -3,7 +3,7 @@
 # 27-3-2025
 # Version: 3.0
 
-# Dependency Checker, autostarter and installer with symlink for my LinuxTweakTray App
+# Dependency Checker, autostarter, and installer with symlink for my LinuxTweakTray App
 # curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
 
 # Config
@@ -14,7 +14,7 @@ linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
 tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 
-# check dependencies are installed (DNF or Pacman)
+# Check and install dependencies (DNF or Pacman)
 install_dependencies() {
     if command -v dnf &>/dev/null; then
         packages=("python3" "python3-pyqt6" "git")
@@ -39,7 +39,7 @@ install_dependencies() {
     done
 }
 
-# clone or update the repo
+# Clone or update the repo
 setup_repo() {
     # Ensure the temp directory exists and is accessible
     sudo mkdir -p "$tmp_clone_dir"
@@ -66,7 +66,7 @@ deploy_app() {
     sudo chmod -R +x "$app_dir"
 }
 
-# create sysmlink (remove if one exists)
+# Create sysmlink (remove if one exists)
 setup_sysmlink() {
     if [ -L "$sysmlink" ] || [ -f "$sysmlink" ]; then
         echo "Removing existing sysmlink: $sysmlink"
@@ -76,7 +76,7 @@ setup_sysmlink() {
     sudo ln -s "$app_executable" "$sysmlink"
 }
 
-# setup autostart
+# Setup autostart
 setup_autostart() {
     mkdir -p "$(dirname "$desktop_file")"
 
@@ -107,14 +107,14 @@ EOL
     fi
 }
 
-# run the app automatically after installation
+# Run the app automatically after installation
 run_app() {
     echo "🚀 Running LinuxTweaks..."
     # Execute the Python app in the background
     nohup python3 "$app_executable" > /dev/null 2>&1 &
 }
 
-# main menu
+# Main menu
 install_dependencies
 setup_repo
 deploy_app
