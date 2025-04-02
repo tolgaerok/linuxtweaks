@@ -12,67 +12,48 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
+tmp_clone_dir="/tmp/linuxtweaks" # Clone into /tmp
 
-# Check and install dependencies
 install_dependencies() {
     if command -v dnf &>/dev/null; then
         packages=("python3" "git")
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
-
-        # Install base packages using dnf if not installed
-        for pkg in "${packages[@]}"; do
-            if ! $check_cmd "$pkg" &>/dev/null; then
-                echo "Installing $pkg..."
-                $install_cmd "$pkg"
-            else
-                echo "$pkg is already installed."
-            fi
-        done
-
-        # Install python3-pyqt6 if not installed
-        if ! $check_cmd "python3-pyqt6" &>/dev/null; then
-            echo "Installing python3-pyqt6..."
-            sudo dnf install -y python3-pyqt6
-        else
-            echo "python3-pyqt6 is already installed."
-        fi
-
-        # Check if PyQt6 is working with Python
-        if ! python3 -c "import PyQt6" &>/dev/null; then
-            echo "PyQt6 is not available. Installing via pip..."
-            # Ensure pip is installed, then install PyQt6 via pip
-            if ! command -v pip &>/dev/null; then
-                echo "Installing pip..."
-                sudo dnf install -y python3-pip
-            fi
-            # Install PyQt6 using --user to install to the current user's local directory
-            pip3 install --user PyQt6
-        else
-            echo "PyQt6 is available for Python3."
-        fi
-
     elif command -v pacman &>/dev/null; then
-        packages=("python" "python-pyqt6" "git")
+        packages=("python" "git")
         install_cmd="sudo pacman -S --noconfirm"
         check_cmd="pacman -Q"
-
-        for pkg in "${packages[@]}"; do
-            if ! $check_cmd "$pkg" &>/dev/null; then
-                echo "Installing $pkg..."
-                $install_cmd "$pkg"
-            else
-                echo "$pkg is already installed."
-            fi
-        done
-
     else
         echo "Unsupported package manager. Install dependencies manually."
         exit 1
     fi
-}
 
+    for pkg in "${packages[@]}"; do
+        if ! $check_cmd "$pkg" &>/dev/null; then
+            echo "Installing $pkg..."
+            $install_cmd "$pkg"
+        else
+            echo "$pkg is already installed."
+        fi
+    done
+
+    # Check if PyQt6 is installed, if not, install using pip3
+    if ! python3 -c "import PyQt6" &>/dev/null; then
+        echo "PyQt6 not found. Installing via pip3..."
+
+        # Install as the current user if running as root
+        if [ "$(id -u)" -eq 0 ]; then
+            echo "Running as root. Installing PyQt6 for the current user..."
+            # Install for the user using pip3
+            su -c "python3 -m pip install --user PyQt6" $SUDO_USER
+        else
+            # Install as normal user
+            python3 -m pip install --user PyQt6
+        fi
+    else
+        echo "PyQt6 is already installed."
+    fi
+}
 
 # Clone or update the repo
 setup_repo() {
@@ -146,7 +127,7 @@ EOL
 run_app() {
     echo "🚀 Running LinuxTweaks..."
     # Execute the Python app in the background
-    nohup python3 "$app_executable" > /dev/null 2>&1 &
+    nohup python3 "$app_executable" >/dev/null 2>&1 &
 }
 
 # Main menu
