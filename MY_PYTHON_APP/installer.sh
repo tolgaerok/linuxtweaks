@@ -17,7 +17,7 @@ tmp_clone_dir="/tmp/linuxtweaks"  # Clone into /tmp
 # check dependencies are installed (DNF or Pacman)
 install_dependencies() {
     if command -v dnf &>/dev/null; then
-        packages=("python3" "python3-qt6" "git")
+        packages=("python3" "python3-pyqt6" "git")
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
     elif command -v pacman &>/dev/null; then
