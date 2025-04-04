@@ -12,7 +12,6 @@ app_executable="$app_dir/LinuxTweaks.py"
 desktop_file="$HOME/.config/autostart/linuxtweaks.desktop"
 linuxtweaks_repo="https://github.com/tolgaerok/linuxtweaks.git"
 sysmlink="/usr/local/bin/linuxtweaks"
-username=${USER:=$(/usr/bin/id -run)}
 
 # Clone into /tmp
 tmp_clone_dir="/tmp/linuxtweaks"
