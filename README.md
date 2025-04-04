@@ -129,6 +129,13 @@ git reset --hard origin/main
 git clean -fd
 ```
 
+#### *Reload kde plasma and fonts*
+
+```bash
+sudo fc-cache -fv
+kquitapp5 plasmashell && kstart5 plasmashell
+```
+
 #
 
 ## Main Menu .
