@@ -89,7 +89,7 @@ After=network-online.target suspend.target
 OnBootSec=15s
 # OnCalendar=*-*-* 00,06,12,18:00:00
 # OnUnitActiveSec=6h
-OnUnitActiveSec=3s
+OnUnitActiveSec=30min
 Persistent=true
 Unit=tolga-flatpak-update.service
 
