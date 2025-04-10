@@ -4,7 +4,7 @@
 # Version: 6.1
 
 # BUG FIX:
-# ✅ Fixed notify-send command 
+# ✅ Fixed notify-send command
 
 # SCOPE: (for testing purposes its set to 3secs)
 # Run 15 seconds after boot.
@@ -67,7 +67,7 @@ if grep -q "Nothing unused to uninstall" /tmp/flatpak_update.log && ! grep -q "u
 elif grep -q "Nothing to do" /tmp/flatpak_update.log; then \
     sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="🌐 Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "✅ No updates available"; \
 else \
-    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Installing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "Updates installed successfully"; \
+    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="💻 Installing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "✅ Updates installed successfully"; \
 fi'
 
 TimeoutStopFailureMode=abort
