@@ -91,9 +91,10 @@ OnBootSec=15s
 # OnUnitActiveSec=6h
 OnUnitActiveSec=3s
 Persistent=true
+Unit=tolga-flatpak-update.service
 
 [Install]
-WantedBy=timers.target suspend.target
+WantedBy=timers.target suspend.target default.target
 EOF
 
 # load up the service && timer
