@@ -3,7 +3,7 @@
 # Date: 21/3/2025
 # Version: 6.1
 
-# BUG FIX:
+# BUG FIX: 10/4/25
 # ✅ Fixed notify-send command 
 
 # SCOPE: (for testing purposes its set to 3secs)
