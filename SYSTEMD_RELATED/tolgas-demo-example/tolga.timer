@@ -4,7 +4,8 @@ Description=Run Tolga’s Service Every 5 Minutes VER:2.0A
 [Timer]
 OnBootSec=1min
 OnUnitActiveSec=5min
+Persistent=true
 Unit=tolga.service
 
 [Install]
-WantedBy=timers.target
+WantedBy=default.target
