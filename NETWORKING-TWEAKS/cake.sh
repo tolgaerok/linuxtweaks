@@ -3,7 +3,7 @@
 # Metadata
 # ----------------------------------------------------------------------------
 # AUTHOR="Tolga Erok"
-# VERSION="V6.1"
+# VERSION="V6.2"
 # DATE_CREATED="18/3/2025"
 # BUG_FIX="18/3/2025"
 # Description: Systemd script to force CAKE onto any active network interface.
@@ -51,16 +51,16 @@ fi
 echo -e "${BLUE}Detected active network interface: ${interface}${NC}"
 
 # Systemd service names
-SERVICE_NAME="tolga-apply-cake-qdisc.service"
-SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME"
-SERVICE_NAME2="tolga-apply-cake-qdisc-wake.service"
-SERVICE_FILE2="/etc/systemd/system/$SERVICE_NAME2"
+service_name="tolga-apply-cake-qdisc.service"
+service_file="/etc/systemd/system/$service_name"
+service_name2="tolga-apply-cake-qdisc-wake.service"
+service_file2="/etc/systemd/system/$service_name2"
 
 # Create systemd service for CAKE at boot
-echo -e "${BLUE}Creating systemd service file at ${SERVICE_FILE}...${NC}"
-sudo bash -c "cat > $SERVICE_FILE" <<EOF
+echo -e "${BLUE}Creating systemd service file at ${service_file}...${NC}"
+sudo bash -c "cat > $service_file" <<EOF
 [Unit]
-Description=Tolga's V6.1 CAKE qdisc for $interface at boot
+Description=Tolga's V6.2 CAKE qdisc for $interface at boot
 After=network-online.target
 Wants=network-online.target
 
@@ -74,10 +74,10 @@ WantedBy=multi-user.target
 EOF
 
 # Create systemd service for suspend/wake
-echo -e "${BLUE}Creating systemd service file at ${SERVICE_FILE2}...${NC}"
-sudo bash -c "cat > $SERVICE_FILE2" <<EOF
+echo -e "${BLUE}Creating systemd service file at ${service_file2}...${NC}"
+sudo bash -c "cat > $service_file2" <<EOF
 [Unit]
-Description=Re-apply Tolga's V6.1 CAKE qdisc to $interface after suspend/wake
+Description=Re-apply Tolga's V6.2 CAKE qdisc to $interface after suspend/wake
 After=suspend.target
 
 [Service]
@@ -91,8 +91,8 @@ EOF
 # Reload systemd and enable services
 echo -e "${BLUE}Reloading systemd daemon and enabling services...${NC}"
 sudo systemctl daemon-reload
-sudo systemctl enable --now "$SERVICE_NAME"
-sudo systemctl enable --now "$SERVICE_NAME2"
+sudo systemctl enable --now "$service_name"
+sudo systemctl enable --now "$service_name2"
 
 echo -e "${BLUE}Verifying qdisc configuration for ${interface}:${NC}"
 sudo tc qdisc show dev "$interface"
@@ -107,6 +107,9 @@ if ! grep -q "function cake-restart()" "$BASHRC"; then
 
 # Apply CAKE qdisc easily - Tolga Erok
 function cake-restart() {
+    service_name="tolga-apply-cake-qdisc.service"
+    service_name2="tolga-apply-cake-qdisc-wake.service"
+
     # Detect active network interface
     interface=\$(ip -o link show | awk -F': ' '
     \$2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print \$2; exit}')
@@ -119,15 +122,15 @@ function cake-restart() {
     echo -e "${BLUE}Restarting CAKE qdisc for interface: \$interface${NC}"
 
     sudo systemctl daemon-reload
-    sudo systemctl restart "$SERVICE_NAME"
-    sudo systemctl restart "$SERVICE_NAME2"
+    sudo systemctl restart "$service_name"
+    sudo systemctl restart "$service_name2"
 
     echo -e "${BLUE}Verifying qdisc configuration for \$interface:${NC}"
     sudo tc -s qdisc show dev "\$interface"
 
     echo -e "${BLUE}Systemd service statuses:${NC}"
-    sudo systemctl status "$SERVICE_NAME" --no-pager
-    sudo systemctl status "$SERVICE_NAME2" --no-pager
+    sudo systemctl status "$service_name" --no-pager
+    sudo systemctl status "$service_name2" --no-pager
 }
 
 EOF
@@ -136,12 +139,12 @@ fi
 # Add aliases if not present
 if ! grep -q 'alias cake-status=' "$BASHRC"; then
     echo -e "${BLUE}Adding 'cake-status' alias to .bashrc...${NC}"
-    echo "alias cake-status=\"sudo systemctl status $SERVICE_NAME --no-pager && sudo systemctl status $SERVICE_NAME2 --no-pager\"" >> "$BASHRC"
+    echo "alias cake-status=\"sudo systemctl status $service_name --no-pager && sudo systemctl status $service_name2 --no-pager\"" >>"$BASHRC"
 fi
 
 if ! grep -q 'alias cake-restart=' "$BASHRC"; then
     echo -e "${BLUE}Adding 'cake-restart' alias to .bashrc...${NC}"
-    echo "alias cake-restart=\"cake-restart\"" >> "$BASHRC"
+    echo "alias cake-restart=\"cake-restart\"" >>"$BASHRC"
 fi
 
 echo -e "${YELLOW}Reloading .bashrc...${NC}"

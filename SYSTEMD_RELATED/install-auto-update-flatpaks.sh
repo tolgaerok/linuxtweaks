@@ -25,9 +25,10 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Download and set up icon
-sudo wget -O /usr/local/bin/tolga-profile-5.png https://github.com/tolgaerok/linuxtweaks/raw/main/modules/docs/images/md-pics/tolga-profile-5.png
-sudo chmod 644 /usr/local/bin/tolga-profile-5.png
+# download LinuxTweaks icon
+sudo mkdir -p /usr/local/bin/LinuxTweaks/images
+sudo wget -O /usr/local/bin/LinuxTweaks/images/LinuxTweak.png https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png
+sudo chmod 644 /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
 
 # Ensure Flatpak is installed
 if ! command -v flatpak &>/dev/null; then
@@ -52,9 +53,9 @@ for i in {1..3}; do \
     /usr/bin/flatpak update -y && break || (echo "Retrying Flatpak update..." && sleep 10); \
 done | tee /tmp/flatpak_update.log; \
 if grep -q "Nothing to do" /tmp/flatpak_update.log; then \
-    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/tolga-profile-5.png "Flatpak Update Status" "No updates available"; \
+    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "No updates available"; \
 else \
-    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Installing Flatpaks" -i /usr/local/bin/tolga-profile-5.png" Flatpak Update Status:" "Updates installed successfully"; \
+    sudo -u tolga DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Installing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status:" "Updates installed successfully"; \
 fi'
 
 #   systemctl daemon-reload && systemctl start tolga-flatpak-update.service && systemctl enable --now tolga-flatpak-update.timer && systemctl restart tolga-flatpak-update.timer && echo -e "\nFlatpak update service status:" && systemctl status tolga-flatpak-update.service --no-pager && echo -e "\nFlatpak update timer status:" && systemctl status tolga-flatpak-update.timer --no-pager && echo -e "\nNext scheduled Flatpak update timer:" && systemctl list-timers --no-pager | grep "tolga-flatpak-update"
