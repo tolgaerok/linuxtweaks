@@ -3,7 +3,7 @@
 # Date: 21/3/2025
 # Version: 6.1
 
-# BUG FIX: 10/4/25
+# BUG FIX:
 # ✅ Fixed notify-send command 
 
 # SCOPE: (for testing purposes its set to 3secs)
@@ -55,17 +55,17 @@ export DISPLAY=:0; \
 export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus; \
 for i in {1..3}; do \
     /usr/bin/flatpak --system uninstall --unused -y --noninteractive && \
-    notify-send --app-name="Checking Flatpaks cruft" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak cruft Status" "Cruft maintained" && \
+    notify-send --app-name="🔧 Checking Flatpaks cruft" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak cruft Status" "✅ Cruft maintained" && \
     /usr/bin/flatpak --system update -y --noninteractive && \
-    notify-send --app-name="Checking Flatpaks Updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "Updates checked" && \
+    notify-send --app-name="📡 Checking Flatpaks Updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "✅ Updates checked" && \
     /usr/bin/flatpak --system repair -y --noninteractive && \
-    notify-send --app-name="Repairing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Repair Status" "Repairs done" && \
+    notify-send --app-name="🔧 Repairing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Repair Status" "✅ Repairs done" && \
     break || (echo "Retrying Flatpak update..." && sleep 10); \
 done | tee /tmp/flatpak_update.log; \
 if grep -q "Nothing unused to uninstall" /tmp/flatpak_update.log && ! grep -q "update complete" /tmp/flatpak_update.log; then \
-    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "No updates available or no packages to clean."; \
+    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="📡 Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "✅ No updates available or no packages to clean."; \
 elif grep -q "Nothing to do" /tmp/flatpak_update.log; then \
-    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "No updates available"; \
+    sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="🌐 Checking Flatpaks for updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "✅ No updates available"; \
 else \
     sudo -u $SUDO_USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send --app-name="Installing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "Updates installed successfully"; \
 fi'
