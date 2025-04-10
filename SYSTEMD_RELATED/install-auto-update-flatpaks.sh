@@ -1,19 +1,18 @@
 #!/bin/bash
 # Author: Tolga Erok
 # Date: 21/3/2025
-# Version: 6.0
+# Version: 6.1
 
 # BUG FIX:
-# ✅ Fixed notify-send command status
+# ✅ Fixed notify-send command 
 
-
-# SCOPE: ( for testing purposes its running at every 3secs)
+# SCOPE: (for testing purposes its set to 3secs)
 # Run 15 seconds after boot.
 # Run at 00:00, 06:00, 12:00, 18:00.
 # Run every 6 hours after it last ran.
 # Check for updates after waking from suspend.
 
-# Configs
+# service and timer file locations
 service_file="/etc/systemd/system/tolga-flatpak-update.service"
 timer_file="/etc/systemd/system/tolga-flatpak-update.timer"
 
@@ -23,7 +22,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Determine the logged-in user
+# who is the logged-in user?
 if [ -n "$SUDO_USER" ]; then
     user="$SUDO_USER" # When run with sudo, get the original user
 else
@@ -35,7 +34,7 @@ sudo mkdir -p /usr/local/bin/LinuxTweaks/images
 sudo wget -O /usr/local/bin/LinuxTweaks/images/LinuxTweak.png https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png
 sudo chmod 644 /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
 
-# Ensure Flatpak is installed
+# is Flatpak is installed
 if ! command -v flatpak &>/dev/null; then
     echo "Error: Flatpak is not installed. Please install Flatpak to proceed."
     exit 1
@@ -44,7 +43,7 @@ fi
 # create my systemd tolga-flatpak-update.service file
 cat >"$service_file" <<EOF
 [Unit]
-Description=Tolga's Flatpak Automatic Update V6.0
+Description=Tolga's Flatpak Automatic Update V6.1
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target
@@ -56,10 +55,10 @@ export DISPLAY=:0; \
 export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus; \
 for i in {1..3}; do \
     /usr/bin/flatpak --system uninstall --unused -y --noninteractive && \
-    notify-send --app-name="Checking Flatpaks cruft" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak cruft Status" "cruft maintained" && \
+    notify-send --app-name="Checking Flatpaks cruft" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak cruft Status" "Cruft maintained" && \
     /usr/bin/flatpak --system update -y --noninteractive && \
-    notify-send --app-name="Checking Flatpaks Updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "updates checked" && \
-    /usr/bin/flatpak --system repair && \
+    notify-send --app-name="Checking Flatpaks Updates" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Update Status" "Updates checked" && \
+    /usr/bin/flatpak --system repair -y --noninteractive && \
     notify-send --app-name="Repairing Flatpaks" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png "Flatpak Repair Status" "Repairs done" && \
     break || (echo "Retrying Flatpak update..." && sleep 10); \
 done | tee /tmp/flatpak_update.log; \
@@ -81,7 +80,7 @@ EOF
 # create my tolga-flatpak-update.timer file
 cat >"$timer_file" <<EOF
 [Unit]
-Description=Tolga's Flatpak Automatic Update Trigger V6.0
+Description=Tolga's Flatpak Automatic Update Trigger V6.1
 Documentation=man:flatpak(1)
 Wants=network-online.target
 After=network-online.target suspend.target
