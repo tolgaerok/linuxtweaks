@@ -1,14 +1,14 @@
 #!/bin/bash
 # Author: Tolga Erok
 # Date: 21/3/2025
-# Version: 3.1
+# Version: 4.1a
 
 # SCOPE:
 # Delete existing service and timer for Flatpak updates and reload systemd.
 
-# Configs
-SERVICE_FILE="/etc/systemd/system/tolga-flatpak-update.service"
-TIMER_FILE="/etc/systemd/system/tolga-flatpak-update.timer"
+# service and timer file locations
+service_file="/etc/systemd/system/tolga-flatpak-update.service"
+timer_file="/etc/systemd/system/tolga-flatpak-update.timer"
 
 # run as root
 if [ "$EUID" -ne 0 ]; then
@@ -16,30 +16,29 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Delete the systemd service and timer files if they exist
-if [ -f "$SERVICE_FILE" ]; then
-    echo "Removing existing service file: $SERVICE_FILE"
-    rm -f "$SERVICE_FILE"
+# Delete my service and timer files if they exist
+if [ -f "$service_file" ]; then
+    echo "Removing existing service file: $service_file"
+    rm -f "$service_file"
 else
-    echo "Service file does not exist: $SERVICE_FILE"
+    echo "Service file does not exist: $service_file"
 fi
 
-if [ -f "$TIMER_FILE" ]; then
-    echo "Removing existing timer file: $TIMER_FILE"
-    rm -f "$TIMER_FILE"
+if [ -f "$timer_file" ]; then
+    echo "Removing existing timer file: $timer_file"
+    rm -f "$timer_file"
 else
-    echo "Timer file does not exist: $TIMER_FILE"
+    echo "Timer file does not exist: $timer_file"
 fi
 
-# Reload systemd daemon to apply changes
+# Reload systemd daemon
 systemctl daemon-reload
 
-# Status of the timer and service (they should be removed)
+# status of the timer and service (they should be removed)
 echo -e "\nFlatpak update service status (should not exist):"
 systemctl status tolga-flatpak-update.service --no-pager || echo "Service is removed."
 
 echo -e "\nFlatpak update timer status (should not exist):"
 systemctl status tolga-flatpak-update.timer --no-pager || echo "Timer is removed."
 
-# Confirm removal and reset
 echo -e "\nFlatpak update service and timer removed. You can now start fresh."
