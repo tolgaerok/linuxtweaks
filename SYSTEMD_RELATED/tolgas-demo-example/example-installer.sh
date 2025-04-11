@@ -12,7 +12,9 @@ icon_path="$icon_dir/LinuxTweak.png"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
 current_user=$(whoami)
 
-# === show Usage ===
+# === show Usage (BETA) ===
+# i.e     ./example-installer.sh install
+# i.e     ./example-installer.sh remove
 usage() {
     echo "Usage: $0 {install|remove}"
     exit 1
@@ -102,15 +104,44 @@ remove_service() {
     echo "[-] Tolga's updater has been fully removed."
 }
 
-# === entry point menu ===
+# === Menu ===
+while true; do
+    echo ""
+    echo "=== Tolga's Auto Flatpak Updater ==="
+    echo "1) Install"
+    echo "2) Remove"
+    echo "3) Exit"
+    read -rp "Choose an option [1-3]: " choice
+
+    case "$choice" in
+    1)
+        install_service
+        ;;
+    2)
+        remove_service
+        ;;
+    3)
+        echo "Goodbye!"
+        exit 0
+        ;;
+    *)
+        echo "Invalid option, try again."
+        ;;
+    esac
+done
+
+
+# === Entry Point ===
+# i.e     ./example-installer.sh install
+# i.e     ./example-installer.sh remove
 case "$1" in
-install)
-    install_service
-    ;;
-remove)
-    remove_service
-    ;;
-*)
-    usage
-    ;;
+    install)
+        install_service
+        ;;
+    remove)
+        remove_service
+        ;;
+    *)
+        usage
+        ;;
 esac
