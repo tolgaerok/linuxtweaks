@@ -3,7 +3,7 @@
 # 11/4/25
 # VERSION 3.0a
 
-# === Define Constants ===
+# === configuration ===
 unit_dir="$HOME/.config/systemd/user"
 service_file="$unit_dir/tolga.service"
 timer_file="$unit_dir/tolga.timer"
@@ -12,20 +12,20 @@ icon_path="$icon_dir/LinuxTweak.png"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
 current_user=$(whoami)
 
-# === Show Usage ===
+# === show Usage ===
 usage() {
     echo "Usage: $0 {install|remove}"
     exit 1
 }
 
-# === Install Function ===
+# === install Function ===
 install_service() {
     echo "[+] Installing Tolga's Flatpak updater..."
 
     mkdir -p "$unit_dir"
     sudo mkdir -p "$icon_dir"
 
-    # Create service
+    # create service
     cat <<EOF >"$service_file"
 [Unit]
 Description=Tolga's Flatpak Automatic Update and Notification VER:2.0A
@@ -53,7 +53,7 @@ TimeoutStopFailureMode=abort
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 EOF
 
-    # Create timer
+    # create timer
     cat <<EOF >"$timer_file"
 [Unit]
 Description=Run Tolga's Flatpak Update Script daily
@@ -85,7 +85,7 @@ EOF
     systemctl --user list-timers | grep tolga
 }
 
-# === Remove Function ===
+# === remove Function ===
 remove_service() {
     echo "[-] Removing Tolga's Flatpak updater..."
 
@@ -102,7 +102,7 @@ remove_service() {
     echo "[-] Tolga's updater has been fully removed."
 }
 
-# === Entry Point ===
+# === entry point menu ===
 case "$1" in
 install)
     install_service
