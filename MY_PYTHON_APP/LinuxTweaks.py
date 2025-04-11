@@ -1,55 +1,47 @@
 #!/usr/bin/env python3
 # Tolga Erok
-# 26-3-2025
-# Version:                  5.0
+# Version: 3.2 - Now supports `.service` and `.timer` units from both system & user level
 
 import sys
 import subprocess
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QPushButton,
-    QSystemTrayIcon, QMenu, QListWidget, QMessageBox
+    QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QMessageBox,
+    QSystemTrayIcon, QMenu
 )
 from PyQt6.QtGui import QAction, QIcon
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import QTimer
 
 app_icon = "/usr/local/bin/LinuxTweaks/images/LinuxTweak.png"
 icon_amber = "🛠️"
 icon_green = "✔️"
 icon_red = "❌️"
 
-def get_tolga_services():
-    """Fetch all active system and user-level services containing 'tolga'."""
-    services = set()
+def list_units(unit_type):
+    """Helper to fetch units of a given type (service or timer) from both scopes."""
+    units = set()
 
-    # System-wide services
-    system_output = subprocess.run(
-        ["systemctl", "list-units", "--type=service", "--all", "--no-pager", "--no-legend"],
-        capture_output=True, text=True
-    ).stdout
-    services.update(
-        line.split()[0] for line in system_output.splitlines()
-        if "tolga" in line
-    )
+    # System
+    sys_cmd = ["systemctl", "list-units", f"--type={unit_type}", "--all", "--no-pager", "--no-legend"]
+    sys_output = subprocess.run(sys_cmd, capture_output=True, text=True).stdout
+    units.update(line.split()[0] for line in sys_output.splitlines() if "tolga" in line)
 
-    # User-level services
-    user_output = subprocess.run(
-        ["systemctl", "--user", "list-units", "--type=service", "--all", "--no-pager", "--no-legend"],
-        capture_output=True, text=True
-    ).stdout
-    services.update(
-        line.split()[0] for line in user_output.splitlines()
-        if "tolga" in line
-    )
+    # User
+    usr_cmd = ["systemctl", "--user", "list-units", f"--type={unit_type}", "--all", "--no-pager", "--no-legend"]
+    usr_output = subprocess.run(usr_cmd, capture_output=True, text=True).stdout
+    units.update(line.split()[0] for line in usr_output.splitlines() if "tolga" in line)
 
-    return sorted(services)
+    return sorted(units)
 
-def check_service_status(service):
-    """Returns status icon and string for each service."""
+def get_tolga_units():
+    return list_units("service") + list_units("timer")
+
+def check_status(unit):
+    """Determine if unit is system or user, and check its status."""
     try:
-        cmd = ["systemctl", "show", service, "--no-pager"]
-        if subprocess.run(["systemctl", "--user", "status", service], capture_output=True).returncode == 0:
-            cmd.insert(1, "--user")
-        output = subprocess.run(cmd, capture_output=True, text=True).stdout
+        # Determine scope
+        is_user = subprocess.run(["systemctl", "--user", "status", unit], capture_output=True).returncode == 0
+        base_cmd = ["systemctl", "--user"] if is_user else ["systemctl"]
+        output = subprocess.run(base_cmd + ["show", unit, "--no-pager"], capture_output=True, text=True).stdout
 
         active_state = next((l.split("=")[1] for l in output.splitlines() if l.startswith("ActiveState=")), "unknown")
         result = next((l.split("=")[1] for l in output.splitlines() if l.startswith("Result=")), "unknown")
@@ -74,78 +66,61 @@ class LinuxTweakMonitor(QWidget):
         self.service_list = QListWidget()
         self.layout.addWidget(self.service_list)
 
-        self.start_button = QPushButton("Start Service")
-        self.stop_button = QPushButton("Stop Service")
-        self.restart_button = QPushButton("Restart Service")
+        self.start_button = QPushButton("Start")
+        self.stop_button = QPushButton("Stop")
+        self.restart_button = QPushButton("Restart")
         self.layout.addWidget(self.start_button)
         self.layout.addWidget(self.stop_button)
         self.layout.addWidget(self.restart_button)
 
-        self.start_button.clicked.connect(lambda: self.manage_service("start"))
-        self.stop_button.clicked.connect(lambda: self.manage_service("stop"))
-        self.restart_button.clicked.connect(lambda: self.manage_service("restart"))
+        self.start_button.clicked.connect(lambda: self.manage("start"))
+        self.stop_button.clicked.connect(lambda: self.manage("stop"))
+        self.restart_button.clicked.connect(lambda: self.manage("restart"))
 
         self.setLayout(self.layout)
         self.refresh_status()
 
     def refresh_status(self):
         self.service_list.clear()
-        self.services = get_tolga_services()
+        self.units = get_tolga_units()
 
-        service_statuses = [
-            (svc, *check_service_status(svc)) for svc in self.services
-        ]
-        service_statuses.sort(key=lambda x: ("Active" not in x[2], "Inactive" in x[2]))
+        statuses = [(unit, *check_status(unit)) for unit in self.units]
+        statuses.sort(key=lambda x: ("Active" not in x[2], "Inactive" in x[2]))
 
-        for svc, icon, status in service_statuses:
-            self.service_list.addItem(f"{icon}{status} :  {svc}")
+        for unit, icon, state in statuses:
+            self.service_list.addItem(f"{icon}{state} :  {unit}")
 
         self.tray_icon.update_status()
 
-    def manage_service(self, action):
-        selected_item = self.service_list.currentItem()
-        if not selected_item:
-            QMessageBox.warning(self, "No Service Selected", "Please select a service.")
+    def manage(self, action):
+        item = self.service_list.currentItem()
+        if not item:
+            QMessageBox.warning(self, "No Unit Selected", "Please select a unit.")
             return
 
-        service = selected_item.text().split(":")[-1].strip()
-        is_user_service = subprocess.run(
-            ["systemctl", "--user", "status", service], capture_output=True
-        ).returncode == 0
-
-        cmd = ["systemctl"]
-        if is_user_service:
-            cmd.append("--user")
-
-        subprocess.run(cmd + ["daemon-reexec"], check=True)
-        subprocess.run(cmd + [action, service], capture_output=True)
+        unit = item.text().split(":")[-1].strip()
+        is_user = subprocess.run(["systemctl", "--user", "status", unit], capture_output=True).returncode == 0
+        cmd = ["systemctl", "--user"] if is_user else ["systemctl"]
+        subprocess.run(cmd + [action, unit], capture_output=True)
         self.refresh_status()
-        QTimer.singleShot(100, self.tray_icon.update_status)
 
 class LinuxTweakTray:
     def __init__(self):
         self.app = QApplication(sys.argv)
         self.tray = QSystemTrayIcon(QIcon(app_icon))
-        self.tray.setToolTip("LinuxTweak Service Monitor")
-
         self.menu = QMenu()
-        self.show_app_action = QAction("Open Service Monitor")
-        self.show_app_action.triggered.connect(self.open_app)
-        self.refresh_action = QAction("Refresh")
-        self.refresh_action.triggered.connect(self.update_status)
-        self.exit_action = QAction("Exit")
-        self.exit_action.triggered.connect(self.app.quit)
 
-        self.menu.addAction(self.show_app_action)
-        self.menu.addAction(self.refresh_action)
+        self.window = LinuxTweakMonitor(self)
+
+        self.menu.addAction("Open Service Monitor", self.open_app)
+        self.menu.addAction("Refresh", self.update_status)
         self.menu.addSeparator()
-        self.menu.addAction(self.exit_action)
+        self.menu.addAction("Exit", self.app.quit)
 
         self.tray.setContextMenu(self.menu)
         self.tray.activated.connect(self.tray_clicked)
-
-        self.window = LinuxTweakMonitor(self)
         self.update_status()
+
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_status)
         self.timer.start(5000)
@@ -153,12 +128,10 @@ class LinuxTweakTray:
         self.tray.show()
 
     def update_status(self):
-        statuses = [(svc, *check_service_status(svc)) for svc in get_tolga_services()]
-
         tooltip = ""
-        for svc, icon, status in statuses:
-            tooltip += f"{icon}{status} : {svc}\n"
-
+        statuses = [(unit, *check_status(unit)) for unit in get_tolga_units()]
+        for unit, icon, state in statuses:
+            tooltip += f"{icon}{state} : {unit}\n"
         self.tray.setToolTip(tooltip.strip())
         self.tray.setIcon(QIcon(app_icon))
 
