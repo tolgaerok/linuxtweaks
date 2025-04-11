@@ -5,8 +5,14 @@
 import sys
 import subprocess
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QMessageBox,
-    QSystemTrayIcon, QMenu
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QPushButton,
+    QListWidget,
+    QMessageBox,
+    QSystemTrayIcon,
+    QMenu,
 )
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
@@ -16,37 +22,74 @@ icon_amber = "🛠️"
 icon_green = "✔️"
 icon_red = "❌️"
 
+
 def list_units(unit_type):
     """Helper to fetch units of a given type (service or timer) from both scopes."""
     units = set()
 
     # System
-    sys_cmd = ["systemctl", "list-units", f"--type={unit_type}", "--all", "--no-pager", "--no-legend"]
+    sys_cmd = [
+        "systemctl",
+        "list-units",
+        f"--type={unit_type}",
+        "--all",
+        "--no-pager",
+        "--no-legend",
+    ]
     sys_output = subprocess.run(sys_cmd, capture_output=True, text=True).stdout
     units.update(line.split()[0] for line in sys_output.splitlines() if "tolga" in line)
 
     # User
-    usr_cmd = ["systemctl", "--user", "list-units", f"--type={unit_type}", "--all", "--no-pager", "--no-legend"]
+    usr_cmd = [
+        "systemctl",
+        "--user",
+        "list-units",
+        f"--type={unit_type}",
+        "--all",
+        "--no-pager",
+        "--no-legend",
+    ]
     usr_output = subprocess.run(usr_cmd, capture_output=True, text=True).stdout
     units.update(line.split()[0] for line in usr_output.splitlines() if "tolga" in line)
 
     return sorted(units)
 
+
 def get_tolga_units():
     return list_units("service") + list_units("timer")
+
 
 def check_status(unit):
     """Determine if unit is system or user, and check its status."""
     try:
         # Determine scope
-        is_user = subprocess.run(["systemctl", "--user", "status", unit], capture_output=True).returncode == 0
+        is_user = (
+            subprocess.run(
+                ["systemctl", "--user", "status", unit], capture_output=True
+            ).returncode
+            == 0
+        )
         base_cmd = ["systemctl", "--user"] if is_user else ["systemctl"]
-        output = subprocess.run(base_cmd + ["show", unit, "--no-pager"], capture_output=True, text=True).stdout
+        output = subprocess.run(
+            base_cmd + ["show", unit, "--no-pager"], capture_output=True, text=True
+        ).stdout
 
-        active_state = next((l.split("=")[1] for l in output.splitlines() if l.startswith("ActiveState=")), "unknown")
-        result = next((l.split("=")[1] for l in output.splitlines() if l.startswith("Result=")), "unknown")
+        active_state = next(
+            (
+                l.split("=")[1]
+                for l in output.splitlines()
+                if l.startswith("ActiveState=")
+            ),
+            "unknown",
+        )
+        result = next(
+            (l.split("=")[1] for l in output.splitlines() if l.startswith("Result=")),
+            "unknown",
+        )
 
-        if active_state == "active" or (active_state == "inactive" and result == "success"):
+        if active_state == "active" or (
+            active_state == "inactive" and result == "success"
+        ):
             return icon_green, " Active   "
         elif active_state == "inactive":
             return icon_red, " Inactive"
@@ -54,6 +97,7 @@ def check_status(unit):
             return icon_amber, " Unknown "
     except Exception:
         return icon_red, " Error"
+
 
 class LinuxTweakMonitor(QWidget):
     def __init__(self, tray_icon):
@@ -99,10 +143,16 @@ class LinuxTweakMonitor(QWidget):
             return
 
         unit = item.text().split(":")[-1].strip()
-        is_user = subprocess.run(["systemctl", "--user", "status", unit], capture_output=True).returncode == 0
+        is_user = (
+            subprocess.run(
+                ["systemctl", "--user", "status", unit], capture_output=True
+            ).returncode
+            == 0
+        )
         cmd = ["systemctl", "--user"] if is_user else ["systemctl"]
         subprocess.run(cmd + [action, unit], capture_output=True)
         self.refresh_status()
+
 
 class LinuxTweakTray:
     def __init__(self):
@@ -145,6 +195,7 @@ class LinuxTweakTray:
 
     def run(self):
         self.app.exec()
+
 
 if __name__ == "__main__":
     tray = LinuxTweakTray()
