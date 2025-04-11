@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-# VERSION 3.0
+# VERSION 3.0a
 
 # === Define Constants ===
 unit_dir="$HOME/.config/systemd/user"
@@ -37,16 +37,16 @@ After=network-online.target
 Type=oneshot
 ExecCondition=/bin/bash -c '[[ "\$(busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager Metered | cut -c 3-)" == @(2|4) ]]'
 ExecStart=/bin/bash -c '
-/usr/bin/notify-send "Flatpaks Uninstall" "🌐 Checking for flatpak cruft" --app-name="🔧 Flatpak Maintenance" -i $icon_path -u NORMAL
+/usr/bin/notify-send "Flatpaks Uninstall" "🌐  Checking for flatpak cruft" --app-name="🔧  Flatpak Maintenance" -i $icon_path -u NORMAL
 /usr/bin/flatpak --system uninstall --unused -y --noninteractive
 sleep 5
-/usr/bin/notify-send "Flatpaks Updates" "📡 Checking for flatpak UPDATES" --app-name="📡 Flatpak Updater" -i $icon_path -u NORMAL
+/usr/bin/notify-send "Flatpaks Updates" "📡  Checking for flatpak UPDATES" --app-name="📡  Flatpak Updater" -i $icon_path -u NORMAL
 /usr/bin/flatpak --system update -y --noninteractive
 sleep 5
-/usr/bin/notify-send "Flatpaks Repair" "💻 Checking and repairing Flatpaks" --app-name="🔧 Flatpak Repair Service" -i $icon_path -u NORMAL
+/usr/bin/notify-send "Flatpaks Repair" "💻  Checking and repairing Flatpaks" --app-name="🔧  Flatpak Repair Service" -i $icon_path -u NORMAL
 /usr/bin/flatpak --system repair
 sleep 5
-/usr/bin/notify-send "Flatpaks Updated" "✅ Your computer is ready!" --app-name="💻  Flatpak Update Service" -i $icon_path -u NORMAL
+/usr/bin/notify-send "Flatpaks Updated" "✅  Your computer is ready!" --app-name="💻  Flatpak Update Service" -i $icon_path -u NORMAL
 '
 
 TimeoutStopFailureMode=abort
@@ -60,8 +60,9 @@ Description=Run Tolga's Flatpak Update Script daily
 
 [Timer]
 OnBootSec=10min
-OnUnitActiveSec=1d
+OnUnitActiveSec=5min
 Persistent=true
+Unit=tolga.service
 
 [Install]
 WantedBy=timers.target
