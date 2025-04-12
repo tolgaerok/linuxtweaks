@@ -9,8 +9,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 unit_dir="$HOME/.config/systemd/user"
-service_file="$unit_dir/tolga.service"
-timer_file="$unit_dir/tolga.timer"
+service_file="$unit_dir/tolga-flatpak.service"
+timer_file="$unit_dir/tolga-flatpak.timer"
 icon_dir="/usr/local/bin/LinuxTweaks/images"
 icon_path="$icon_dir/LinuxTweak.png"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
@@ -65,7 +65,7 @@ Description=Run Tolga's Flatpak Update Script daily
 OnCalendar=daily
 RandomizedDelaySec=10min
 Persistent=true
-Unit=tolga.service
+Unit=tolga-flatpak.service
 
 [Install]
 WantedBy=timers.target
@@ -81,13 +81,13 @@ EOF
     sudo loginctl enable-linger "$current_user"
     systemctl --user daemon-reexec
     systemctl --user daemon-reload
-    systemctl --user enable --now tolga.timer
-    systemctl --user start tolga.service
-    systemctl --user status tolga.service --no-pager
+    systemctl --user enable --now tolga-flatpak.timer
+    systemctl --user start tolga-flatpak.service
+    systemctl --user status tolga-flatpak.service --no-pager
 
     echo -en "${YELLOW}[+] Timer status:\n ${NC}"
     # systemctl --user list-timers | grep tolga
-    systemctl --user list-timers tolga.timer
+    systemctl --user list-timers tolga-flatpak.timer
     echo -e "${GREEN}=== Tolga's Auto Flatpak Updater installed ===${NC}"
     sleep 5
 }
@@ -96,7 +96,7 @@ EOF
 remove_service() {
     echo -e "${RED}\n[-] Removing Tolga's Flatpak updater...\n ${NC}"
 
-    systemctl --user disable --now tolga.timer tolga.service
+    systemctl --user disable --now tolga-flatpak.timer tolga-flatpak.service
     systemctl --user daemon-reload
 
     echo -e "${RED}\n[-] Removing systemd unit files...\n ${NC}"
@@ -131,9 +131,9 @@ while true; do
     3)
         clear
         echo -e "${RED}\n[+] ===============      TIMERS    ======================= [+]\n${NC}"
-        systemctl --user list-timers tolga.timer
+        systemctl --user list-timers tolga-flatpak.timer
         echo -e "${RED}\n[+] =============== SERVICE STATUS ======================= [+]\n${NC}"
-        systemctl --user status tolga.service --no-pager
+        systemctl --user status tolga-flatpak.service --no-pager
         echo -e "${RED}\n[+] ============================================== [+]\n${NC}"
         echo -e "${RED}\nGoodbye and thankyou for using Tolga's LinuxTweaks flatpak autoupdater\n${NC}"
 
