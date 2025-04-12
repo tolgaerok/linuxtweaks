@@ -86,8 +86,8 @@ EOF
     systemctl --user status tolga.service --no-pager
 
     echo -en "${YELLOW}[+] Timer status:\n ${NC}"
-    systemctl --user list-timers | grep tolga
-
+    # systemctl --user list-timers | grep tolga
+    systemctl --user list-timers tolga.timer
     echo -e "${GREEN}=== Tolga's Auto Flatpak Updater installed ===${NC}"
     sleep 5
 }
@@ -131,7 +131,7 @@ while true; do
     3)
         clear
         echo -e "${RED}\n[+] ===============      TIMERS    ======================= [+]\n${NC}"
-        systemctl --user list-timers | grep tolga
+        systemctl --user list-timers tolga.timer
         echo -e "${RED}\n[+] =============== SERVICE STATUS ======================= [+]\n${NC}"
         systemctl --user status tolga.service --no-pager
         echo -e "${RED}\n[+] ============================================== [+]\n${NC}"
