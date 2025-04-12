@@ -48,7 +48,7 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 StandardError=journal
 StandardOutput=journal
 SuccessExitStatus=0 1
-TimeoutStartSec=30
+TimeoutStartSec=0
 TimeoutStopFailureMode=abort
 EOF
 

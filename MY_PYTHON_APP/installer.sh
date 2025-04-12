@@ -22,7 +22,7 @@ install_dependencies() {
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
     elif command -v pacman &>/dev/null; then
-        packages=("python" "git")
+        packages=("python" "git" "python-pyqt6" )
         install_cmd="sudo pacman -S --noconfirm"
         check_cmd="pacman -Q"
     else
