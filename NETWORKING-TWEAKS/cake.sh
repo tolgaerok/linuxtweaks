@@ -79,13 +79,25 @@ sudo bash -c "cat > $service_file2" <<EOF
 [Unit]
 Description=Re-apply Tolga's V6.2 CAKE qdisc to $interface after suspend/wake
 After=suspend.target
+PartOf=systemd-suspend.service
 
 [Service]
 Type=oneshot
-ExecStart=$TC_PATH qdisc replace dev $interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18
+ExecStart=/bin/bash -c 'sleep 3 && $TC_PATH qdisc replace dev $interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18'
+
+Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
+
+# Watchdog & safety
+TimeoutStartSec=10min
+TimeoutStopSec=10s
+TimeoutStopFailureMode=kill
+
+StandardError=journal
+StandardOutput=journal
+SuccessExitStatus=0 3
 
 [Install]
-WantedBy=suspend.target
+WantedBy=systemd-suspend.service
 EOF
 
 # Reload systemd and enable services

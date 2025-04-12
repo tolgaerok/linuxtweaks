@@ -53,7 +53,7 @@ TimeoutStopFailureMode=kill
 
 StandardError=journal
 StandardOutput=journal
-SuccessExitStatus=0 1
+SuccessExitStatus=0 3
 EOF
 
     # create timer
