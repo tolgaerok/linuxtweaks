@@ -45,11 +45,15 @@ ExecCondition=/bin/bash -c '[[ "\$(busctl get-property org.freedesktop.NetworkMa
 ExecStart=/bin/bash -c "/usr/bin/notify-send \"\" \"🌐  Checking for flatpak cruft\" --app-name=\"🔧  Flatpak Maintenance\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system uninstall --unused -y --noninteractive && sleep 5 && /usr/bin/notify-send \"\" \"📡  Checking for flatpak UPDATES\" --app-name=\"📡  Flatpak Updater\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system update -y --noninteractive && sleep 5 && /usr/bin/notify-send \"\" \"💻  Checking and repairing Flatpaks\" --app-name=\"🔧  Flatpak Repair Service\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system repair && sleep 5 && /usr/bin/notify-send \"Flatpaks checked, fixed and updated\" \"✅  Your computer is ready!\" --app-name=\"💻  Flatpak Update Service\" -i $icon_path -u NORMAL"
 
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
+
+# Watchdog & safety
+TimeoutStartSec=10min
+TimeoutStopSec=10s
+TimeoutStopFailureMode=kill
+
 StandardError=journal
 StandardOutput=journal
 SuccessExitStatus=0 1
-TimeoutStartSec=0
-TimeoutStopFailureMode=abort
 EOF
 
     # create timer
@@ -58,8 +62,8 @@ EOF
 Description=Run Tolga's Flatpak Update Script daily
 
 [Timer]
-OnBootSec=10min
-OnUnitActiveSec=5min
+OnCalendar=daily
+RandomizedDelaySec=10min
 Persistent=true
 Unit=tolga.service
 
