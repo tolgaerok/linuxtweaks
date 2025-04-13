@@ -136,6 +136,16 @@ sudo fc-cache -fv
 kquitapp5 plasmashell && kstart5 plasmashell
 ```
 
+
+#### Preinstall code extensions
+
+```bash
+# Pre-install preferred VSCode Extensions
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension ms-vscode-remote.remote-ssh
+code --install-extension ms-azuretools.vscode-docker
+```
+
 #
 
 ## Main Menu .
