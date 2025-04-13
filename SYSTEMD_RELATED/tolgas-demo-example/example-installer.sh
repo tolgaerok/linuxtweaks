@@ -10,6 +10,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 unit_dir="$HOME/.config/systemd/user"
 service_file="$unit_dir/tolga-flatpak.service"
+failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
 timer_file="$unit_dir/tolga-flatpak.timer"
 icon_dir="/usr/local/bin/LinuxTweaks/images"
 icon_path="$icon_dir/LinuxTweak.png"
@@ -36,6 +37,7 @@ install_service() {
 [Unit]
 Description=Tolga's Flatpak Automatic Update and Notification VER:2.0A
 Documentation=file://$unit_dir/help.txt
+OnFailure=tolga-flatpak-failed-notify.service
 Wants=network-online.target
 After=network-online.target
 
@@ -47,13 +49,24 @@ ExecStart=/bin/bash -c "/usr/bin/notify-send \"\" \"🌐  Checking for flatpak c
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 
 # Watchdog & safety
-TimeoutStartSec=10min
-TimeoutStopSec=10s
+TimeoutStartSec=15min
+TimeoutStopSec=30s
 TimeoutStopFailureMode=kill
 
 StandardError=journal
 StandardOutput=journal
 SuccessExitStatus=0 3
+EOF
+
+
+    # create failed service
+    cat <<EOF >"$failed_service_file"
+[Unit]
+Description=Flatpak Update Failure Notification
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/notify-send "❌ Flatpak Autoupdate Failed" "Please check your flatpak service logs." --app-name="Flatpak Fail" -i dialog-error -u CRITICAL
 EOF
 
     # create timer
@@ -82,9 +95,11 @@ EOF
     systemctl --user daemon-reexec
     systemctl --user daemon-reload
     systemctl --user enable --now tolga-flatpak.timer
+    systemctl --user start tolga-flatpak-failed-notify.service
     systemctl --user start tolga-flatpak.service
+    systemctl --user status tolga-flatpak-failed-notify.service --no-pager
     systemctl --user status tolga-flatpak.service --no-pager
-
+    
     echo -en "${YELLOW}[+] Timer status:\n ${NC}"
     # systemctl --user list-timers | grep tolga
     systemctl --user list-timers tolga-flatpak.timer
@@ -96,7 +111,7 @@ EOF
 remove_service() {
     echo -e "${RED}\n[-] Removing Tolga's Flatpak updater...\n ${NC}"
 
-    systemctl --user disable --now tolga-flatpak.timer tolga-flatpak.service
+    systemctl --user disable --now tolga-flatpak.timer tolga-flatpak.service tolga-flatpak-failed-notify.service
     systemctl --user daemon-reload
 
     echo -e "${RED}\n[-] Removing systemd unit files...\n ${NC}"
@@ -134,6 +149,8 @@ while true; do
         systemctl --user list-timers tolga-flatpak.timer
         echo -e "${RED}\n[+] =============== SERVICE STATUS ======================= [+]\n${NC}"
         systemctl --user status tolga-flatpak.service --no-pager
+        echo -e "${RED}\n[+] ============================================== [+]\n${NC}"
+        systemctl --user status tolga-flatpak-failed-notify.service --no-pager
         echo -e "${RED}\n[+] ============================================== [+]\n${NC}"
         echo -e "${RED}\nGoodbye and thankyou for using Tolga's LinuxTweaks flatpak autoupdater\n${NC}"
 
