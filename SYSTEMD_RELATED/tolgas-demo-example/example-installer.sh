@@ -3,6 +3,13 @@
 # 11/4/25
 # VERSION 3.0a
 
+# exit if script is run as root or with sudo
+if [ "$(id -u)" -eq 0 ]; then
+    echo -e "\033[0;31m[!] Do NOT run this script as root or with sudo.\033[0m"
+    echo -e "\033[0;33m[!] Please run as a regular user. Sudo will be used internally only when needed.\033[0m"
+    exit 1
+fi
+
 # === configuration ===
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -13,8 +20,11 @@ service_file="$unit_dir/tolga-flatpak.service"
 failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
 timer_file="$unit_dir/tolga-flatpak.timer"
 icon_dir="/usr/local/bin/LinuxTweaks/images"
+help_dir="$unit_dir"
+help_file="$help_dir/help.txt"
 icon_path="$icon_dir/LinuxTweak.png"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
+help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/tolgas-demo-example/help.txt"
 current_user=$(whoami)
 
 # === show Usage (BETA) ===
@@ -30,7 +40,13 @@ install_service() {
     echo -e "${GREEN}[+] Installing Tolga's Flatpak updater...\n ${NC}"
 
     mkdir -p "$unit_dir"
+    sudo wget -O "$unit_dir" "$icon_URL"
     sudo mkdir -p "$icon_dir"
+
+    # Download help file
+    echo -e "${GREEN}[+] Downloading help file...\n${NC}"
+    wget -O "$help_dir/help.txt" "$help_URL"
+    chmod 644 "$help_dir/help.txt"
 
     # create service
     cat <<EOF >"$service_file"
@@ -57,7 +73,6 @@ StandardError=journal
 StandardOutput=journal
 SuccessExitStatus=0 3
 EOF
-
 
     # create failed service
     cat <<EOF >"$failed_service_file"
@@ -88,6 +103,7 @@ EOF
 
     echo -e "${GREEN}[+] Downloading icon...\n ${NC}"
     sudo wget -O "$icon_path" "$icon_URL"
+
     sudo chmod 644 "$icon_path"
 
     echo -en "${YELLOW}[+] Enabling linger and reloading systemd...standby....\n ${NC}"
@@ -99,7 +115,7 @@ EOF
     systemctl --user start tolga-flatpak.service
     systemctl --user status tolga-flatpak-failed-notify.service --no-pager
     systemctl --user status tolga-flatpak.service --no-pager
-    
+
     echo -en "${YELLOW}[+] Timer status:\n ${NC}"
     # systemctl --user list-timers | grep tolga
     systemctl --user list-timers tolga-flatpak.timer
