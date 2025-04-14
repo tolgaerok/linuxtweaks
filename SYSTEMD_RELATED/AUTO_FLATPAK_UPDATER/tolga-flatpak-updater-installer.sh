@@ -15,15 +15,23 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
-unit_dir="$HOME/.config/systemd/user"
-service_file="$unit_dir/tolga-flatpak.service"
+
 failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
-timer_file="$unit_dir/tolga-flatpak.timer"
-icon_dir="/usr/local/bin/LinuxTweaks/images"
-help_dir="$unit_dir"
-icon_path="$icon_dir/LinuxTweak.png"
-icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
 help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/help.txt"
+help_dir="$unit_dir"
+icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
+icon_dir="/usr/local/bin/LinuxTweaks/images"
+icon_path="$icon_dir/LinuxTweak.png"
+service_file="$unit_dir/tolga-flatpak.service"
+timer_file="$unit_dir/tolga-flatpak.timer"
+unit_dir="$HOME/.config/systemd/user"
+
+# ---- Flatpak Theming Tweaks - LinuxTweaks (Tolga)  ----
+flatpak override --user --env=USE_POINTER_VIEWPORT=1
+flatpak override --user --filesystem=xdg-config/gtk-4.0:ro
+flatpak override --user --unset-env=QT_QPA_PLATFORMTHEME
+sudo timedatectl set-ntp true
+
 current_user=$(whoami)
 
 # === show Usage (BETA) ===
