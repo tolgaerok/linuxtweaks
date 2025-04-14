@@ -51,13 +51,13 @@ If you use Flatpak often and like the idea of keeping your apps up to date autom
 ### 🔗 *To view source code:*
 
 ```bash
-https://github.com/tolgaerok/linuxtweaks/blob/main/SYSTEMD_RELATED/auto-update-flatpaks.sh
+https://github.com/tolgaerok/linuxtweaks/blob/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/tolga-flatpak-updater.sh
 ```
 
 ### 🔗 *To `run` from the remote location:*
 
 ```bash
-curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/auto-update-flatpaks.sh | sudo bash
+curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/tolga-flatpak-updater.sh | sudo bash
 ```
 
 #
