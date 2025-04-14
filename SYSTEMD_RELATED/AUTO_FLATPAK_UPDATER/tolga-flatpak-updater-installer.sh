@@ -21,10 +21,9 @@ failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
 timer_file="$unit_dir/tolga-flatpak.timer"
 icon_dir="/usr/local/bin/LinuxTweaks/images"
 help_dir="$unit_dir"
-help_file="$help_dir/help.txt"
 icon_path="$icon_dir/LinuxTweak.png"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
-help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/tolgas-demo-example/help.txt"
+help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/help.txt"
 current_user=$(whoami)
 
 # === show Usage (BETA) ===
@@ -39,11 +38,12 @@ usage() {
 install_service() {
     echo -e "${GREEN}[+] Installing Tolga's Flatpak updater...\n ${NC}"
 
+    # download linuxtweaks icon
     mkdir -p "$unit_dir"
     sudo wget -O "$unit_dir" "$icon_URL"
     sudo mkdir -p "$icon_dir"
 
-    # Download help file
+    # download help file
     echo -e "${GREEN}[+] Downloading help file...\n${NC}"
     wget -O "$help_dir/help.txt" "$help_URL"
     chmod 644 "$help_dir/help.txt"
