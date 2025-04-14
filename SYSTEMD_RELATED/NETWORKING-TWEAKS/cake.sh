@@ -3,9 +3,10 @@
 # Metadata
 # ----------------------------------------------------------------------------
 # AUTHOR="Tolga Erok"
-# VERSION="V6.2"
+# VERSION="V8"
 # DATE_CREATED="18/3/2025"
-# BUG_FIX="18/3/2025"
+# BUG_FIX="14/4/2025"
+
 # Description: Systemd script to force CAKE onto any active network interface.
 
 YELLOW="\033[1;33m"
@@ -60,30 +61,15 @@ service_file2="/etc/systemd/system/$service_name2"
 echo -e "${BLUE}Creating systemd service file at ${service_file}...${NC}"
 sudo bash -c "cat > $service_file" <<EOF
 [Unit]
-Description=Tolga's V6.2 CAKE qdisc for $interface at boot
+Description=Tolga's V8.0 CAKE qdisc for $interface at boot
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=$TC_PATH qdisc replace dev $interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18
+# ExecStart=$TC_PATH qdisc replace dev $interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18
+ExecStart=/bin/bash -c 'interface=\$(ip link show | awk -F: '\''\$0 ~ \"wlp|wlo|wlx\" && \$0 !~ \"NO-CARRIER\" {gsub(/^[ \t]+|[ \t]+$/, \"\", \$2); print \$2; exit}'\''); if [ -n \"\$interface\" ]; then sudo tc qdisc replace dev \$interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18; fi'
 RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Create systemd service for suspend/wake
-echo -e "${BLUE}Creating systemd service file at ${service_file2}...${NC}"
-sudo bash -c "cat > $service_file2" <<EOF
-[Unit]
-Description=Re-apply Tolga's V6.2 CAKE qdisc to $interface after suspend/wake
-After=suspend.target
-PartOf=systemd-suspend.service
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash -c 'sleep 3 && $TC_PATH qdisc replace dev $interface root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18'
 
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 
@@ -97,7 +83,38 @@ StandardOutput=journal
 SuccessExitStatus=0 3
 
 [Install]
-WantedBy=systemd-suspend.service
+WantedBy=multi-user.target
+EOF
+
+# Create systemd service for suspend/wake
+echo -e "${BLUE}Creating systemd service file at ${service_file2}...${NC}"
+sudo bash -c "cat > $service_file2" <<EOF
+[Unit]
+Description=Re-apply Tolga's V8.0 CAKE qdisc to $interface after suspend/wake
+After=network-online.target suspend.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'iface=$(ip -o link show | awk -F: '\''/wlp|wlo|wlx/ && $2 !~ /NO-CARRIER/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2; exit}'\''); \
+if [ -n "$iface" ]; then \
+  /usr/sbin/tc qdisc replace dev "$iface" root cake bandwidth 1Gbit diffserv4 triple-isolate nonat nowash ack-filter split-gso rtt 10ms raw overhead 18; \
+fi'
+
+RemainAfterExit=yes
+Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
+
+# Watchdog & safety
+TimeoutStartSec=10min
+TimeoutStopSec=10s
+TimeoutStopFailureMode=kill
+
+StandardError=journal
+StandardOutput=journal
+SuccessExitStatus=0 3
+
+[Install]
+WantedBy=suspend.target
 EOF
 
 # Reload systemd and enable services
