@@ -7,7 +7,7 @@ base_url="https://sourceforge.net/projects/makulu/files/lindoz-d/packages"
 
 # get list of available packages on his site
 echo "Fetching package list from Makulu Lindoz-D repository..."
-package_list=$(curl -s "$base_url/" | grep -oP 'href="\K.*?(?=")' | grep -E 'nvidia|kernel|suspend' | sort -u)
+package_list=$(curl -s "$base_url/" | grep -oP 'href="\K.*?(?=")' | grep -E '\.deb$' | grep -E 'nvidia|kernel|suspend' | sort -u)
 
 # are these packages available?
 if [ -z "$package_list" ]; then
@@ -17,21 +17,27 @@ fi
 
 # show available NVIDIA driver versions from his site
 echo "Available NVIDIA driver packages:"
-echo "$package_list" | grep 'nvidia' | nl
+nvidia_list=$(echo "$package_list" | grep 'nvidia')
+echo "$nvidia_list" | nl
 
+# choose driver
 read -p "Enter the number corresponding to the NVIDIA driver you wish to install: " driver_selection
 
-total_drivers=$(echo "$package_list" | grep 'nvidia' | wc -l)
+# get total count for validation
+total_drivers=$(echo "$nvidia_list" | wc -l)
 if ! [[ "$driver_selection" =~ ^[0-9]+$ ]] || [ "$driver_selection" -lt 1 ] || [ "$driver_selection" -gt "$total_drivers" ]; then
     echo "Invalid selection. Exiting."
     exit 1
 fi
 
-selected_driver=$(echo "$package_list" | grep 'nvidia' | sed -n "${driver_selection}p")
+selected_driver=$(echo "$nvidia_list" | sed -n "${driver_selection}p")
+
+# get version or keyword to match kernel/suspend
+version_hint=$(basename "$selected_driver" | cut -d'-' -f2)
 
 # sort the corresponding kernel and suspend packages
-kernel_package=$(echo "$package_list" | grep 'kernel' | grep "$(basename "$selected_driver" | cut -d'-' -f2)" | head -n 1)
-suspend_package=$(echo "$package_list" | grep 'suspend' | grep "$(basename "$selected_driver" | cut -d'-' -f2)" | head -n 1)
+kernel_package=$(echo "$package_list" | grep 'kernel' | grep "$version_hint" | head -n 1)
+suspend_package=$(echo "$package_list" | grep 'suspend' | grep "$version_hint" | head -n 1)
 
 # show what packages to be downloaded from his site
 echo "The following packages will be downloaded and installed:"
@@ -39,6 +45,7 @@ echo "NVIDIA Driver: $selected_driver"
 echo "Kernel Package: $kernel_package"
 echo "Suspend Package: $suspend_package"
 
+# make temp directory for download
 temp_dir=$(mktemp -d)
 cd "$temp_dir" || exit 1
 
@@ -48,6 +55,7 @@ wget "$base_url/$selected_driver/download" -O "$(basename "$selected_driver")"
 wget "$base_url/$kernel_package/download" -O "$(basename "$kernel_package")"
 wget "$base_url/$suspend_package/download" -O "$(basename "$suspend_package")"
 
+# install packages
 echo "Installing packages..."
 sudo dpkg -i *.deb
 
