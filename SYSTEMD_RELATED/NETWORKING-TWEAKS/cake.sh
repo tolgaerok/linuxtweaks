@@ -5,7 +5,7 @@
 # AUTHOR="Tolga Erok"
 # VERSION="V8"
 # DATE_CREATED="18/3/2025"
-# BUG_FIX="14/4/2025"
+# BUG_FIX="15/4/2025" : Typo error on creating wake service
 
 # Description: Systemd script to force CAKE onto any active network interface.
 
@@ -88,7 +88,7 @@ EOF
 
 # Create systemd service for suspend/wake
 echo -e "${BLUE}Creating systemd service file at ${service_file2}...${NC}"
-sudo bash -c "cat > $service_file2" <<EOF
+sudo tee "$service_file2" >/dev/null <<'EOF'
 [Unit]
 Description=Re-apply Tolga's V8.0 CAKE qdisc to $interface after suspend/wake
 After=network-online.target suspend.target
