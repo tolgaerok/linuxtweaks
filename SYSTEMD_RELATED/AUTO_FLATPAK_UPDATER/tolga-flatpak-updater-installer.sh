@@ -16,15 +16,16 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+unit_dir="$HOME/.config/systemd/user"
+service_file="$unit_dir/tolga-flatpak.service"
+timer_file="$unit_dir/tolga-flatpak.timer"
 failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
 help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/help.txt"
 help_dir="$unit_dir"
 icon_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/images/LinuxTweak.png"
 icon_dir="/usr/local/bin/LinuxTweaks/images"
 icon_path="$icon_dir/LinuxTweak.png"
-service_file="$unit_dir/tolga-flatpak.service"
-timer_file="$unit_dir/tolga-flatpak.timer"
-unit_dir="$HOME/.config/systemd/user"
+current_user=$(whoami)
 
 # ---- Flatpak Theming Tweaks - LinuxTweaks (Tolga)  ----
 flatpak override --user --env=USE_POINTER_VIEWPORT=1
@@ -46,15 +47,16 @@ usage() {
 install_service() {
     echo -e "${GREEN}[+] Installing Tolga's Flatpak updater...\n ${NC}"
 
-    # download linuxtweaks icon
     mkdir -p "$unit_dir"
-    sudo wget -O "$unit_dir" "$icon_URL"
-    sudo mkdir -p "$icon_dir"
+    mkdir -p "$icon_dir"
 
-    # download help file
     echo -e "${GREEN}[+] Downloading help file...\n${NC}"
     wget -O "$help_dir/help.txt" "$help_URL"
     chmod 644 "$help_dir/help.txt"
+
+    echo -e "${GREEN}[+] Downloading icon...\n ${NC}"
+    wget -O "$icon_path" "$icon_URL"
+    sudo chmod 644 "$icon_path"
 
     # create service
     cat <<EOF >"$service_file"
