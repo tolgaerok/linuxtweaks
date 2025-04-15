@@ -61,7 +61,7 @@ View service status:
 
 This command shows the current status and error logs.
 
-    systemctl --user status tolga-flatpak.service
+    systemctl --user status tolga-flatpak.service --no-pager
 
 If the service fails, you can check logs using:
 
