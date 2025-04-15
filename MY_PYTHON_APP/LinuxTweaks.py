@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # Tolga Erok
-# Version: 3.4 - Now supports `.service` and `.timer` units from both system & user level
+# Version: 4 - Now supports .service and .timer units from both system & user level
+
+# BUG FIX: 16/4/25
+# ✅ Fix: Override the close to hide the window instead of quitting the app!
+# 🔄 Fix: Set quitOnLastWindowClosed to False - typo error
 
 import sys
 import subprocess
@@ -24,7 +28,6 @@ icon_red = "❌️"
 
 
 def list_units(unit_type):
-    """Helper to fetch units of a given type (service or timer) from both scopes."""
     units = set()
 
     # System
@@ -60,9 +63,7 @@ def get_tolga_units():
 
 
 def check_status(unit):
-    """Determine if unit is system or user, and check its status."""
     try:
-        # Determine scope
         is_user = (
             subprocess.run(
                 ["systemctl", "--user", "status", unit], capture_output=True
@@ -153,10 +154,16 @@ class LinuxTweakMonitor(QWidget):
         subprocess.run(cmd + [action, unit], capture_output=True)
         self.refresh_status()
 
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+
 
 class LinuxTweakTray:
     def __init__(self):
         self.app = QApplication(sys.argv)
+        self.app.setQuitOnLastWindowClosed(False)
+
         self.tray = QSystemTrayIcon(QIcon(app_icon))
         self.menu = QMenu()
 
