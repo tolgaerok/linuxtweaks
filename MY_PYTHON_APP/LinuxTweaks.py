@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Tolga Erok
-# Version: 4 - Now supports `.service` and `.timer` units from both system & user level
+# Version: 3.4 - Now supports `.service` and `.timer` units from both system & user level
 
 import sys
 import subprocess
@@ -24,7 +24,7 @@ icon_red = "❌️"
 
 
 def list_units(unit_type):
-    """fetch units of a given type (service or timer)"""
+    """Helper to fetch units of a given type (service or timer) from both scopes."""
     units = set()
 
     # System
