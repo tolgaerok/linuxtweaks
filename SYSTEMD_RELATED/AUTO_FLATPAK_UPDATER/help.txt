@@ -53,7 +53,7 @@ How to Restart the Service:
 If the service fails or you need to manually restart it, you can use the following commands:
 
 1. current_userRestart the service immediatelycurrent_user:
-      systemctl --user restart tolga.service
+      systemctl --user restart tolga-flatpak.service
 
 =============================
 View service status:
@@ -61,11 +61,11 @@ View service status:
 
 This command shows the current status and error logs.
 
-    systemctl --user status tolga.service
+    systemctl --user status tolga-flatpak.service
 
 If the service fails, you can check logs using:
 
-    journalctl --user-unit=tolga.service --since "1 hour ago"
+    journalctl --user-unit=tolga-flatpak.service --since "1 hour ago"
 
 This will show any recent error messages and logs related to the service.
 
@@ -75,11 +75,11 @@ If you want to reload the systemd configuration (e.g., after editing unit files)
 
 If the service keeps failing, try enabling the service with this command:
 
-    systemctl --user enable --now tolga.service
+    systemctl --user enable --now tolga-flatpak.service
 
 To stop the service:
 
-    systemctl --user stop tolga.service
+    systemctl --user stop tolga-flatpak.service
 
 ============================= 
 Error Handling:
@@ -104,11 +104,11 @@ If you no longer want to use the service, you can remove it with the following c
 
 Disable and stop the service:
 
-        systemctl --user disable --now tolga.service
+        systemctl --user disable --now tolga-flatpak.service
 
 Remove the systemd unit files:
 
-    rm -f $HOME/.config/systemd/user/tolga.service
+    rm -f $HOME/.config/systemd/user/tolga-flatpak.service
     rm -f $HOME/.config/systemd/user/tolga.timer
 
 Remove the notification icon (optional):
