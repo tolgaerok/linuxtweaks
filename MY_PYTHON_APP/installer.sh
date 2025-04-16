@@ -132,14 +132,15 @@ run_app() {
 
     # start the app in the background
     # nohup python3 "$app_executable" >/dev/null 2>&1 &
-    sleep 2
+    sleep 5
 
     # kill it
     pkill -f "$app_executable"
     sleep 1
 
     # restart the app
-    nohup python3 "$app_executable" >/dev/null 2>&1 &
+    # nohup python3 "$app_executable" >/dev/null 2>&1 &
+    python3 "$app_executable" &
 }
 
 # Main menu
