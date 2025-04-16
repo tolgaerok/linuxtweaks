@@ -131,7 +131,7 @@ run_app() {
     echo "🚀 Running LinuxTweaks..."
 
     # start the app in the background
-    # nohup python3 "$app_executable" >/dev/null 2>&1 &
+    nohup python3 "$app_executable" >/dev/null 2>&1 &
     sleep 5
 
     # kill it
