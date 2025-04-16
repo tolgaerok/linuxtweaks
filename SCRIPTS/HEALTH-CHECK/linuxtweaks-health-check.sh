@@ -8,25 +8,25 @@
 
 clear
 
-# config
+# Config
 GREEN='\033[1;32m'
 BLUE='\033[1;34m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 RESET='\033[0m'
 
-# timestamp
+# Timestamp
 timestamp=$(date +"%Y-%m-%d %H:%M:%S %Z")
 
 #=================================================
 # Basic System Information
 #=================================================
 kernel=$(uname -r)
-distribution=$(lsb_release -d | awk -F"\t" '{print $2}')
+distribution=$(lsb_release -d 2>/dev/null | awk -F"\t" '{print $2}' || echo "Unknown")
 architecture=$(uname -m)
 cpu_model=$(lscpu | grep "Model name" | awk -F": " '{print $2}')
 total_ram=$(free -h | awk '/Mem:/ {print $2}')
-session_type=$(loginctl | grep -m1 "Session" | awk '{print $2}')
+session_type=$(loginctl show-session $(loginctl | grep -m1 "$(whoami)" | awk '{print $1}') -p Type | cut -d= -f2)
 desktop_environment=${XDG_CURRENT_DESKTOP:-"Unknown"}
 uptime=$(uptime -p)
 load_avg=$(uptime | awk -F'load average:' '{print $2}' | sed 's/^ //')
@@ -44,7 +44,7 @@ fi
 #=================================================
 # System Logs
 #=================================================
-systemd_errors=$(journalctl -p 3 -n 20)
+systemd_errors=$(journalctl -p 3 -n 20 --no-pager)
 
 #=================================================
 # Network Details
@@ -64,7 +64,7 @@ done
 #=================================================
 # SMART Status
 #=================================================
-smart_status=$(sudo smartctl -a /dev/sda | grep "SMART overall-health self-assessment test result")
+smart_status=$(sudo smartctl -H /dev/sda 2>/dev/null | grep "SMART overall-health self-assessment test result")
 
 #=================================================
 # USB Devices
@@ -79,17 +79,17 @@ disk_info=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE)
 #=================================================
 # Memory Details
 #=================================================
-mem_details=$(sudo dmidecode --type 17 | grep -E "Size:|Speed:|Type:" | grep -v "No Module Installed")
+mem_details=$(sudo dmidecode --type 17 2>/dev/null | grep -E "Size:|Speed:|Type:" | grep -v "No Module Installed")
 
 #=================================================
 # Systemd Timers
 #=================================================
-timers_info=$(systemctl list-timers --all)
+timers_info=$(systemctl list-timers --all --no-pager)
 
 #=================================================
 # Systemd Services
 #=================================================
-services_info=$(systemctl list-units --type=service --all)
+services_info=$(systemctl list-units --type=service --state=running --no-pager)
 
 #=================================================
 # Report Output
@@ -97,10 +97,10 @@ services_info=$(systemctl list-units --type=service --all)
 
 section() {
     echo ""
-    echo -e "${GREEN}🛠️ (ツ)_/¯${RESET}"
-    echo -e "${RED}=================================================${RESET}"
-    echo -e "   $1"
-    echo -e "${RED}=================================================${RESET}"
+    echo -e " 🛠️${GREEN} (ツ)_/¯"
+    echo -e "${GREEN}================================================="
+    echo -e "${BLUE} $1${GREEN}"
+    echo -e "=================================================${RESET}"
 }
 
 field() {
@@ -134,9 +134,6 @@ echo -e "${YELLOW}$ping_results${RESET}"
 section "Network Configuration"
 field "Routing Table" ""
 echo -e "${YELLOW}$network_routes${RESET}"
-echo ""
-field "Congestion Control" ""
-sysctl net.ipv4.tcp_congestion_control
 
 section "DNS Configuration (/etc/resolv.conf)"
 echo -e "${YELLOW}$dns_config${RESET}"
@@ -151,10 +148,15 @@ section "Disk Information"
 echo -e "${YELLOW}$disk_info${RESET}"
 
 section "Swap Information"
-sudo swapon --show
+swap_info=$(sudo swapon --show)
+echo -e "${YELLOW}$swap_info${RESET}"
 
 section "Memory Module Details"
 echo -e "${YELLOW}$mem_details${RESET}"
+
+section "TCP Congestion Control"
+congestion_control=$(sysctl net.ipv4.tcp_congestion_control)
+echo -e "${YELLOW}$congestion_control${RESET}"
 
 section "Systemd Timers"
 echo -e "${YELLOW}$timers_info${RESET}"
