@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-# VERSION 3.0a
+# VERSION 4
 
 # exit if script is run as root or with sudo
 if [ "$(id -u)" -eq 0 ]; then
@@ -11,7 +11,7 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 # TESTING
-#version="3.0a"
+#version="4"
 #if [ "$1" == "--version" ]; then
 #    echo "Tolga's Flatpak Updater $version"
 #    exit 0
