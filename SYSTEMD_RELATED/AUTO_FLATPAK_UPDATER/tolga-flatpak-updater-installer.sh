@@ -10,6 +10,14 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
+# TESTING
+#version="3.0a"
+#if [ "$1" == "--version" ]; then
+#    echo "Tolga's Flatpak Updater $version"
+#    exit 0
+#fi
+
+
 # === configuration ===
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -17,8 +25,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 unit_dir="$HOME/.config/systemd/user"
+unit_dir_root="/etc/systemd/system"
 service_file="$unit_dir/tolga-flatpak.service"
 timer_file="$unit_dir/tolga-flatpak.timer"
+wake_file="$unit_dir_root/tolga-flatpak-wake.service"
 failed_service_file="$unit_dir/tolga-flatpak-failed-notify.service"
 help_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/help.txt"
 help_dir="$unit_dir"
@@ -32,8 +42,6 @@ flatpak override --user --env=USE_POINTER_VIEWPORT=1
 flatpak override --user --filesystem=xdg-config/gtk-4.0:ro
 flatpak override --user --unset-env=QT_QPA_PLATFORMTHEME
 sudo timedatectl set-ntp true
-
-current_user=$(whoami)
 
 # === show Usage (BETA) ===
 # i.e     ./example-installer.sh install
@@ -52,6 +60,7 @@ install_service() {
 
     echo -e "${GREEN}[+] Downloading help file...\n${NC}"
     wget -O "$help_dir/help.txt" "$help_URL"
+    sudo chown "$USER:$USER" "$icon_path" "$help_dir/help.txt"
     chmod 644 "$help_dir/help.txt"
 
     echo -e "${GREEN}[+] Downloading icon...\n ${NC}"
@@ -100,13 +109,30 @@ EOF
 Description=Run Tolga's Flatpak Update Script daily
 
 [Timer]
-OnCalendar=daily
+# OnCalendar=daily
+OnBootSec=5min
 RandomizedDelaySec=10min
 Persistent=true
 Unit=tolga-flatpak.service
 
 [Install]
 WantedBy=timers.target
+EOF
+
+    # create wake
+    cat <<EOF >"$wake_file"
+[Unit]
+Description=Trigger user flatpak update after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+# ExecStart=/bin/bash -c 'su - "$current_user" -c "systemctl --user start tolga-flatpak.service"'
+ExecStart=/bin/bash -c 'su - "$USER" -c "systemctl --user start tolga-flatpak.service"'
+
+
+[Install]
+WantedBy=suspend.target
 EOF
 
     chmod 755 "$service_file" "$timer_file"
@@ -119,6 +145,10 @@ EOF
     # systemctl --user daemon-reexec
     systemctl --user daemon-reload
     systemctl --user enable --now tolga-flatpak.timer
+
+    sudo systemctl enable tolga-flatpak-wake.service
+    sudo systemctl start tolga-flatpak-wake.service
+
     systemctl --user start tolga-flatpak.timer
     # systemctl --user start tolga-flatpak-failed-notify.service
     systemctl --user start tolga-flatpak.service
@@ -148,6 +178,8 @@ remove_service() {
     # sudo rmdir --ignore-fail-on-non-empty "$icon_dir"
 
     echo -e "${RED}\n[-] Tolga's updater has been fully removed.\n ${NC}"
+    systemctl --user is-active --quiet tolga-flatpak.timer && systemctl --user disable --now tolga-flatpak.timer
+
     sleep 5
 }
 

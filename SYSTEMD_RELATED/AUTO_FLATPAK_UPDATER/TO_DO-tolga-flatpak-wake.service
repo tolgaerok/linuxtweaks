@@ -1,0 +1,12 @@
+[Unit]
+Description=Trigger user flatpak update after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+# ExecStart=/bin/bash -c '/usr/bin/runuser -l tolga -c "systemctl --user restart tolga-flatpak.timer"'
+# ExecStart=/usr/bin/runuser -l tolga -c 'XDG_RUNTIME_DIR="/run/user/$(id -u tolga)" systemctl --user restart tolga-flatpak.timer'
+ExecStart=/bin/bash -c 'su - tolga -c "systemctl --user start tolga-flatpak.service"'
+
+[Install]
+WantedBy=suspend.target
