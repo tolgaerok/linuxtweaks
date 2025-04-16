@@ -109,22 +109,22 @@ Unit=tolga-flatpak.service
 WantedBy=timers.target
 EOF
 
-    chmod 644 "$service_file" "$timer_file"
-
-    echo -e "${GREEN}[+] Downloading icon...\n ${NC}"
-    sudo wget -O "$icon_path" "$icon_URL"
-
-    sudo chmod 644 "$icon_path"
+    chmod 755 "$service_file" "$timer_file"
+    chmod 644 "$failed_service_file"
 
     echo -en "${YELLOW}[+] Enabling linger and reloading systemd...standby....\n ${NC}"
+
     sudo loginctl enable-linger "$current_user"
-    systemctl --user daemon-reexec
+
+    # systemctl --user daemon-reexec
     systemctl --user daemon-reload
     systemctl --user enable --now tolga-flatpak.timer
-    systemctl --user start tolga-flatpak-failed-notify.service
+    systemctl --user start tolga-flatpak.timer
+    # systemctl --user start tolga-flatpak-failed-notify.service
     systemctl --user start tolga-flatpak.service
     systemctl --user status tolga-flatpak-failed-notify.service --no-pager
     systemctl --user status tolga-flatpak.service --no-pager
+    # systemctl --user daemon-reload
 
     echo -en "${YELLOW}[+] Timer status:\n ${NC}"
     # systemctl --user list-timers | grep tolga
