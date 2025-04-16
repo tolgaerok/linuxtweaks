@@ -8,12 +8,14 @@
 
 clear
 
-# Colors
+# config
 GREEN='\033[1;32m'
+BLUE='\033[1;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 RESET='\033[0m'
 
-# Timestamp
+# timestamp
 timestamp=$(date +"%Y-%m-%d %H:%M:%S %Z")
 
 #=================================================
@@ -42,7 +44,7 @@ fi
 #=================================================
 # System Logs
 #=================================================
-systemd_errors=$(journalctl -p 3 -n 100)
+systemd_errors=$(journalctl -p 3 -n 20)
 
 #=================================================
 # Network Details
@@ -95,14 +97,14 @@ services_info=$(systemctl list-units --type=service --all)
 
 section() {
     echo ""
-    echo -e "${GREEN}🛠️ (ツ)_/¯"
-    echo -e "================================================="
+    echo -e "${GREEN}🛠️ (ツ)_/¯${RESET}"
+    echo -e "${RED}=================================================${RESET}"
     echo -e "$1"
-    echo -e "=================================================${RESET}"
+    echo -e "${RED}=================================================${RESET}"
 }
 
 field() {
-    echo -e "${GREEN}- $1:${RESET} ${YELLOW}$2${RESET}"
+    echo -e "${BLUE}- $1:${RESET} ${YELLOW}$2${RESET}"
 }
 
 section "LinuxTweaks - Startup System Health Check Report"
@@ -123,7 +125,7 @@ section "Boot Analysis"
 field "Startup finished in" "$startup_time"
 field "Graphical target reached after" "$graphical_target_time"
 
-section "Systemd Journal Errors (Last 100)"
+section "Systemd Journal Errors (Last 20)"
 echo -e "${YELLOW}$systemd_errors${RESET}"
 
 section "Connectivity Test (Ping DNS Servers)"
@@ -132,6 +134,9 @@ echo -e "${YELLOW}$ping_results${RESET}"
 section "Network Configuration"
 field "Routing Table" ""
 echo -e "${YELLOW}$network_routes${RESET}"
+echo ""
+field "Congestion Control" ""
+sysctl net.ipv4.tcp_congestion_control
 
 section "DNS Configuration (/etc/resolv.conf)"
 echo -e "${YELLOW}$dns_config${RESET}"
@@ -144,6 +149,9 @@ echo -e "${YELLOW}$usb_info${RESET}"
 
 section "Disk Information"
 echo -e "${YELLOW}$disk_info${RESET}"
+
+section "Swap Information"
+sudo swapon --show
 
 section "Memory Module Details"
 echo -e "${YELLOW}$mem_details${RESET}"
