@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Tolga Erok
 # 27-3-2025
-# Version: 3.3
+# Version: 4.0
+
+# BUG FIX: 16/4/25 kill and then re run app after install to ensure proper execution
 
 # Dependency Checker, autostarter, and installer with symlink for my LinuxTweakTray App
 # curl -sL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/MY_PYTHON_APP/installer.sh | sudo bash
@@ -22,7 +24,7 @@ install_dependencies() {
         install_cmd="sudo dnf install -y"
         check_cmd="dnf list installed"
     elif command -v pacman &>/dev/null; then
-        packages=("python" "git" "python-pyqt6" )
+        packages=("python" "git" "python-pyqt6")
         install_cmd="sudo pacman -S --noconfirm"
         check_cmd="pacman -Q"
     else
@@ -110,7 +112,7 @@ X-GNOME-Autostart-enabled=true
 EOL
     chmod +x "$desktop_file"
 
-    # Get the actual non-root user
+    # get the actual non-root user
     logged_in_user=$(logname 2>/dev/null || echo $SUDO_USER)
     logged_in_user_desktop="/home/$logged_in_user/Desktop"
 
@@ -125,10 +127,18 @@ EOL
     fi
 }
 
-# Run the app automatically after installation
 run_app() {
     echo "🚀 Running LinuxTweaks..."
-    # Execute the Python app in the background
+
+    # start the app in the background
+    nohup python3 "$app_executable" >/dev/null 2>&1 &
+    sleep 2
+
+    # kill it
+    pkill -f "$app_executable"
+    sleep 1
+
+    # restart the app
     nohup python3 "$app_executable" >/dev/null 2>&1 &
 }
 
@@ -139,7 +149,7 @@ deploy_app
 setup_sysmlink
 setup_autostart
 
-# Run the app after installation
+# run the app after installation
 run_app
 
 echo "✅ LinuxTweaks installed, symlinked, added to autostart, and is now running."
