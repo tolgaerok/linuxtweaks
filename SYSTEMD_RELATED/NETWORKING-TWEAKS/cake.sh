@@ -6,6 +6,7 @@
 # VERSION="V8"
 # DATE_CREATED="18/3/2025"
 # BUG_FIX="15/4/2025" : Typo error on creating wake service
+# BUG_FIX="16/4/2025" : fixed detecting package manager more rebust
 
 # Description: Systemd script to force CAKE onto any active network interface.
 
@@ -14,23 +15,28 @@ BLUE="\033[0;34m"
 RED="\033[0;31m"
 NC="\033[0m"
 
-# Detect package manager
+# which package manager and set install command for `tc`
 if command -v dnf &>/dev/null; then
-    PM="dnf"
     INSTALL_CMD="sudo dnf install -y iproute-tc"
 elif command -v pacman &>/dev/null; then
-    PM="pacman"
     INSTALL_CMD="sudo pacman -Sy --needed iproute2"
 else
-    echo -e "${RED}Unsupported distribution. Exiting...${NC}"
+    echo -e "${RED}❌ Unsupported distribution. Exiting...${NC}"
     exit 1
 fi
 
-# Check and install `tc`
+# check for `tc` command - install if itsmissing
 if ! command -v tc &>/dev/null; then
-    echo -e "${YELLOW}tc command not found, installing required package...${NC}"
-    $INSTALL_CMD
-    hash -r
+    echo -e "${YELLOW}⚠️  'tc' command not found. Installing required package...${NC}"
+    if $INSTALL_CMD; then
+        echo -e "${GREEN}✅ 'tc' installed successfully.${NC}"
+        hash -r
+    else
+        echo -e "${RED}❌ Failed to install 'tc'. Please install it manually.${NC}"
+        exit 1
+    fi
+else
+    echo -e "${GREEN}✅ 'tc' is already installed.${NC}"
 fi
 
 # detect tc path
@@ -40,7 +46,7 @@ if [ -z "$TC_PATH" ]; then
     exit 1
 fi
 
-# Detect active network interface
+# detect active network interface
 interface=$(ip -o link show | awk -F': ' '
 $2 ~ /wlp|wlo|wlx|eth|eno/ && /UP/ && !/NO-CARRIER/ {print $2; exit}')
 
