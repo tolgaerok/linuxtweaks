@@ -15,7 +15,7 @@ get_latest_version() {
     curl -sL "$VERSION_URL" | tr -d '\r'
 }
 
-# 🎯 compare versions using sort -V 🔥
+# 🎯 compare versions 🔥
 is_outdated() {
     local current=$1
     local latest=$2
