@@ -2,6 +2,7 @@
 # Tolga Erok
 # 11/4/25
 VERSION="4.1a"
+VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"
 
 # exit if script is run as root or with sudo
 if [ "$(id -u)" -eq 0 ]; then
@@ -16,11 +17,20 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# in terminal type:  ./tolga-flatpak-updater-installer.sh --version
-# you'll get       :   Tolga's Flatpak Updater 4.1a
+get_latest_version() {
+    curl -s "$VERSION_URL"
+}
+
+# check if the user has the latest version
+current_version=$VERSION
+latest_version=$(get_latest_version)
+
 if [ "$1" == "--version" ]; then
-    echo -e "\n Tolga's Flatpak Updater Version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
+    [ "$current_version" != "$latest_version" ]
+    echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
     exit 0
+else
+    echo -e "\nYou are using the latest version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
 fi
 
 unit_dir="$HOME/.config/systemd/user"
