@@ -101,7 +101,7 @@ install_service() {
     # create service
     cat <<EOF >"$service_file"
 [Unit]
-Description=Tolga's Flatpak Automatic Update and Notification VER:2.0A
+Description=Tolga's Flatpak Automatic Update and Notification VER: 5.0
 Documentation=file:///home/tolga/.config/systemd/user/help.txt
 OnFailure=tolga-flatpak-failed-notify.service
 Wants=network-online.target
@@ -124,7 +124,7 @@ EOF
     # create failed service
     cat <<EOF >"$failed_service_file"
 [Unit]
-Description=Flatpak Update Failure Notification
+Description=Flatpak Update Failure Notification VER: 5.0
 
 [Service]
 Type=oneshot
@@ -134,7 +134,7 @@ EOF
     # create timer
     cat <<EOF >"$timer_file"
 [Unit]
-Description=Run Tolga's Flatpak Update Script daily
+Description=Run Tolga's Flatpak Update Script daily VER: 5.0
 
 [Timer]
 # OnCalendar=daily
@@ -150,7 +150,7 @@ EOF
     # create wake
     cat <<EOF >"$wake_file"
 [Unit]
-Description=Trigger user flatpak update after resume
+Description=Trigger user flatpak update after resume VER: 5.0
 After=suspend.target
 
 [Service]
