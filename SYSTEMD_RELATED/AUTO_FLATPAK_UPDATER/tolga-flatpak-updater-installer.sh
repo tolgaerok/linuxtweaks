@@ -1,64 +1,60 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-VERSION="4.1a"  # Current local version of the script
-VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"  # URL to the version.txt file
 
-# Exit if the script is run as root or with sudo
-if [ "$(id -u)" -eq 0 ]; then
-    echo -e "\033[0;31m[!] Do NOT run this script as root or with sudo.\033[0m"
-    echo -e "\033[0;33m[!] Please run as a regular user. Sudo will be used internally only when needed.\033[0m"
-    exit 1
-fi
+VERSION="4.9"
+VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"
 
-# === configuration ===
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# Function to fetch the latest version from GitHub
+# 🔥 fetch the latest version from my GitHub
 get_latest_version() {
-    curl -s "$VERSION_URL"
+    curl -sL "$VERSION_URL" | tr -d '\r'
 }
 
-# Function to compare versions (ignoring any non-numeric characters)
-compare_versions() {
-    version1=$1
-    version2=$2
-    # Strip non-numeric characters for comparison
-    version1_clean=$(echo "$version1" | sed 's/[^0-9.]//g')
-    version2_clean=$(echo "$version2" | sed 's/[^0-9.]//g')
-
-    # Compare versions numerically
-    if [ "$(echo -e "$version1_clean\n$version2_clean" | sort -V | head -n1)" != "$version1_clean" ]; then
-        return 1  # version1 is less than version2 (outdated)
-    else
-        return 0  # version1 is equal or newer
-    fi
+# 🎯 compare versions using sort -V 🔥
+is_outdated() {
+    local current=$1
+    local latest=$2
+    [[ "$(printf '%s\n' "$current" "$latest" | sort -V | head -n1)" != "$latest" ]]
 }
 
-# Get the current and latest versions
-current_version=$VERSION
-latest_version=$(get_latest_version)
+# 🎯 skip version check if told to 🔥
+if [ "$1" == "--skip-version" ]; then
+    shift
+    SKIP_VERSION_CHECK="yes"
+fi
 
-# Check if the user requested the version info
-if [ "$1" == "--version" ]; then
-    if compare_versions "$current_version" "$latest_version"; then
-        echo -e "\033[0;32m[ ✔️] You are using the latest version ($current_version).\033[0m"
+if [ "$1" == "--version" ] && [ "$SKIP_VERSION_CHECK" != "yes" ]; then
+    latest_version=$(get_latest_version)
+
+    if is_outdated "$VERSION" "$latest_version"; then
+        echo -e "${YELLOW}[ ❌ ] Your version ($VERSION) is outdated. Latest is $latest_version.${NC}"
+        echo -ne "${YELLOW}\nWould you like to download and run the latest installer script now? (y/n): ${NC}"
+        read -r answer
+        if [[ "$answer" == [Yy]* ]]; then
+            TMP_SCRIPT="/tmp/tolga-flatpak-updater-installer.sh"
+            echo -e "${GREEN}[+] Downloading the latest installer to $TMP_SCRIPT...${NC}"
+            curl -sL "https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/tolga-flatpak-updater-installer.sh" -o "$TMP_SCRIPT"
+            chmod +x "$TMP_SCRIPT"
+            echo -e "${GREEN}[+] Running the installer...${NC}"
+            bash "$TMP_SCRIPT"
+            rm -f "$TMP_SCRIPT"
+            exit 0
+        else
+            echo -e "${YELLOW}[!] Update skipped by user.${NC}"
+            exit 1
+        fi
     else
-        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
-    fi
-    exit 0
-else
-    if compare_versions "$current_version" "$latest_version"; then
-        echo -e "\nYou are using the latest version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
-    else
-        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
+        echo -e "${GREEN}[ ✔ ] You are using the latest version ($VERSION).${NC}"
+        exit 0
     fi
 fi
 
-
+# varibles
 unit_dir="$HOME/.config/systemd/user"
 unit_dir_root="/etc/systemd/system"
 service_file="$unit_dir/tolga-flatpak.service"
@@ -95,8 +91,8 @@ install_service() {
 
     echo -e "${GREEN}[+] Downloading help file...\n${NC}"
     wget -O "$help_dir/help.txt" "$help_URL"
-    sudo chown "$USER:$USER" "$icon_path" "$help_dir/help.txt"
     chmod 644 "$help_dir/help.txt"
+    sudo chown "$USER:$USER" "$icon_path" "$help_dir/help.txt"
 
     echo -e "${GREEN}[+] Downloading icon...\n ${NC}"
     wget -O "$icon_path" "$icon_URL"
@@ -197,29 +193,55 @@ EOF
 
 # === remove Function ===
 remove_service() {
-    echo -e "${RED}\n[-] Removing Tolga's Flatpak updater...\n ${NC}"
+    echo -e "${RED}\n[-] Removing Tolga's Flatpak updater...\n${NC}"
 
-    systemctl --user disable --now tolga-flatpak.timer tolga-flatpak.service tolga-flatpak-failed-notify.service
+    # Stop and disable user-level services
+    systemctl --user disable --now \
+        tolga-flatpak.timer \
+        tolga-flatpak.service \
+        tolga-flatpak-failed-notify.service
+
+    # Stop and disable the wake service (system-level)
+    sudo systemctl disable --now tolga-flatpak-wake.service
+
+    # Reload systemd
     systemctl --user daemon-reload
+    sudo systemctl daemon-reexec
 
-    echo -e "${RED}\n[-] Removing systemd unit files...\n ${NC}"
-    rm -f "$service_file" "$timer_file"
+    echo -e "${RED}\n[-] Removing systemd unit files...\n${NC}"
+    rm -f "$service_file" "$timer_file" "$failed_service_file"
+    sudo rm -f "$wake_file"
 
-    # echo "[-] Optionally removing icon and directory..."
+    # Optionally remove icon and help file
     # sudo rm -f "$icon_path"
+    # rm -f "$help_dir/help.txt"
     # sudo rmdir --ignore-fail-on-non-empty "$icon_dir"
 
-    echo -e "${RED}\n[-] Tolga's updater has been fully removed.\n ${NC}"
-    systemctl --user is-active --quiet tolga-flatpak.timer && systemctl --user disable --now tolga-flatpak.timer
+    echo -e "${RED}\n[-] Tolga's updater has been fully removed.\n${NC}"
 
     sleep 5
 }
+
+# === Entry Point ===
+# i.e     ./example-installer.sh install
+# i.e     ./example-installer.sh remove
+case "$1" in
+install)
+    install_service
+    ;;
+remove)
+    remove_service
+    ;;
+*)
+    usage
+    ;;
+esac
 
 # === Menu ===
 while true; do
     clear
     echo -e ""
-    echo -e "${GREEN}=== Tolga's Auto Flatpak Updater ===${NC}"
+    echo -e "${GREEN}=== Tolga's Auto Flatpak Updater v$VERSION ===${NC}"
     echo -e "${GREEN}1)${YELLOW} Install${NC}"
     echo -e "${GREEN}2)${YELLOW} Remove${NC}"
     echo -e "${RED}3) Exit${NC}"
@@ -251,18 +273,3 @@ while true; do
         ;;
     esac
 done
-
-# === Entry Point ===
-# i.e     ./example-installer.sh install
-# i.e     ./example-installer.sh remove
-case "$1" in
-install)
-    install_service
-    ;;
-remove)
-    remove_service
-    ;;
-*)
-    usage
-    ;;
-esac
