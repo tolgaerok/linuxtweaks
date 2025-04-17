@@ -1,10 +1,10 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-VERSION="4.1a"
-VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"
+VERSION="4.1a"                                                                                                              # Current local version of the script
+VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt" # URL to the version.txt file
 
-# exit if script is run as root or with sudo
+# Exit if the script is run as root or with sudo
 if [ "$(id -u)" -eq 0 ]; then
     echo -e "\033[0;31m[!] Do NOT run this script as root or with sudo.\033[0m"
     echo -e "\033[0;33m[!] Please run as a regular user. Sudo will be used internally only when needed.\033[0m"
@@ -17,20 +17,25 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+# Function to fetch the latest version from GitHub
 get_latest_version() {
     curl -s "$VERSION_URL"
 }
 
-# check if the user has the latest version
-current_version=$VERSION
-latest_version=$(get_latest_version)
-
+# Check if the user requested the version info
 if [ "$1" == "--version" ]; then
-    [ "$current_version" != "$latest_version" ]
-    echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
-    exit 0
+    if [ "$current_version" != "$latest_version" ]; then
+        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
+        exit 0
+    else
+        echo -e "\033[0;32m[ ✔️] You are using the latest version ($current_version).\033[0m"
+    fi
 else
-    echo -e "\nYou are using the latest version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
+    if [ "$current_version" != "$latest_version" ]; then
+        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
+    else
+        echo -e "\nYou are using the latest version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
+    fi
 fi
 
 unit_dir="$HOME/.config/systemd/user"
