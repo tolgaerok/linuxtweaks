@@ -5,8 +5,8 @@ sudo chmod 644 /usr/local/bin/LinuxTweaks/images/LinuxTweak.png
 
 systemctl --user daemon-reexec
 systemctl --user daemon-reload
-systemctl --user enable --now tolga.timer
-systemctl --user start tolga.service
-systemctl --user status tolga.timer
+systemctl --user enable --now tolga-flatpak.timer
+systemctl --user start tolga-flatpak.service
+systemctl --user status tolga-flatpak.timer
 sudo loginctl enable-linger tolga
 systemctl --user list-timers | grep tolga

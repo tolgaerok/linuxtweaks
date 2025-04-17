@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-# VERSION 4
+VERSION="4.1a"
 
 # exit if script is run as root or with sudo
 if [ "$(id -u)" -eq 0 ]; then
@@ -10,18 +10,18 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-# TESTING
-#version="4"
-#if [ "$1" == "--version" ]; then
-#    echo "Tolga's Flatpak Updater $version"
-#    exit 0
-#fi
-
 # === configuration ===
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
+
+# in terminal type:  ./tolga-flatpak-updater-installer.sh --version
+# you'll get       :   Tolga's Flatpak Updater 4.1a
+if [ "$1" == "--version" ]; then
+    echo -e "\n Tolga's Flatpak Updater Version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
+    exit 0
+fi
 
 unit_dir="$HOME/.config/systemd/user"
 unit_dir_root="/etc/systemd/system"
@@ -70,15 +70,16 @@ install_service() {
     cat <<EOF >"$service_file"
 [Unit]
 Description=Tolga's Flatpak Automatic Update and Notification VER:2.0A
-Documentation=file://$unit_dir/help.txt
+Documentation=file:///home/tolga/.config/systemd/user/help.txt
 OnFailure=tolga-flatpak-failed-notify.service
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=oneshot
-# ExecCondition=/bin/bash -c '[[ "\$(busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager Metered | cut -c 3-)" == @(2|4) ]]'
-ExecStart=/bin/bash -c "/usr/bin/notify-send \"\" \"🌐  Checking for flatpak cruft\" --app-name=\"🔧  Flatpak Maintenance\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system uninstall --unused -y --noninteractive && sleep 5 && /usr/bin/notify-send \"\" \"📡  Checking for flatpak UPDATES\" --app-name=\"📡  Flatpak Updater\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system update -y --noninteractive && sleep 5 && /usr/bin/notify-send \"\" \"💻  Checking and repairing Flatpaks\" --app-name=\"🔧  Flatpak Repair Service\" -i $icon_path -u NORMAL && /usr/bin/flatpak --system repair && sleep 5 && /usr/bin/notify-send \"Flatpaks checked, fixed and updated\" \"✅  Your computer is ready!\" --app-name=\"💻  Flatpak Update Service\" -i $icon_path -u NORMAL"
+ExecCondition=/bin/bash -c '[[ "$(busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager Metered | cut -c 3-)" == @(2|4) ]]'
+ExecStart=/bin/bash -c '/usr/bin/notify-send "" "🌐  Checking for flatpak cruft" --app-name="🔧  Flatpak Maintenance" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png -u NORMAL && /usr/bin/flatpak --system uninstall --unused -y --noninteractive && sleep 5 && /usr/bin/notify-send "" "📡  Checking for flatpak UPDATES" --app-name="📡  Flatpak Updater" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png -u NORMAL && /usr/bin/flatpak --system update -y --noninteractive && sleep 5 && /usr/bin/notify-send "" "💻  Checking and repairing Flatpaks" --app-name="🔧  Flatpak Repair Service" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png -u NORMAL && /usr/bin/flatpak --system repair && sleep 5 && /usr/bin/notify-send "Flatpaks checked, fixed and updated" "✅  Your computer is ready!" --app-name="💻  Flatpak Update Service" -i /usr/local/bin/LinuxTweaks/images/LinuxTweak.png -u NORMAL'
+
 
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 
@@ -86,10 +87,6 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0
 TimeoutStartSec=15min
 TimeoutStopSec=30s
 TimeoutStopFailureMode=kill
-
-StandardError=journal
-StandardOutput=journal
-SuccessExitStatus=0 3
 EOF
 
     # create failed service
