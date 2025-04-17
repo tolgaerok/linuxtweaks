@@ -1,8 +1,8 @@
 #!/bin/bash
 # Tolga Erok
 # 11/4/25
-VERSION="4.1a"                                                                                                              # Current local version of the script
-VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt" # URL to the version.txt file
+VERSION="4.1a"  # Current local version of the script
+VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"  # URL to the version.txt file
 
 # Exit if the script is run as root or with sudo
 if [ "$(id -u)" -eq 0 ]; then
@@ -22,21 +22,42 @@ get_latest_version() {
     curl -s "$VERSION_URL"
 }
 
+# Function to compare versions (ignoring any non-numeric characters)
+compare_versions() {
+    version1=$1
+    version2=$2
+    # Strip non-numeric characters for comparison
+    version1_clean=$(echo "$version1" | sed 's/[^0-9.]//g')
+    version2_clean=$(echo "$version2" | sed 's/[^0-9.]//g')
+
+    # Compare versions numerically
+    if [ "$(echo -e "$version1_clean\n$version2_clean" | sort -V | head -n1)" != "$version1_clean" ]; then
+        return 1  # version1 is less than version2 (outdated)
+    else
+        return 0  # version1 is equal or newer
+    fi
+}
+
+# Get the current and latest versions
+current_version=$VERSION
+latest_version=$(get_latest_version)
+
 # Check if the user requested the version info
 if [ "$1" == "--version" ]; then
-    if [ "$current_version" != "$latest_version" ]; then
-        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
-        exit 0
-    else
+    if compare_versions "$current_version" "$latest_version"; then
         echo -e "\033[0;32m[ ✔️] You are using the latest version ($current_version).\033[0m"
-    fi
-else
-    if [ "$current_version" != "$latest_version" ]; then
-        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
     else
+        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
+    fi
+    exit 0
+else
+    if compare_versions "$current_version" "$latest_version"; then
         echo -e "\nYou are using the latest version: ${GREEN}[ ✔️]${NC}${YELLOW} $VERSION \n${NC}"
+    else
+        echo -e "\033[0;33m[ ❌] Your version ($current_version) is outdated. The latest version is $latest_version. Please update.\033[0m"
     fi
 fi
+
 
 unit_dir="$HOME/.config/systemd/user"
 unit_dir_root="/etc/systemd/system"
