@@ -2,8 +2,8 @@
 # Tolga Erok
 # 11/4/25
 
-VERSION="4.9"
-VERSION_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"
+version="4.9"
+version_URL="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/SYSTEMD_RELATED/AUTO_FLATPAK_UPDATER/version.txt"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -12,7 +12,7 @@ NC='\033[0m'
 
 # 🔥 fetch the latest version from my GitHub
 get_latest_version() {
-    curl -sL "$VERSION_URL" | tr -d '\r'
+    curl -sL "$version_URL" | tr -d '\r'
 }
 
 # 🎯 compare versions 🔥
@@ -25,14 +25,14 @@ is_outdated() {
 # 🎯 skip version check if told to 🔥
 if [ "$1" == "--skip-version" ]; then
     shift
-    SKIP_VERSION_CHECK="yes"
+    skip_version_check="yes"
 fi
 
-if [ "$1" == "--version" ] && [ "$SKIP_VERSION_CHECK" != "yes" ]; then
+if [ "$1" == "--version" ] && [ "$skip_version_check" != "yes" ]; then
     latest_version=$(get_latest_version)
 
-    if is_outdated "$VERSION" "$latest_version"; then
-        echo -e "${YELLOW}[ ❌ ] Your version ($VERSION) is outdated. Latest is $latest_version.${NC}"
+    if is_outdated "$version" "$latest_version"; then
+        echo -e "${YELLOW}[ ❌ ] Your version ($version) is outdated. Latest is $latest_version.${NC}"
         echo -ne "${YELLOW}\nWould you like to download and run the latest installer script now? (y/n): ${NC}"
         read -r answer
         if [[ "$answer" == [Yy]* ]]; then
@@ -49,7 +49,7 @@ if [ "$1" == "--version" ] && [ "$SKIP_VERSION_CHECK" != "yes" ]; then
             exit 1
         fi
     else
-        echo -e "${GREEN}[ ✔ ] You are using the latest version ($VERSION).${NC}"
+        echo -e "${GREEN}[ ✔ ] You are using the latest version ($version).${NC}"
         exit 0
     fi
 fi
@@ -241,7 +241,7 @@ esac
 while true; do
     clear
     echo -e ""
-    echo -e "${GREEN}=== Tolga's Auto Flatpak Updater v$VERSION ===${NC}"
+    echo -e "${GREEN}=== Tolga's Auto Flatpak Updater v$version ===${NC}"
     echo -e "${GREEN}1)${YELLOW} Install${NC}"
     echo -e "${GREEN}2)${YELLOW} Remove${NC}"
     echo -e "${RED}3) Exit${NC}"
