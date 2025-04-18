@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # Tolga Erok
 # Version: 4 - Now supports .service and .timer units from both system & user level
 
