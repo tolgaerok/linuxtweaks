@@ -164,22 +164,22 @@ code --install-extension ms-azuretools.vscode-docker
 
 ## Main Menu .
 
-| Tweak                           | Tested | Pass | Link                                                                                                                 |
-| ------------------------------- | :----: | :--: | -------------------------------------------------------------------------------------------------------------------- |
-| 📡**CAKE (Protocol)**     |  Yes  | Yes | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-cake.md)                 |
-| 🌐**FlatPak AutoUpdater** |  Yes  | Yes | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-flatpak-auto-updater.md) |
-| 🏠**HOST**                |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| 📡**NSSWITCH**            |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| 📡**RESOLVED-DNS**        |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| 🖧**WSSD**                |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| 🖧**SAMBA**               |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **a**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **b**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **c**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **d**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **e**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-| **f**                     |  Yes  | Yes | [TO-DO](#)                                                                                                              |
-
+| Tweak                     | Tested | Pass | Tested on                                                                                                        | Link                                                                                                                 |
+|--------------------------|:------:|:----:|:---------------------------------------------------------------------------------------------------------------:|----------------------------------------------------------------------------------------------------------------------|
+| 📡 **CAKE (Protocol)**     |  Yes  | Yes  | ![alt text](image.png) ![alt text](image-1.png) ![alt text](image-2.png)                                         | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-cake.md)              |
+| 🌐 **FlatPak AutoUpdater** |  Yes  | Yes  | ![alt text](image.png) ![alt text](image-1.png) ![alt text](image-2.png)                                         | [📜 Documentation](https://github.com/tolgaerok/linuxtweaks/blob/main/MY_PYTHON_APP/docs/about-flatpak-auto-updater.md) |
+| 🏠 **HOST**                |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+| 📡 **NSSWITCH**            |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+| 📡 **RESOLVED-DNS**        |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+| 🖧 **WSSD**                |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+| 🖧 **SAMBA**               |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **a**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **b**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **c**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **d**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **e**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+|  **f**                    |  Yes  | Yes  |                                                                                                                  | [TO-DO](#)                                                                                                            |
+                                                                                  
 ## *Other repositories in my git hub:*
 
 <div align="center">
