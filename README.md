@@ -36,6 +36,12 @@ sudo dnf check-update
 sudo dnf install linuxtweaks -y
 ```
 
+### View changlog
+
+```bash
+rpm -q --changelog linuxtweaks
+```
+
 ### Uninstall
 
 ```bash
