@@ -22,7 +22,10 @@ I built this because I was tired of hunting through different tools to check upd
 ### Add the Repository
 
 ```bash
-echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=0" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
+#### don't use echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=0" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
+
+# NEW
+echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
 ```
 
 ### Install
