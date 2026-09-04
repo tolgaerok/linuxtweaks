@@ -2,7 +2,7 @@
 
 ---
 
-# LinuxTweaks v6.0.2
+# 🫟 LinuxTweaks 2026
 
 **A simple, no-nonsense system update manager for Fedora.**
 
