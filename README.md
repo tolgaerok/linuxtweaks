@@ -22,13 +22,44 @@ I built this because I was tired of hunting through different tools to check upd
 ### Add the Repository
 <img width="1306" height="848" alt="image" src="https://github.com/user-attachments/assets/b1a3ad07-4323-41f6-9963-0859202be3c0" />
 
-### Copy and paste repo
+### Copy and paste gpg signed repo
 
 ```bash
 echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
 ```
 
-### Install
+## 🔴 Upgrading from Older Versions
+
+If you're upgrading from LinuxTweaks v6.0.x or earlier, run these commands to clean up old configurations:
+
+```bash
+# Stop and disable old services
+systemctl --user stop linuxtweaks* 2>/dev/null || true
+systemctl --user disable linuxtweaks* 2>/dev/null || true
+systemctl --user reset-failed 2>/dev/null || true
+
+# Kill running processes
+pkill -9 -f "tray.py" 2>/dev/null || true
+pkill -9 -f "linuxtweaks" 2>/dev/null || true
+
+# Remove old service files
+rm -f ~/.config/systemd/user/linuxtweaks*.service
+rm -f ~/.config/systemd/user/linuxtweaks*.timer
+rm -f ~/.config/systemd/user/app-linuxtweaks@autostart.service
+
+# Remove old configs
+rm -rf ~/.config/linuxtweaks
+
+# Reload systemd
+systemctl --user daemon-reload
+
+# Verify cleanup
+echo "✅ Cleanup complete! Ready for fresh install."
+```
+
+Then install fresh:
+
+### 📥 Install
 
 ```bash
 sudo dnf clean all
@@ -36,19 +67,19 @@ sudo dnf check-update
 sudo dnf install linuxtweaks -y
 ```
 
-### View changlog
+### 📅 View changlog
 
 ```bash
 rpm -q --changelog linuxtweaks
 ```
 
-### Uninstall
+### 🪓 Uninstall
 
 ```bash
 sudo dnf remove linuxtweaks -y
 ```
 
-### ⚙️ Install/Reinstall Package"
+### 📦 Install/Reinstall Package"
 ```bash
 sudo dnf remove linuxtweaks -y
 sudo dnf install linuxtweaks -y
@@ -59,7 +90,7 @@ sudo dnf install linuxtweaks -y
 dnf info linuxtweaks
 ```
 
-### Check Available Repositories
+### 📂 Check Available Repositories
 
 ```bash
 sudo dnf repolist | grep linuxtweaks
@@ -67,7 +98,7 @@ sudo dnf repolist | grep linuxtweaks
 
 ## Usage
 
-### Start the App
+### 🔑 Start the App
 
 ```bash
 linuxtweaks
@@ -140,7 +171,7 @@ CLEANUP_JOURNAL=true
 4. **Tray App**: Reads state, shows icon color (green=up-to-date, red=updates available)
 5. **Upgrade**: Runs full upgrade with your configured DNF flags
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 **App won't start?**
 ```bash
