@@ -30,11 +30,24 @@ echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.11
 ### Install
 
 ```bash
-sudo dnf install linuxtweaks
+sudo dnf clean all
+sudo dnf check-update
+sudo dnf install linuxtweaks -y
 ```
 
-### Verify Installation
+### Uninstall
 
+```bash
+sudo dnf remove linuxtweaks -y
+```
+
+### ⚙️ Install/Reinstall Package"
+```bash
+sudo dnf remove linuxtweaks -y
+sudo dnf install linuxtweaks -y
+```
+
+### 📋 Verify Installation
 ```bash
 dnf info linuxtweaks
 ```
