@@ -1,13 +1,15 @@
 #!/bin/bash
-# LinuxTweaks Installation & Verification Suite
-# Author: Tolga Erok
-# Date: 01 Sep 2026
+# ======================================================================
+#   LinuxTweaks Installation & Verification Suite
+#   Author : Tolga Erok
+#   Date   : 05 Sep 2026
+#   Purpose: Clean install with repo setup and verification the easy way
+# ======================================================================
 
 set -e
-
 clear
 
-# ── Colors ────────────────────────────────────────────────
+# ── Colours ────────────────────────────────────────────────
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -37,7 +39,7 @@ warn() {
 # ── Start ──────────────────────────────────────────────────
 header "LinuxTweaks Installation Suite"
 
-# Setup repository
+# Repository Configuration
 step "Repository Configuration"
 REPO_FILE="/etc/yum.repos.d/linuxtweaks.repo"
 if [ -f "$REPO_FILE" ]; then
@@ -48,7 +50,7 @@ else
     success "Repository added"
 fi
 
-# Cleanup old installation
+# Cleaning Old Installation
 step "Cleaning Old Installation"
 systemctl --user stop linuxtweaks* 2>/dev/null || true
 systemctl --user disable linuxtweaks* 2>/dev/null || true
@@ -62,7 +64,7 @@ rm -rf ~/.config/linuxtweaks ~/.local/lib/linuxtweaks ~/.local/bin/linuxtweaks*
 systemctl --user daemon-reload
 success "Old installation removed"
 
-# System update
+# System Maintenance
 step "System Maintenance"
 sudo dnf clean all
 sudo dnf autoremove -y || true
@@ -70,14 +72,14 @@ success "System cleaned"
 sudo dnf upgrade --refresh -y || warn "System upgrade encountered an issue"
 success "System updated"
 
-# Install LinuxTweaks
+# Installing LinuxTweaks
 step "Installing LinuxTweaks"
 sudo dnf remove linuxtweaks -y 2>/dev/null || true
 sudo dnf autoremove -y 2>/dev/null || true
 sudo dnf install linuxtweaks -y || warn "Installation failed"
 success "LinuxTweaks installed"
 
-# Verify installation
+# Verification
 step "Verification"
 VERSION=$(dnf info linuxtweaks 2>/dev/null | grep "^Version" | awk '{print $3}')
 success "Version: $VERSION"
@@ -85,16 +87,31 @@ success "Version: $VERSION"
 echo -e "\n${CYAN}📦 Package Info:${NC}"
 dnf info linuxtweaks | grep -E "^Name|^Version|^Release|^Repository"
 
-echo -e "\n${CYAN}🔧 Services:${NC}"
-systemctl --user list-unit-files --no-pager 2>/dev/null | grep linuxtweaks | head -4 || echo "  (pending activation)"
+echo -e "\n${CYAN}🔧 Systemd Services:${NC}"
+systemctl --user list-unit-files --no-pager 2>/dev/null | grep linuxtweaks | head -5
 
-# Launch app
+echo -e "\n${CYAN}⏱ Timer Status:${NC}"
+systemctl --user status linuxtweaks.timer --no-pager | head -6
+
+echo -e "\n${CYAN}🚀 Autostart Service:${NC}"
+systemctl --user status linuxtweaks-autostart.service --no-pager | head -6
+
+echo -e "\n${CYAN}📊 Running Processes:${NC}"
+ps aux | grep tray.py | grep -v grep || echo -e "${YELLOW}(launching...)${NC}"
+
+echo -e "\n${CYAN}Repository Status:${NC}"
+sudo dnf repolist | grep linuxtweaks
+
+echo -e "\n${CYAN}Recent Changes:${NC}"
+rpm -q --changelog linuxtweaks | head -20
+
+# Launching Application
 step "Launching Application"
 linuxtweaks &
 sleep 2
 success "Application started in background"
 
-# Final summary
+# Final Summary
 echo ""
 header "✅ LinuxTweaks v${VERSION} Ready!"
 echo -e "${GREEN}Installation complete and verified.${NC}"
