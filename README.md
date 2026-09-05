@@ -25,6 +25,12 @@ I built this because I was tired of hunting through different tools to check upd
 echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
 ```
 
+## 👍 Quick Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
+```
+
 ### 📥 Install (Clean Slate)
 
 Clean up any old installations first (safe on fresh installs):
