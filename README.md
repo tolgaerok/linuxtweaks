@@ -6,6 +6,8 @@
 
 **A simple, no-nonsense system update manager for Fedora.**
 
+<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/111c8f8e-51a9-4ef9-aded-5bbdf3f56155" />
+
 I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
 
 ## What It Does
@@ -61,6 +63,9 @@ echo "✅ Old installation cleaned up! Enjoy brother"
 
 Then install fresh:
 
+<img width="1891" height="609" alt="image" src="https://github.com/user-attachments/assets/63ac9918-7232-43e4-ba92-392542129b89" />
+
+
 ```bash
 sudo dnf clean all
 sudo dnf check-update
@@ -75,6 +80,8 @@ dnf info linuxtweaks
 
 ### 🪓 Uninstall
 
+<img width="1902" height="547" alt="image" src="https://github.com/user-attachments/assets/5f6281e6-d162-4142-a250-54e014c81ada" />
+
 ```bash
 sudo dnf remove linuxtweaks -y
 ```
@@ -88,6 +95,8 @@ rpm -q --changelog linuxtweaks
 ## Usage
 
 ### 🔑 Start the App
+
+<img width="239" height="81" alt="image" src="https://github.com/user-attachments/assets/8a61b967-1b55-4d2a-93bd-fc762305132c" />
 
 ```bash
 linuxtweaks
@@ -106,12 +115,16 @@ cat /run/user/$(id -u)/linuxtweaks/dnf_count
 ```
 
 ### Settings
+<img width="258" height="295" alt="image" src="https://github.com/user-attachments/assets/de698d80-7f6a-44bc-bfaa-ba2b35735c3c" />
 
 Click **⚙ Settings** in the tray menu to:
 - Set check interval (1 min to 1 week)
 - Enable/disable Flatpak, Firmware, Distrobox updates
 - Auto-answer "yes" to upgrade prompts
 - Customize DNF flags (`--best`, `--allowerasing`, etc.)
+
+<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/8a1cd409-ca3e-41be-93d8-5f43f45c15d2" />
+
 
 ## Configuration
 
