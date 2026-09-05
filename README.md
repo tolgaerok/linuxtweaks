@@ -1,6 +1,6 @@
 ![Linux Tweaks](https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png)
 
-# 🫟 LinuxTweaks 2026
+# 🫟 LinuxTweaks 2026 {#top}
 
 [![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
 
@@ -27,9 +27,7 @@ echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.11
 
 ### 📥 Install (Clean Slate)
 
-### 2. Clean Up Old Installations (Safe on Fresh Installs)
-
-If upgrading from an older version, remove old files first:
+Clean up any old installations first (safe on fresh installs):
 
 ```bash
 # Stop any old services
@@ -52,10 +50,10 @@ rm -f ~/.local/bin/linuxtweaks*
 # Reload systemd
 systemctl --user daemon-reload
 
-echo "✅ Old installation cleaned up!, enjoy brother"
+echo "✅ Old installation cleaned up! Enjoy brother"
 ```
 
-### 📥 Fresh Install
+Then install fresh:
 
 ```bash
 sudo dnf clean all
@@ -166,6 +164,45 @@ Go to Settings and add `--allowerasing` to Custom DNF Flags.
 Hamilton Hill, Perth, Western Australia  
 📧 kingtolga@gmail.com  
 🐙 [GitHub](https://github.com/tolgaerok/linuxtweaks)
+
+---
+
+## Other Repositories
+
+<div align="center">
+  <table style="border-collapse: collapse; width: 100%; border: none;">
+    <tr>
+      <td align="center" style="border: none;">
+        <a href="https://github.com/tolgaerok/fedora-tolga">
+          <img src="https://flathub.org/img/distro/fedora.svg" alt="Fedora" style="width: 100%;">
+          <br>Fedora
+        </a>
+      </td>
+      <td align="center" style="border: none;">
+        <a href="https://github.com/tolgaerok/Debian-tolga">
+          <img src="https://flathub.org/img/distro/debian.svg" alt="Debian" style="width: 100%;">
+          <br>Debian
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+## Stats
+
+<div align="center">
+  <a href="https://git.io/streak-stats" target="_blank">
+    <img src="http://github-readme-streak-stats.herokuapp.com?user=tolgaerok&theme=dark&background=000000" alt="GitHub Streak">
+  </a>
+  <br>
+  <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank">
+    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=tolgaerok&layout=compact&theme=vision-friendly-dark" alt="Top Languages">
+  </a>
+</div>
+
+---
+
+[⬆ Back to Top](#top)
 
 ---
 
