@@ -163,7 +163,7 @@ Go to Settings and add `--allowerasing` to Custom DNF Flags.
 **Tolga Erok**  
 Hamilton Hill, Perth, Western Australia  
 📧 kingtolga@gmail.com  
-🐙 [GitHub](https://github.com/tolgaerok/linuxtweaks)
+🐙 [My other GitHub repo's](https://github.com/tolgaerok)
 
 ---
 
