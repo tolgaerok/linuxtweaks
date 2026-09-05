@@ -1,11 +1,10 @@
 #!/bin/bash
 # ======================================================================
-#   LinuxTweaks Installation & Verification Suite
+#   LinuxTweaks Installation & Verification Suite v6.1.20
 #   Author : Tolga Erok
 #   Date   : 05 Sep 2026
-#   Purpose: Clean install with repo setup and verification the easy way
+#   Purpose: Clean install with repo setup and verification
 # ======================================================================
-
 set -e
 clear
 
@@ -37,7 +36,7 @@ warn() {
 }
 
 # ── Start ──────────────────────────────────────────────────
-header "LinuxTweaks Installation Suite"
+header "LinuxTweaks Installation Suite v6.1.20"
 
 # Repository Configuration
 step "Repository Configuration"
@@ -57,9 +56,6 @@ systemctl --user disable linuxtweaks* 2>/dev/null || true
 systemctl --user reset-failed 2>/dev/null || true
 pkill -9 -f "tray.py" 2>/dev/null || true
 pkill -9 -f "linuxtweaks" 2>/dev/null || true
-rm -f ~/.config/systemd/user/linuxtweaks*.service
-rm -f ~/.config/systemd/user/linuxtweaks*.timer
-rm -f ~/.config/systemd/user/app-linuxtweaks@autostart.service
 rm -rf ~/.config/linuxtweaks ~/.local/lib/linuxtweaks ~/.local/bin/linuxtweaks*
 systemctl --user daemon-reload
 success "Old installation removed"
@@ -88,31 +84,32 @@ echo -e "\n${CYAN}📦 Package Info:${NC}"
 dnf info linuxtweaks | grep -E "^Name|^Version|^Release|^Repository"
 
 echo -e "\n${CYAN}🔧 Systemd Services:${NC}"
-systemctl --user list-unit-files --no-pager 2>/dev/null | grep linuxtweaks | head -5
+systemctl --user list-unit-files --no-pager 2>/dev/null | grep linuxtweaks | head -3
 
-echo -e "\n${CYAN}⏱ Timer Status:${NC}"
-systemctl --user status linuxtweaks.timer --no-pager | head -6
+# Service Status
+echo ""
+header "🫟 LinuxTweaks Service Status"
 
-echo -e "\n${CYAN}🚀 Autostart Service:${NC}"
-systemctl --user status linuxtweaks-autostart.service --no-pager | head -6
+systemctl --user is-active linuxtweaks.timer && echo "✅ Timer running" || echo "❌ Timer stopped"
+systemctl --user is-active linuxtweaks-autostart.service && echo "✅ Autostart enabled" || echo "⚠️  Autostart inactive (normal - runs once on login)"
 
-echo -e "\n${CYAN}📊 Running Processes:${NC}"
-ps aux | grep tray.py | grep -v grep || echo -e "${YELLOW}(launching...)${NC}"
+echo ""
+echo -e "${CYAN}Timer Details:${NC}"
+systemctl --user status linuxtweaks.timer --no-pager | grep -E "Loaded|Active|Trigger"
+
+echo ""
+echo -e "${CYAN}Running Process:${NC}"
+ps aux | grep tray.py | grep -v grep || echo "(tray app will start on next login or run: linuxtweaks)"
 
 echo -e "\n${CYAN}Repository Status:${NC}"
 sudo dnf repolist | grep linuxtweaks
 
 echo -e "\n${CYAN}Recent Changes:${NC}"
-rpm -q --changelog linuxtweaks | head -20
+rpm -q --changelog linuxtweaks | head -15
 
-# Launching Application
-step "Launching Application"
-linuxtweaks &
-sleep 2
-success "Application started in background"
-
-# Final Summary
+# Final summary
 echo ""
-header "✅ LinuxTweaks v${VERSION} Ready!"
-echo -e "${GREEN}Installation complete and verified.${NC}"
-echo -e "${CYAN}Services active • App running • Ready to use${NC}"
+header "✅ LinuxTweaks v${VERSION} - Installation Complete!"
+echo -e "${GREEN}Services configured and verified.${NC}"
+echo -e "${CYAN}👉 Run: linuxtweaks${NC}"
+echo ""
