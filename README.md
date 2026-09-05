@@ -1,12 +1,12 @@
-# ![1744722407588](image/README/1744722407588.png)Linux Tweaks - UNDER CONSTRUCTION !!!!
-
----
+![Linux Tweaks](https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png)
 
 # 🫟 LinuxTweaks 2026
 
+[![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
+
 **A simple, no-nonsense system update manager for Fedora.**
 
-I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware—all scattered. I wanted one place that just works.
+I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
 
 ## What It Does
 
@@ -20,46 +20,42 @@ I built this because I was tired of hunting through different tools to check upd
 ## Installation
 
 ### Add the Repository
-<img width="1306" height="848" alt="image" src="https://github.com/user-attachments/assets/b1a3ad07-4323-41f6-9963-0859202be3c0" />
-
-### Copy and paste gpg signed repo
 
 ```bash
 echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
 ```
 
-## 🔴 Upgrading from Older Versions
+### 📥 Install (Clean Slate)
 
-If you're upgrading from LinuxTweaks v6.0.x or earlier, run these commands to clean up old configurations:
+### 2. Clean Up Old Installations (Safe on Fresh Installs)
+
+If upgrading from an older version, remove old files first:
 
 ```bash
-# Stop and disable old services
+# Stop any old services
 systemctl --user stop linuxtweaks* 2>/dev/null || true
 systemctl --user disable linuxtweaks* 2>/dev/null || true
 systemctl --user reset-failed 2>/dev/null || true
 
-# Kill running processes
+# Kill any running processes
 pkill -9 -f "tray.py" 2>/dev/null || true
 pkill -9 -f "linuxtweaks" 2>/dev/null || true
 
-# Remove old service files
+# Remove old user-location files
 rm -f ~/.config/systemd/user/linuxtweaks*.service
 rm -f ~/.config/systemd/user/linuxtweaks*.timer
 rm -f ~/.config/systemd/user/app-linuxtweaks@autostart.service
-
-# Remove old configs
 rm -rf ~/.config/linuxtweaks
+rm -rf ~/.local/lib/linuxtweaks
+rm -f ~/.local/bin/linuxtweaks*
 
 # Reload systemd
 systemctl --user daemon-reload
 
-# Verify cleanup
-echo "✅ Cleanup complete! Ready for fresh install."
+echo "✅ Old installation cleaned up!, enjoy brother"
 ```
 
-Then install fresh:
-
-### 📥 Install
+### 📥 Fresh Install
 
 ```bash
 sudo dnf clean all
@@ -67,10 +63,10 @@ sudo dnf check-update
 sudo dnf install linuxtweaks -y
 ```
 
-### 📅 View changlog
+### 📋 Verify Installation
 
 ```bash
-rpm -q --changelog linuxtweaks
+dnf info linuxtweaks
 ```
 
 ### 🪓 Uninstall
@@ -79,21 +75,10 @@ rpm -q --changelog linuxtweaks
 sudo dnf remove linuxtweaks -y
 ```
 
-### 📦 Install/Reinstall Package"
-```bash
-sudo dnf remove linuxtweaks -y
-sudo dnf install linuxtweaks -y
-```
-
-### 📋 Verify Installation
-```bash
-dnf info linuxtweaks
-```
-
-### 📂 Check Available Repositories
+### 📅 View Changelog
 
 ```bash
-sudo dnf repolist | grep linuxtweaks
+rpm -q --changelog linuxtweaks
 ```
 
 ## Usage
@@ -122,35 +107,15 @@ Click **⚙ Settings** in the tray menu to:
 - Set check interval (1 min to 1 week)
 - Enable/disable Flatpak, Firmware, Distrobox updates
 - Auto-answer "yes" to upgrade prompts
-- Customize DNF flags (--best, --allowerasing, etc.)
-
-## Repository Information
-
-### View Repository List
-
-```bash
-sudo dnf repolist
-```
-
-### View All Packages
-
-```bash
-sudo dnf search linuxtweaks
-```
-
-### Check for Updates
-
-```bash
-sudo dnf check-update
-```
+- Customize DNF flags (`--best`, `--allowerasing`, etc.)
 
 ## Configuration
 
 Settings stored in: `~/.config/linuxtweaks/config`
 
 ```ini
-CHECK_INTERVAL=1800         => time intervals
-AUTO_YES=true
+CHECK_INTERVAL=1800         # Time between checks (seconds)
+AUTO_YES=true               # Auto-answer yes to upgrades
 FLATPAK_USE_SUDO=true
 USE_DISTRO_SYNC=true
 DNF_ARGUMENTS=--best
@@ -175,36 +140,32 @@ CLEANUP_JOURNAL=true
 
 **App won't start?**
 ```bash
-# Check systemd service
 systemctl --user --no-pager status linuxtweaks.timer
 journalctl --user --no-pager -u linuxtweaks.service
 ```
 
 **Updates not detecting?**
 ```bash
-# Manual check
 bash /usr/lib64/linuxtweaks/lib/check.sh
-
-# Check state files
 ls /run/user/$(id -u)/linuxtweaks/
 ```
 
 **Upgrade conflicts?**
-Go to Settings => Custom DNF Flags and add: `--allowerasing`
+Go to Settings and add `--allowerasing` to Custom DNF Flags.
 
 ## Built For
 
 - **OS**: Fedora 44+
 - **Desktop**: KDE Plasma
 - **Language**: Python (PyQt5)
-- **Init System**: Systemd
+- **Init**: Systemd
 
 ## Author
 
 **Tolga Erok**  
 Hamilton Hill, Perth, Western Australia  
-Email: kingtolga@gmail.com  
-GitHub: https://github.com/tolgaerok/linuxtweaks
+📧 kingtolga@gmail.com  
+🐙 [GitHub](https://github.com/tolgaerok/linuxtweaks)
 
 ---
 
