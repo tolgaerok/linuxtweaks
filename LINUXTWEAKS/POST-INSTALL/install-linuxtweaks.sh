@@ -70,8 +70,8 @@ success "System updated"
 
 # Installing LinuxTweaks
 step "Installing LinuxTweaks"
-sudo dnf remove linuxtweaks -y 2>/dev/null || true
-sudo dnf autoremove -y 2>/dev/null || true
+sudo dnf remove linuxtweaks -y || true
+sudo dnf autoremove -y || true
 sudo dnf install linuxtweaks -y || warn "Installation failed"
 success "LinuxTweaks installed"
 
