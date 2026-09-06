@@ -113,9 +113,39 @@ header "✅ LinuxTweaks v${VERSION} - Installation Complete!"
 echo -e "${GREEN}Services configured and verified.${NC}"
 echo -e "${CYAN}👉 Run: linuxtweaks${NC}"
 echo ""
+
+# Launch tray app
 nohup linuxtweaks > /dev/null 2>&1 &
 sleep 2
+
+# Run initial check
 bash /usr/lib/linuxtweaks/lib/check.sh
 echo ""
 
+# Verify services
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${YELLOW}📋 Service Status:${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+echo -e "${CYAN}Timer:${NC}"
+systemctl --user status linuxtweaks.timer | grep -E "Loaded|Active"
+
+echo ""
+echo -e "${CYAN}Services:${NC}"
+systemctl --user status linuxtweaks.service | grep -E "Loaded|Active"
+systemctl --user status linuxtweaks-autostart.service | grep -E "Loaded|Active"
+
+echo ""
+echo -e "${CYAN}Next scheduled check:${NC}"
+systemctl --user list-timers linuxtweaks.timer --no-pager
+
+echo ""
+echo -e "${CYAN}Enabled status:${NC}"
+echo "  Timer: $(systemctl --user is-enabled linuxtweaks.timer)"
+echo "  Service: $(systemctl --user is-enabled linuxtweaks.service)"
+echo "  Autostart: $(systemctl --user is-enabled linuxtweaks-autostart.service)"
+
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
