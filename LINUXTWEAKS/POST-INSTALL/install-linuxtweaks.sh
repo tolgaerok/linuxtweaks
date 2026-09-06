@@ -113,7 +113,7 @@ header "✅ LinuxTweaks v${VERSION} - Installation Complete!"
 echo -e "${GREEN}Services configured and verified.${NC}"
 echo -e "${CYAN}👉 Run: linuxtweaks${NC}"
 echo ""
-linuxtweaks &
+nohup linuxtweaks > /dev/null 2>&1 &
 sleep 2
 bash /usr/lib/linuxtweaks/lib/check.sh
 echo ""
