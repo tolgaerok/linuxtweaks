@@ -6,7 +6,8 @@
 
 **A simple, no-nonsense system update manager for Fedora.**
 
-<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/111c8f8e-51a9-4ef9-aded-5bbdf3f56155" />
+<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/9a1a78ba-f982-416f-87a1-149c7e30b4ad" />
+
 
 I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
 
@@ -102,13 +103,13 @@ rpm -q --changelog linuxtweaks
 linuxtweaks
 ```
 
-The app appears in your system tray. Click the icon to see options.
+The app appears in your system tray. Right click the icon to see options.
 
 ### From Command Line
 
 ```bash
 # Manual update check
-bash /usr/lib64/linuxtweaks/lib/check.sh
+bash /usr/lib/linuxtweaks/lib/check.sh
 
 # View current state
 cat /run/user/$(id -u)/linuxtweaks/dnf_count
@@ -123,7 +124,8 @@ Click **⚙ Settings** in the tray menu to:
 - Auto-answer "yes" to upgrade prompts
 - Customize DNF flags (`--best`, `--allowerasing`, etc.)
 
-<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/8a1cd409-ca3e-41be-93d8-5f43f45c15d2" />
+<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/eb095833-16de-477a-ad1d-be6303fceed7" />
+
 
 
 ## Configuration
@@ -163,7 +165,7 @@ journalctl --user --no-pager -u linuxtweaks.service
 
 **Updates not detecting?**
 ```bash
-bash /usr/lib64/linuxtweaks/lib/check.sh
+bash /usr/lib/linuxtweaks/lib/check.sh
 ls /run/user/$(id -u)/linuxtweaks/
 ```
 
