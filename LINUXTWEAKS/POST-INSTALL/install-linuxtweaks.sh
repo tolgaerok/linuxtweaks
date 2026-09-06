@@ -1,6 +1,6 @@
 #!/bin/bash
 # ======================================================================
-#   LinuxTweaks Installation & Verification Suite v6.1.20
+#   LinuxTweaks Installation & Verification Suite
 #   Author : Tolga Erok
 #   Date   : 05 Sep 2026
 #   Purpose: Clean install with repo setup and verification
