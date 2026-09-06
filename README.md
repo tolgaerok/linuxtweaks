@@ -103,13 +103,13 @@ rpm -q --changelog linuxtweaks
 linuxtweaks
 ```
 
-The app appears in your system tray. Click the icon to see options.
+The app appears in your system tray. Right click the icon to see options.
 
 ### From Command Line
 
 ```bash
 # Manual update check
-bash /usr/lib64/linuxtweaks/lib/check.sh
+bash /usr/lib/linuxtweaks/lib/check.sh
 
 # View current state
 cat /run/user/$(id -u)/linuxtweaks/dnf_count
@@ -165,7 +165,7 @@ journalctl --user --no-pager -u linuxtweaks.service
 
 **Updates not detecting?**
 ```bash
-bash /usr/lib64/linuxtweaks/lib/check.sh
+bash /usr/lib/linuxtweaks/lib/check.sh
 ls /run/user/$(id -u)/linuxtweaks/
 ```
 
