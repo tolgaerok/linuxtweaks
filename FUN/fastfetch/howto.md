@@ -1,4 +1,5 @@
 # Fastfetch Setup
+<img width="707" height="563" alt="image" src="https://github.com/user-attachments/assets/a26ad838-6ed4-4e6b-9638-b182f85056e9" />
 
 ## 1. Add alias to `.bashrc`
 
