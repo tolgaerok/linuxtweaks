@@ -21,31 +21,194 @@ I built this because I was tired of hunting through different tools to check upd
 - **Settings that stick**: Configure once, it remembers
 
 ## What my package contains: 
-✅ Config files:
--   /etc/sudoers.d/linuxtweaks
--   /etc/systemd/user-preset/50-linuxtweaks.preset
--   /etc/xdg/autostart/linuxtweaks.desktop
 
-✅ Binaries (wrapper scripts):
--   /usr/bin/linuxtweaks
--   /usr/bin/linuxtweaks-autostart
--   /usr/bin/linuxtweaks-check
--   /usr/bin/linuxtweaks-upgrade
+📁 Installation Structure
+```bash
+LinuxTweaks v6.1.68 Installation Structure
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Application files:
--  /usr/lib/linuxtweaks/lib/ (shell scripts)
--  /usr/lib/linuxtweaks/tray/ (Python files + icon)
+/
+├── etc/
+│   ├── sudoers.d/
+│   │   └── linuxtweaks                           (sudo permissions)
+│   ├── systemd/
+│   │   └── user-preset/
+│   │       └── 50-linuxtweaks.preset             (enable by default)
+│   └── xdg/
+│       └── autostart/
+│           └── linuxtweaks.desktop               (autostart on login)
+│
+├── usr/
+│   ├── bin/
+│   │   ├── linuxtweaks                           (main wrapper)
+│   │   ├── linuxtweaks-autostart                 (autostart wrapper)
+│   │   ├── linuxtweaks-check                     (check wrapper)
+│   │   └── linuxtweaks-upgrade                   (upgrade wrapper)
+│   │
+│   ├── lib/
+│   │   └── linuxtweaks/
+│   │       ├── lib/
+│   │       │   ├── check.sh                      (check updates logic)
+│   │       │   ├── common.sh                     (common functions)
+│   │       │   ├── config.sh                     (config helpers)
+│   │       │   └── upgrade.sh                    (upgrade logic)
+│   │       │
+│   │       └── tray/
+│   │           ├── __init__.py                   (package init)
+│   │           ├── __main__.py                   (entry point)
+│   │           ├── app.py                        (main tray app)
+│   │           ├── tray.py                       (tray icon)
+│   │           ├── settings_dialog.py            (user settings)
+│   │           ├── about_dialog.py               (about dialog)
+│   │           ├── log_dialog.py                 (log viewer)
+│   │           ├── config.py                     (config reader/writer)
+│   │           ├── utils.py                      (utilities)
+│   │           ├── check_theme.py                (theme handler)
+│   │           └── linuxtweaks-icon.png          (icon asset)
+│   │
+│   └── lib/systemd/user/
+│       ├── linuxtweaks.timer                     (30min timer, user-configurable)
+│       ├── linuxtweaks.service                   (check updates service)
+│       └── linuxtweaks-autostart.service         (tray autostart service)
+│
+├── usr/share/
+│   ├── doc/
+│   │   └── linuxtweaks/
+│   │       └── README.md                         (documentation)
+│   │
+│   └── licenses/
+│       └── linuxtweaks/
+│           └── LICENSE                           (MIT license)
+│
+└── ~/.config/ (user-specific, created at runtime)
+    ├── linuxtweaks/
+    │   └── config                                (app settings)
+    └── systemd/user/
+        └── linuxtweaks.timer                     (user timer override, 1h default)
 
-✅ Systemd services:
-   /usr/lib/systemd/user/linuxtweaks.timer
-   /usr/lib/systemd/user/linuxtweaks.service
-   /usr/lib/systemd/user/linuxtweaks-autostart.service
 
-✅ Documentation:
--  /usr/share/doc/linuxtweaks/README.md
--  /usr/share/licenses/linuxtweaks/LICENSE
+SERVICE ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<img width="318" height="516" alt="Screenshot_20260910_215833" src="https://github.com/user-attachments/assets/2e49aadf-10d6-4be3-9d74-6387bc9d090c" />
+System Services (in /usr/lib/systemd/user/):
+├── linuxtweaks.timer
+│   └── Runs every 30 minutes (default, user-configurable via Settings)
+│       └── Triggers: linuxtweaks.service
+│
+├── linuxtweaks.service
+│   └── Runs /usr/lib/linuxtweaks/lib/check.sh
+│       └── Checks for: DNF, Flatpak, Firmware, Distrobox updates
+│
+└── linuxtweaks-autostart.service
+    └── Runs /usr/bin/linuxtweaks (tray app)
+        └── Starts on: graphical-session.target (login)
+
+
+FLOW DIAGRAM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+User Login
+    ↓
+50-linuxtweaks.preset enables services
+    ↓
+┌───────────────────────────────────────┐
+│ linuxtweaks-autostart.service starts  │
+│ Runs: /usr/bin/linuxtweaks            │
+│ → Starts systemctl services           │
+│ → Launches: python3 -m tray           │
+│ → Shows: System tray icon             │
+└───────────────────────────────────────┘
+    ↓
+┌───────────────────────────────────────┐
+│ linuxtweaks.timer runs every 1h       │
+│ (default 30min, user-configurable)    │
+└───────────────────────────────────────┘
+    ↓
+Every interval:
+    ↓
+┌───────────────────────────────────────┐
+│ linuxtweaks.service triggered         │
+│ Runs: /usr/lib/linuxtweaks/lib/check.sh
+│ Checks all update sources             │
+│ Updates tray icon with results        │
+│ Shows notifications (if enabled)      │
+└───────────────────────────────────────┘
+    ↓
+User clicks Settings → Changes interval to 1h/6h/12h/etc
+    ↓
+settings_dialog.py:
+  1. Saves CHECK_INTERVAL to ~/.config/linuxtweaks/config
+  2. Creates ~/.config/systemd/user/ if missing
+  3. Copies system timer to user override location
+  4. Modifies OnUnitActiveSec=1h (or selected interval)
+  5. Runs: systemctl --user daemon-reload
+  6. Runs: systemctl --user restart linuxtweaks.timer
+    ↓
+Timer now runs at new interval!
+
+
+CONFIGURATION LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+System Level (immutable):
+  /usr/lib/systemd/user/linuxtweaks.timer
+    - OnBootSec=30s (initial check on login)
+    - OnUnitActiveSec=30min (default interval)
+    - Persistent=true (survives suspend/resume)
+
+User Level (runtime override):
+  ~/.config/systemd/user/linuxtweaks.timer (created on first settings change)
+    - User's chosen interval (1h, 6h, 12h, etc)
+    - Overrides system timer
+
+App Config:
+  ~/.config/linuxtweaks/config
+    - CHECK_INTERVAL=3600 (user's choice in seconds)
+    - Update options (DNF, Flatpak, Firmware, Distrobox)
+    - Cleanup options (orphans, cache, journal)
+    - Notification settings
+
+
+FILE PERMISSIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Wrapper scripts (755):
+  /usr/bin/linuxtweaks
+  /usr/bin/linuxtweaks-autostart
+  /usr/bin/linuxtweaks-check
+  /usr/bin/linuxtweaks-upgrade
+
+Library scripts (755):
+  /usr/lib/linuxtweaks/lib/*.sh
+
+Python files (755):
+  /usr/lib/linuxtweaks/tray/*.py
+
+Config files (644):
+  /etc/sudoers.d/linuxtweaks (440)
+  /etc/xdg/autostart/linuxtweaks.desktop
+  /etc/systemd/user-preset/50-linuxtweaks.preset
+  /usr/lib/systemd/user/*.{timer,service}
+
+Documentation (644):
+  /usr/share/doc/linuxtweaks/README.md
+  /usr/share/licenses/linuxtweaks/LICENSE
+
+
+UNINSTALL CLEANUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When removed with: sudo dnf remove linuxtweaks
+
+%postun removes:
+  ✓ System services (via %systemd_user_postun)
+  ✓ All processes: python3 -m tray, check.sh
+  ✓ User config: ~/.config/linuxtweaks/
+  ✓ User timer override: ~/.config/systemd/user/linuxtweaks.timer
+  ✓ Systemd daemon reload
+
+Result: Clean uninstall, zero traces left
+```
 
 
 ## Installation
