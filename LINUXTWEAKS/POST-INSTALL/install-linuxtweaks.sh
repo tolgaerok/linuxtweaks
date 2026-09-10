@@ -1,9 +1,9 @@
 #!/bin/bash
 # ======================================================================
-#   LinuxTweaks Installation & Verification Suite
+#   LinuxTweaks Installation & Verification Suite 
 #   Author : Tolga Erok
-#   Date   : 05 Sep 2026
-#   Purpose: Clean install with repo setup and verification
+#   Date   : 10 Sep 2026
+#   Purpose: Clean install from repo with full verification
 # ======================================================================
 set -e
 clear
@@ -36,9 +36,9 @@ warn() {
 }
 
 # ── Start ──────────────────────────────────────────────────
-header "LinuxTweaks Installation Suite v6.1.20"
+header "  🫟   LinuxTweaks Installation Suite "
 
-# Repository Configuration
+# My Repository Configuration
 step "Repository Configuration"
 REPO_FILE="/etc/yum.repos.d/linuxtweaks.repo"
 if [ -f "$REPO_FILE" ]; then
@@ -51,14 +51,16 @@ fi
 
 # Cleaning Old Installation
 step "Cleaning Old Installation"
-systemctl --user stop linuxtweaks* 2>/dev/null || true
-systemctl --user disable linuxtweaks* 2>/dev/null || true
+systemctl --user stop linuxtweaks.timer 2>/dev/null || true
+systemctl --user stop linuxtweaks-autostart.service 2>/dev/null || true
+systemctl --user disable linuxtweaks.timer 2>/dev/null || true
+systemctl --user disable linuxtweaks-autostart.service 2>/dev/null || true
 systemctl --user reset-failed 2>/dev/null || true
-pkill -9 -f "tray.py" 2>/dev/null || true
-pkill -9 -f "linuxtweaks" 2>/dev/null || true
-rm -rf ~/.config/linuxtweaks ~/.local/lib/linuxtweaks ~/.local/bin/linuxtweaks*
-systemctl --user daemon-reload
-success "Old installation removed"
+pkill -9 -f "python3 -m tray" 2>/dev/null || true
+pkill -9 -f "check.sh" 2>/dev/null || true
+rm -rf ~/.config/linuxtweaks ~/.config/systemd/user/linuxtweaks.timer
+systemctl --user daemon-reload 2>/dev/null || true
+success "Old installation cleaned"
 
 # System Maintenance
 step "System Maintenance"
@@ -68,11 +70,11 @@ success "System cleaned"
 sudo dnf upgrade --refresh -y || warn "System upgrade encountered an issue"
 success "System updated"
 
-# Installing LinuxTweaks
-step "Installing LinuxTweaks"
+# Installing LinuxTweaks 2026
+step "Installing LinuxTweaks v6.1.68"
 sudo dnf remove linuxtweaks -y || true
 sudo dnf autoremove -y || true
-sudo dnf install linuxtweaks -y || warn "Installation failed"
+sudo dnf install linuxtweaks -y || warn "Installation failed - check repo connectivity"
 success "LinuxTweaks installed"
 
 # Verification
@@ -83,69 +85,59 @@ success "Version: $VERSION"
 echo -e "\n${CYAN}📦 Package Info:${NC}"
 dnf info linuxtweaks | grep -E "^Name|^Version|^Release|^Repository"
 
-echo -e "\n${CYAN}🔧 Systemd Services:${NC}"
-systemctl --user list-unit-files --no-pager 2>/dev/null | grep linuxtweaks | head -3
+echo -e "\n${CYAN}🔧 Systemd Services Installed:${NC}"
+rpm -ql linuxtweaks | grep systemd/user | while read service; do
+    echo "  ✓ $(basename $service)"
+done
 
 # Service Status
 echo ""
 header "🫟 LinuxTweaks Service Status"
 
-systemctl --user is-active linuxtweaks.timer && echo "✅ Timer running" || echo "❌ Timer stopped"
-systemctl --user is-active linuxtweaks-autostart.service && echo "✅ Autostart enabled" || echo "⚠️  Autostart inactive (normal - runs once on login)"
+echo -e "${CYAN}Timer:${NC}"
+systemctl --user status linuxtweaks.timer --no-pager 2>&1 | grep -E "Loaded|Active|Trigger" || true
 
-echo ""
-echo -e "${CYAN}Timer Details:${NC}"
-systemctl --user status linuxtweaks.timer --no-pager | grep -E "Loaded|Active|Trigger"
+echo -e "\n${CYAN}Update Checker Service:${NC}"
+systemctl --user status linuxtweaks.service --no-pager 2>&1 | grep -E "Loaded|Active|TriggeredBy" || true
 
-echo ""
-echo -e "${CYAN}Running Process:${NC}"
-ps aux | grep tray.py | grep -v grep || echo "(tray app will start on next login or run: linuxtweaks)"
+echo -e "\n${CYAN}Autostart Service:${NC}"
+systemctl --user status linuxtweaks-autostart.service --no-pager 2>&1 | grep -E "Loaded|Active" || true
+
+echo -e "\n${CYAN}Enabled Status:${NC}"
+echo "  Timer: $(systemctl --user is-enabled linuxtweaks.timer 2>/dev/null || echo 'disabled')"
+echo "  Service: $(systemctl --user is-enabled linuxtweaks.service 2>/dev/null || echo 'static')"
+echo "  Autostart: $(systemctl --user is-enabled linuxtweaks-autostart.service 2>/dev/null || echo 'disabled')"
+
+echo -e "\n${CYAN}User Timer Configuration:${NC}"
+if [ -f ~/.config/systemd/user/linuxtweaks.timer ]; then
+    grep "OnUnitActiveSec" ~/.config/systemd/user/linuxtweaks.timer || echo "  (using system default: 30 minutes)"
+else
+    echo "  User timer not yet created (will be created on first settings change)"
+fi
+
+echo -e "\n${CYAN}Application Config:${NC}"
+if [ -f ~/.config/linuxtweaks/config ]; then
+    CHECK_INTERVAL=$(grep "CHECK_INTERVAL" ~/.config/linuxtweaks/config | cut -d= -f2)
+    echo "  Configured interval: $CHECK_INTERVAL seconds"
+else
+    echo "  Config not yet created (will be created on first run)"
+fi
 
 echo -e "\n${CYAN}Repository Status:${NC}"
-sudo dnf repolist | grep linuxtweaks
+sudo dnf repolist | grep linuxtweaks || warn "Repository not found >> check connectivity to 100.83.30.114:8080"
 
-echo -e "\n${CYAN}Recent Changes:${NC}"
-rpm -q --changelog linuxtweaks | head -15
+echo -e "\n${CYAN}Recent Changelog:${NC}"
+rpm -q --changelog linuxtweaks | head -10
 
-# Final summary
+# Bye
 echo ""
 header "✅ LinuxTweaks v${VERSION} - Installation Complete!"
-echo -e "${GREEN}Services configured and verified.${NC}"
-echo -e "${CYAN}👉 Run: linuxtweaks${NC}"
+echo -e "${GREEN}All services configured and verified.${NC}"
 echo ""
-
-# Launch tray app
-nohup linuxtweaks > /dev/null 2>&1 &
-sleep 2
-
-# Run initial check
-bash /usr/lib/linuxtweaks/lib/check.sh
-echo ""
-
-# Verify services
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}📋 Service Status:${NC}"
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo ""
-
-echo -e "${CYAN}Timer:${NC}"
-systemctl --user status linuxtweaks.timer | grep -E "Loaded|Active"
-
-echo ""
-echo -e "${CYAN}Services:${NC}"
-systemctl --user status linuxtweaks.service | grep -E "Loaded|Active"
-systemctl --user status linuxtweaks-autostart.service | grep -E "Loaded|Active"
-
-echo ""
-echo -e "${CYAN}Next scheduled check:${NC}"
-systemctl --user list-timers linuxtweaks.timer --no-pager
-
-echo ""
-echo -e "${CYAN}Enabled status:${NC}"
-echo "  Timer: $(systemctl --user is-enabled linuxtweaks.timer)"
-echo "  Service: $(systemctl --user is-enabled linuxtweaks.service)"
-echo "  Autostart: $(systemctl --user is-enabled linuxtweaks-autostart.service)"
-
+echo -e "${YELLOW}Next Steps:${NC}"
+echo -e "  1. ${CYAN}Run the app:${NC} ${GREEN}linuxtweaks${NC}"
+echo -e "  2. ${CYAN}Open Settings:${NC} Configure check interval and update options"
+echo -e "  3. ${CYAN}Default Timer will:${NC} Run every 30 minutes (configurable in Settings)"
+echo -e "  4. ${CYAN}Autostart on:${NC} Next login"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-
