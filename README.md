@@ -20,6 +20,32 @@ I built this because I was tired of hunting through different tools to check upd
 - **Automatic checks**: Configurable intervals (1 min to 1 week)
 - **Settings that stick**: Configure once, it remembers
 
+## What my package contains: 
+✅ Config files:
+   /etc/sudoers.d/linuxtweaks
+   /etc/systemd/user-preset/50-linuxtweaks.preset
+   /etc/xdg/autostart/linuxtweaks.desktop
+
+✅ Binaries (wrapper scripts):
+   /usr/bin/linuxtweaks
+   /usr/bin/linuxtweaks-autostart
+   /usr/bin/linuxtweaks-check
+   /usr/bin/linuxtweaks-upgrade
+
+✅ Application files:
+   /usr/lib/linuxtweaks/lib/ (shell scripts)
+   /usr/lib/linuxtweaks/tray/ (Python files + icon)
+
+✅ Systemd services:
+   /usr/lib/systemd/user/linuxtweaks.timer
+   /usr/lib/systemd/user/linuxtweaks.service
+   /usr/lib/systemd/user/linuxtweaks-autostart.service
+
+✅ Documentation:
+   /usr/share/doc/linuxtweaks/README.md
+   /usr/share/licenses/linuxtweaks/LICENSE
+   
+
 ## Installation
 
 ### Add the Repository
