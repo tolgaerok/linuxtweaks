@@ -22,19 +22,19 @@ I built this because I was tired of hunting through different tools to check upd
 
 ## What my package contains: 
 ✅ Config files:
-   /etc/sudoers.d/linuxtweaks
-   /etc/systemd/user-preset/50-linuxtweaks.preset
-   /etc/xdg/autostart/linuxtweaks.desktop
+-   /etc/sudoers.d/linuxtweaks
+-   /etc/systemd/user-preset/50-linuxtweaks.preset
+-   /etc/xdg/autostart/linuxtweaks.desktop
 
 ✅ Binaries (wrapper scripts):
-   /usr/bin/linuxtweaks
-   /usr/bin/linuxtweaks-autostart
-   /usr/bin/linuxtweaks-check
-   /usr/bin/linuxtweaks-upgrade
+-   /usr/bin/linuxtweaks
+-   /usr/bin/linuxtweaks-autostart
+-   /usr/bin/linuxtweaks-check
+-   /usr/bin/linuxtweaks-upgrade
 
 ✅ Application files:
-   /usr/lib/linuxtweaks/lib/ (shell scripts)
-   /usr/lib/linuxtweaks/tray/ (Python files + icon)
+-  /usr/lib/linuxtweaks/lib/ (shell scripts)
+-  /usr/lib/linuxtweaks/tray/ (Python files + icon)
 
 ✅ Systemd services:
    /usr/lib/systemd/user/linuxtweaks.timer
@@ -42,9 +42,11 @@ I built this because I was tired of hunting through different tools to check upd
    /usr/lib/systemd/user/linuxtweaks-autostart.service
 
 ✅ Documentation:
-   /usr/share/doc/linuxtweaks/README.md
-   /usr/share/licenses/linuxtweaks/LICENSE
-   
+-  /usr/share/doc/linuxtweaks/README.md
+-  /usr/share/licenses/linuxtweaks/LICENSE
+
+<img width="318" height="516" alt="Screenshot_20260910_215833" src="https://github.com/user-attachments/assets/2e49aadf-10d6-4be3-9d74-6387bc9d090c" />
+
 
 ## Installation
 
