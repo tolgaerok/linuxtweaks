@@ -67,22 +67,26 @@ curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWE
 Clean up any old installations first (safe on fresh installs):
 
 ```bash
-# Stop any old services
+# Stop any old/new services
 systemctl --user stop linuxtweaks* 2>/dev/null || true
 systemctl --user disable linuxtweaks* 2>/dev/null || true
 systemctl --user reset-failed 2>/dev/null || true
 
 # Kill any running processes
+pkill -9 -f "python3 -m tray" 2>/dev/null || true
 pkill -9 -f "tray.py" 2>/dev/null || true
 pkill -9 -f "linuxtweaks" 2>/dev/null || true
 
-# Remove old user-location files
+# Remove old user-location files (backward compat)
 rm -f ~/.config/systemd/user/linuxtweaks*.service
 rm -f ~/.config/systemd/user/linuxtweaks*.timer
 rm -f ~/.config/systemd/user/app-linuxtweaks@autostart.service
-rm -rf ~/.config/linuxtweaks
 rm -rf ~/.local/lib/linuxtweaks
 rm -f ~/.local/bin/linuxtweaks*
+
+# Remove new v6.1.68x user-specific files
+rm -rf ~/.config/linuxtweaks
+rm -f ~/.config/systemd/user/linuxtweaks.timer
 
 # Reload systemd
 systemctl --user daemon-reload
