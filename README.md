@@ -4,7 +4,7 @@
 
 [![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
 
-**A simple, no-nonsense system update manager for Fedora.**
+**🫟  A simple, no-nonsense system update manager for Fedora...**
 
 <img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/9a1a78ba-f982-416f-87a1-149c7e30b4ad" />
 
