@@ -90,6 +90,8 @@ rpm -ql linuxtweaks | grep systemd/user | while read service; do
     echo "  ✓ $(basename $service)"
 done
 
+linuxtweaks
+
 # Service Status
 echo ""
 header "🫟 LinuxTweaks Service Status"

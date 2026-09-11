@@ -6,7 +6,7 @@
 %endif
 
 Name:           linuxtweaks
-Version:        6.1.69
+Version: 6.1.75
 Release:        1%{?dist}
 Summary:       🛡️ Personal Fedora System Update Manager > 🫟  LinuxTweaks 2026 Tray Application
 License:        MIT
@@ -63,9 +63,10 @@ mkdir -p %{buildroot}%{_userunitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/systemd/user-preset
 
 # Install source files from tarball
-install -m 644 etc/xdg/autostart/linuxtweaks.desktop %{buildroot}%{_sysconfdir}/xdg/autostart/
-install -m 644 etc/sudoers.d/linuxtweaks %{buildroot}%{_sysconfdir}/sudoers.d/
+# install -m 644 etc/sudoers.d/linuxtweaks %{buildroot}%{_sysconfdir}/sudoers.d/
+install -m 440 etc/sudoers.d/linuxtweaks %{buildroot}%{_sysconfdir}/sudoers.d/
 install -m 644 etc/systemd/user-preset/50-linuxtweaks.preset %{buildroot}%{_sysconfdir}/systemd/user-preset/
+install -m 644 etc/xdg/autostart/linuxtweaks.desktop %{buildroot}%{_sysconfdir}/xdg/autostart/
 
 install -m 755 lib/*.sh %{buildroot}%{_libdir}/linuxtweaks/lib/
 install -m 755 tray/*.py %{buildroot}%{_libdir}/linuxtweaks/tray/
@@ -85,17 +86,17 @@ install -m 644 usr/lib/systemd/user/linuxtweaks-autostart.service %{buildroot}%{
 %files
 %license LICENSE
 %doc README.md
+%attr(0440, root, root) %config(noreplace) %{_sysconfdir}/sudoers.d/linuxtweaks
+%config %{_sysconfdir}/xdg/autostart/linuxtweaks.desktop
+%config %{_sysconfdir}/systemd/user-preset/50-linuxtweaks.preset
+%{_bindir}/linuxtweaks
+%{_bindir}/linuxtweaks-autostart
+%{_bindir}/linuxtweaks-check
+%{_bindir}/linuxtweaks-upgrade
+%{_libdir}/linuxtweaks/
 %{_userunitdir}/linuxtweaks.timer
 %{_userunitdir}/linuxtweaks.service
 %{_userunitdir}/linuxtweaks-autostart.service
-%{_bindir}/linuxtweaks-autostart
-%{_bindir}/linuxtweaks
-%{_bindir}/linuxtweaks-upgrade
-%{_bindir}/linuxtweaks-check
-%{_libdir}/linuxtweaks/
-%{_sysconfdir}/sudoers.d/linuxtweaks
-%{_sysconfdir}/xdg/autostart/linuxtweaks.desktop
-%{_sysconfdir}/systemd/user-preset/50-linuxtweaks.preset
 
 %post
 %systemd_user_post linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service
@@ -177,6 +178,23 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 %changelog
+* Fri Sep 11 2026 Tolga Erok <kingtolga@gmail.com> - 6.1.71-1
+- IMPROVED: Sudoers configuration now properly packaged in /etc/sudoers.d/linuxtweaks
+- IMPROVED: Package manager commands scoped to specific binaries only (dnf, flatpak, fwupdmgr)
+- IMPROVED: Sudoers file marked noreplace to preserve user modifications
+- IMPROVED: Works for any user without hardcoding usernames
+- FIXED: check.sh now uses full paths (/usr/bin/dnf, /usr/bin/flatpak, /usr/bin/fwupdmgr)
+- FIXED: upgrade.sh now uses full paths matching sudoers configuration
+- FIXED: Passwordless sudo for timer-based and manual update checks
+- SECURITY: Sudoers permissions set to 0440 (readable by root only)
+
+* Thu Sep 10 2026 Tolga Erok <kingtolga@gmail.com> - 6.1.69-1
+- FIXED: Notification ID tracking (utils.py) >> prevents "replace notification id 9999" plasma error
+- FIXED: notify() function now returns actual notification ID from notify-send
+- FIXED: Only use -r flag when NOTIFY_ID exists (no error on first notification)
+- IMPROVED: Notifications properly reuse IDs for sequential updates
+- IMPROVED: Plasma Shell no longer reports missing notification IDs
+
 * Thu Sep 10 2026 Tolga Erok <kingtolga@gmail.com> - 6.1.68-1
 - FIXED: settings_dialog.py timer interval save (mkdir, shutil.copy, proper error handling)
 - FIXED: User timer directory creation (~/.config/systemd/user/) on first interval change
