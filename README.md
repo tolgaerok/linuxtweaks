@@ -213,7 +213,7 @@ Result: Clean uninstall, zero traces left
 
 ## Installation
 
-### Add the Repository
+### Add the linuxtweaks Repository
 
 ```bash
 echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
@@ -225,7 +225,15 @@ echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.11
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
 ```
 
-### 📥 Install (Clean Slate)
+### Add the linuxtweaks-io Repository
+```bash
+echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=0" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
+
+sudo dnf clean all
+sudo dnf install -y linuxtweaks-io
+```
+
+### 📥 Install linuxtweaks (Clean Slate)
 
 Clean up any old installations first (safe on fresh installs):
 
