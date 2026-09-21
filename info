@@ -1,0 +1,242 @@
+
+rpm -qi linuxtweaks-dnf-updater
+
+rpm -qip linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm
+
+rpm -qlp linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm
+
+rpm -qcp linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm
+
+rpm -qRp linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm
+
+rpm -qsp linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm
+
+rpm2cpio linuxtweaks-dnf-updater-7.1.157-1.fc44.noarch.rpm | cpio -idmv
+
+
+Name        : linuxtweaks-dnf-updater
+Version     : 7.1.157
+Release     : 1.fc44
+Architecture: noarch
+Install Date: Mon 21 Sep 2026 18:26:11
+Group       : Unspecified
+Size        : 73766
+License     : GPL-3.0-or-later
+Signature   : (none)
+Source RPM  : linuxtweaks-dnf-updater-7.1.157-1.fc44.src.rpm
+Build Date  : Mon 21 Sep 2026 18:26:01
+Build Host  : G4-fedora44
+URL         : https://github.com/tolgaerok/linuxtweaks
+Summary     : Professional DNF package manager auto-updater with system tray integration
+Description :
+🫟 LinuxTweaks 7.1.157 > My personal Fedora system update manager <
+
+I wanted a single tool to handle everything: DNF packages, Flatpak apps,
+firmware updates ... all in one place, all from the system tray. No more
+hunting through different update tools. No more QTimer breaking after
+suspend. Just set an interval and let it work.
+
+Built for KDE Plasma on Fedora with PyQt5, systemd timers that actually
+survive suspend/resume, and real-time update detection showing exactly
+what needs updating. One-click upgrade or dry-run to see what would change.
+
+Configure it once, forget about it. Designed and built for my Hamilton Hill,
+Western Australia Fedora setup, but works great on any Fedora system.
+
+ 👁‍🗨 Created by: Tolga Erok
+ 📧 Email:      kingtolga@gmail.com
+ 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks
+Name        : linuxtweaks-dnf-updater
+Version     : 7.1.157
+Release     : 1.fc44
+Architecture: noarch
+Install Date: (not installed)
+Group       : Unspecified
+Size        : 73766
+License     : GPL-3.0-or-later
+Signature   : (none)
+Source RPM  : linuxtweaks-dnf-updater-7.1.157-1.fc44.src.rpm
+Build Date  : Mon 21 Sep 2026 18:26:01
+Build Host  : G4-fedora44
+URL         : https://github.com/tolgaerok/linuxtweaks
+Summary     : Professional DNF package manager auto-updater with system tray integration
+Description :
+🫟 LinuxTweaks 7.1.157 > My personal Fedora system update manager <
+
+I wanted a single tool to handle everything: DNF packages, Flatpak apps,
+firmware updates ... all in one place, all from the system tray. No more
+hunting through different update tools. No more QTimer breaking after
+suspend. Just set an interval and let it work.
+
+Built for KDE Plasma on Fedora with PyQt5, systemd timers that actually
+survive suspend/resume, and real-time update detection showing exactly
+what needs updating. One-click upgrade or dry-run to see what would change.
+
+Configure it once, forget about it. Designed and built for my Hamilton Hill,
+Western Australia Fedora setup, but works great on any Fedora system.
+
+ 👁‍🗨 Created by: Tolga Erok
+ 📧 Email:      kingtolga@gmail.com
+ 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks
+/etc/sudoers.d/dnf-updater
+/etc/xdg/autostart/dnf-updater-tray.desktop
+/usr/bin/dnf-updater
+/usr/bin/dnf-updater-check
+/usr/bin/dnf-updater-upgrade
+/usr/lib/dnf-updater/lib
+/usr/lib/dnf-updater/lib/check.sh
+/usr/lib/dnf-updater/lib/common.sh
+/usr/lib/dnf-updater/lib/flatpak_unused_packages.sh
+/usr/lib/dnf-updater/lib/full_upgrade.sh
+/usr/lib/dnf-updater/lib/kernel_reboot.sh
+/usr/lib/dnf-updater/lib/list_packages.sh
+/usr/lib/dnf-updater/lib/notification.sh
+/usr/lib/dnf-updater/lib/orphan_packages.sh
+/usr/lib/dnf-updater/lib/packages_cache.sh
+/usr/lib/dnf-updater/lib/restart_services.sh
+/usr/lib/dnf-updater/lib/rpmnew_files.sh
+/usr/lib/dnf-updater/lib/tray.sh
+/usr/lib/dnf-updater/lib/update.sh
+/usr/lib/dnf-updater/tray
+/usr/lib/dnf-updater/tray/__init__.py
+/usr/lib/dnf-updater/tray/__main__.py
+/usr/lib/dnf-updater/tray/dnf-updater-icon.png
+/usr/lib/dnf-updater/tray/tray.py
+/usr/lib/systemd/user/dnf-updater-autostart.service
+/usr/lib/systemd/user/dnf-updater-check.service
+/usr/lib/systemd/user/dnf-updater-check.timer
+/usr/share/applications/dnf-updater.desktop
+/usr/share/icons/hicolor/48x48/apps/dnf-updater.png
+/etc/sudoers.d/dnf-updater
+/bin/sh
+/bin/sh
+/usr/bin/bash
+/usr/bin/bash
+/usr/bin/python3
+/usr/bin/python3
+config(linuxtweaks-dnf-updater) = 7.1.157-1.fc44
+rpmlib(CompressedFileNames) <= 3.0.4-1
+rpmlib(FileDigests) <= 4.6.0-1
+rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+rpmlib(PayloadIsZstd) <= 5.4.18-1
+(no state)    /etc/sudoers.d/dnf-updater
+(no state)    /etc/xdg/autostart/dnf-updater-tray.desktop
+(no state)    /usr/bin/dnf-updater
+(no state)    /usr/bin/dnf-updater-check
+(no state)    /usr/bin/dnf-updater-upgrade
+(no state)    /usr/lib/dnf-updater/lib
+(no state)    /usr/lib/dnf-updater/lib/check.sh
+(no state)    /usr/lib/dnf-updater/lib/common.sh
+(no state)    /usr/lib/dnf-updater/lib/flatpak_unused_packages.sh
+(no state)    /usr/lib/dnf-updater/lib/full_upgrade.sh
+(no state)    /usr/lib/dnf-updater/lib/kernel_reboot.sh
+(no state)    /usr/lib/dnf-updater/lib/list_packages.sh
+(no state)    /usr/lib/dnf-updater/lib/notification.sh
+(no state)    /usr/lib/dnf-updater/lib/orphan_packages.sh
+(no state)    /usr/lib/dnf-updater/lib/packages_cache.sh
+(no state)    /usr/lib/dnf-updater/lib/restart_services.sh
+(no state)    /usr/lib/dnf-updater/lib/rpmnew_files.sh
+(no state)    /usr/lib/dnf-updater/lib/tray.sh
+(no state)    /usr/lib/dnf-updater/lib/update.sh
+(no state)    /usr/lib/dnf-updater/tray
+(no state)    /usr/lib/dnf-updater/tray/__init__.py
+(no state)    /usr/lib/dnf-updater/tray/__main__.py
+(no state)    /usr/lib/dnf-updater/tray/dnf-updater-icon.png
+(no state)    /usr/lib/dnf-updater/tray/tray.py
+(no state)    /usr/lib/systemd/user/dnf-updater-autostart.service
+(no state)    /usr/lib/systemd/user/dnf-updater-check.service
+(no state)    /usr/lib/systemd/user/dnf-updater-check.timer
+(no state)    /usr/share/applications/dnf-updater.desktop
+(no state)    /usr/share/icons/hicolor/48x48/apps/dnf-updater.png
+./etc/sudoers.d/dnf-updater
+./etc/xdg/autostart/dnf-updater-tray.desktop
+./usr/bin/dnf-updater
+./usr/bin/dnf-updater-check
+./usr/bin/dnf-updater-upgrade
+./usr/lib/dnf-updater/lib
+./usr/lib/dnf-updater/lib/check.sh
+./usr/lib/dnf-updater/lib/common.sh
+./usr/lib/dnf-updater/lib/flatpak_unused_packages.sh
+./usr/lib/dnf-updater/lib/full_upgrade.sh
+./usr/lib/dnf-updater/lib/kernel_reboot.sh
+./usr/lib/dnf-updater/lib/list_packages.sh
+./usr/lib/dnf-updater/lib/notification.sh
+./usr/lib/dnf-updater/lib/orphan_packages.sh
+./usr/lib/dnf-updater/lib/packages_cache.sh
+./usr/lib/dnf-updater/lib/restart_services.sh
+./usr/lib/dnf-updater/lib/rpmnew_files.sh
+./usr/lib/dnf-updater/lib/tray.sh
+./usr/lib/dnf-updater/lib/update.sh
+./usr/lib/dnf-updater/tray
+./usr/lib/dnf-updater/tray/__init__.py
+./usr/lib/dnf-updater/tray/__main__.py
+./usr/lib/dnf-updater/tray/dnf-updater-icon.png
+./usr/lib/dnf-updater/tray/tray.py
+./usr/lib/systemd/user/dnf-updater-autostart.service
+./usr/lib/systemd/user/dnf-updater-check.service
+./usr/lib/systemd/user/dnf-updater-check.timer
+./usr/share/applications/dnf-updater.desktop
+./usr/share/icons/hicolor/48x48/apps/dnf-updater.png
+153 blocks
+┌(tolga@G4-fedora44) ➤ noarch
+└➤
+
+
+ tree
+.
+├── build_new.sh
+├── check-diff-new.sh
+├── checkers
+│   ├── build_new.sh
+│   ├── build.sh
+│   ├── check-diff-new.sh
+│   ├── check-diff.sh
+│   ├── diff2.sh
+│   ├── diff-deployment.sh
+│   └── REFACTORING_SUMMARY.md
+├── diff-deployment.sh
+├── etc
+│   ├── sudoers.d
+│   │   ├── dnf-updater
+│   │   └── linuxtweaks-dnf-updater
+│   └── xdg
+│       ├── applications
+│       │   └── dnf-updater.desktop
+│       └── autostart
+│           └── dnf-updater-tray.desktop
+├── lib
+│   ├── check.sh
+│   ├── common.sh
+│   ├── flatpak_unused_packages.sh
+│   ├── full_upgrade.sh
+│   ├── kernel_reboot.sh
+│   ├── list_packages.sh
+│   ├── notification.sh
+│   ├── orphan_packages.sh
+│   ├── packages_cache.sh
+│   ├── restart_services.sh
+│   ├── rpmnew_files.sh
+│   ├── tray.sh
+│   └── update.sh
+├── RPM
+│   └── dnf-updater.spec
+├── tray
+│   ├── dnf-updater-icon.png
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── __pycache__
+│   │   └── tray.cpython-314.pyc
+│   └── tray.py
+└── usr
+    ├── bin
+    │   ├── dnf-updater
+    │   ├── dnf-updater-check
+    │   └── dnf-updater-upgrade
+    └── lib
+        └── systemd
+            └── user
+                ├── dnf-updater-autostart.service
+                ├── dnf-updater-check.service
+                └── dnf-updater-check.timer
+
+16 directories, 39 files
