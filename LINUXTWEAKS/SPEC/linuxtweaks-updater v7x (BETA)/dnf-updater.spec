@@ -94,6 +94,7 @@ for user_home in /home/*; do
 			user=$(basename "$user_home")
 			chown "$user:$user" "$state_dir" 2>/dev/null || true
 			chmod 700 "$state_dir" 2>/dev/null || true
+      # Thankyou Nixos!
 			# Keep this user's systemd --user manager alive across logout/suspend,
 			# otherwise Persistent= timers (weekly maintenance) lose their last-run
 			# state on every fresh login and fire immediately instead of weekly.
