@@ -1,15 +1,39 @@
+<div align="center">
+
+[![Version](https://img.shields.io/badge/Version-7.3.8-5e81ac)](https://github.com/tolgaerok/linuxtweaks)
+[![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
+[![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
+[![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
+[![Bash](https://img.shields.io/badge/Bash-scripts-4EAA25?logo=gnubash&logoColor=white)](https://www.gnu.org/software/bash)
+
+[![RPM](https://img.shields.io/badge/RPM-GPG_signed-2e3440?logo=gnuprivacyguard&logoColor=white)](#installation)
+[![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue)](https://github.com/tolgaerok/linuxtweaks/blob/main/LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen)](https://github.com/tolgaerok/linuxtweaks)
+[![Last commit](https://img.shields.io/github/last-commit/tolgaerok/linuxtweaks)](https://github.com/tolgaerok/linuxtweaks/commits/main)
+[![Stars](https://img.shields.io/github/stars/tolgaerok/linuxtweaks?style=flat)](https://github.com/tolgaerok/linuxtweaks/stargazers)
+
+</div>
+
+----------------
+
 ![Linux Tweaks](https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png)
+[![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
 
 # 🫟 LinuxTweaks 2026 {#top}
 
-[![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
 
 **🫟  A simple, no-nonsense system update manager for Fedora...**
 
 <!-- screenshot: LinuxTweaks Updater tray menu -->
 
-
 I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
+
+### The tray icon and app
+
+<img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
+
+<img width="292" height="479" alt="image" src="https://github.com/user-attachments/assets/99139b76-969c-4591-979e-424faffae4ae" />
 
 ## What It Does
 
@@ -23,6 +47,9 @@ I built this because I was tired of hunting through different tools to check upd
 - **Weekly maintenance**: cleans the DNF cache, trims the journal to 7 days, runs SSD TRIM (skipped if Fedora's own `fstrim.timer` does it)
 - **What's new**: shows what changed after each update of the app itself
 - **Signed packages**: everything in my repo is signed with my LinuxTweaks key
+
+<img width="1909" height="1022" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
+
 
 ## Installation
 
