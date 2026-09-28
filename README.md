@@ -31,9 +31,11 @@ I built this because I was tired of hunting through different tools to check upd
 
 ### The tray icon and app
 
-<img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
+
 
 <img width="292" height="479" alt="image" src="https://github.com/user-attachments/assets/99139b76-969c-4591-979e-424faffae4ae" />
+<img width="429" height="219" alt="image" src="https://github.com/user-attachments/assets/524a2e40-508a-4ed9-9f71-cd19ab47cbd3" />
+<img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
 
 ## What It Does
 
