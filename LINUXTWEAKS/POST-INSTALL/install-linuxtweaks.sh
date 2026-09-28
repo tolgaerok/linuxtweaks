@@ -1,12 +1,14 @@
 #!/bin/bash
 # ======================================================================
-#   LinuxTweaks Installation & Verification Suite 
+#   LinuxTweaks Updater - Installation & Verification Suite
 #   Author : Tolga Erok
-#   Date   : 10 Sep 2026
-#   Purpose: Clean install from repo with full verification
+#   Date   : 28 Sep 2026
+#   Purpose: Install LinuxTweaks Updater from my repo, with verification.
+#            Replaces the old LinuxTweaks 6.x app (package "linuxtweaks")
+#            automatically.
 # ======================================================================
 set -e
-clear
+clear 2>/dev/null || true  # no TERM (e.g. over ssh) must not stop the install
 
 # ── Colours ────────────────────────────────────────────────
 BLUE='\033[0;34m'
@@ -35,111 +37,78 @@ warn() {
     echo -e "${RED}❌ ERROR${NC}: $*" >&2
 }
 
-# ── Start ──────────────────────────────────────────────────
-header "  🫟   LinuxTweaks Installation Suite "
-
-# My Repository Configuration
-step "Repository Configuration"
+PACKAGE="linuxtweaks-updater"
+REPO_URL="http://100.83.30.114:8080/linuxtweaks"
 REPO_FILE="/etc/yum.repos.d/linuxtweaks.repo"
-if [ -f "$REPO_FILE" ]; then
-    success "Repository already configured"
-else
-    echo "Adding LinuxTweaks repository..."
-    echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee "$REPO_FILE" > /dev/null
-    success "Repository added"
-fi
 
-# Cleaning Old Installation
-step "Cleaning Old Installation"
-systemctl --user stop linuxtweaks.timer 2>/dev/null || true
-systemctl --user stop linuxtweaks-autostart.service 2>/dev/null || true
-systemctl --user disable linuxtweaks.timer 2>/dev/null || true
-systemctl --user disable linuxtweaks-autostart.service 2>/dev/null || true
-systemctl --user reset-failed 2>/dev/null || true
+# ── Start ──────────────────────────────────────────────────
+header "  🫟   LinuxTweaks Updater Installation Suite "
+
+# My Repository Configuration - always rewritten, so older copies (some had
+# gpgcheck=0) get the signature check and the hourly refresh
+step "Repository Configuration"
+echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=${REPO_URL}/\nenabled=1\ngpgcheck=1\ngpgkey=${REPO_URL}/RPM-GPG-KEY\n# check for new uploads at least hourly\nmetadata_expire=1h" | sudo tee "$REPO_FILE" > /dev/null
+success "Repository configured (signed packages, checked hourly)"
+
+# The old LinuxTweaks 6.x app - the new package replaces it (dnf removes it
+# in the same step), this just stops it running first. Exact names only: a
+# linuxtweaks* pattern would also hit the new linuxtweaks-updater.
+step "Stopping the old LinuxTweaks 6.x app (if you have it)"
+systemctl --user stop linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service 2>/dev/null || true
+systemctl --user disable linuxtweaks.timer linuxtweaks-autostart.service 2>/dev/null || true
+pkill -9 -f "/usr/lib/linuxtweaks/tray" 2>/dev/null || true
 pkill -9 -f "python3 -m tray" 2>/dev/null || true
-pkill -9 -f "check.sh" 2>/dev/null || true
-rm -rf ~/.config/linuxtweaks ~/.config/systemd/user/linuxtweaks.timer
-systemctl --user daemon-reload 2>/dev/null || true
-success "Old installation cleaned"
+systemctl --user reset-failed 2>/dev/null || true
+success "Done"
 
 # System Maintenance
 step "System Maintenance"
 sudo dnf clean all
-sudo dnf autoremove -y || true
-success "System cleaned"
 sudo dnf upgrade --refresh -y || warn "System upgrade encountered an issue"
-success "System updated"
 
-# Installing LinuxTweaks 2026
-step "Installing LinuxTweaks v6.1.68"
-sudo dnf remove linuxtweaks -y || true
-sudo dnf autoremove -y || true
-sudo dnf install linuxtweaks -y || warn "Installation failed - check repo connectivity"
-success "LinuxTweaks installed"
+# Install - dnf asks once to import my signing key
+step "Installing ${PACKAGE}"
+sudo dnf install --refresh -y "$PACKAGE" || { warn "Installation failed - check repo connectivity to 100.83.30.114:8080"; exit 1; }
+VERSION=$(rpm -q --qf '%{VERSION}' "$PACKAGE")
+success "${PACKAGE} ${VERSION} installed"
 
 # Verification
 step "Verification"
-VERSION=$(dnf info linuxtweaks 2>/dev/null | grep "^Version" | awk '{print $3}')
-success "Version: $VERSION"
-
-echo -e "\n${CYAN}📦 Package Info:${NC}"
-dnf info linuxtweaks | grep -E "^Name|^Version|^Release|^Repository"
-
-echo -e "\n${CYAN}🔧 Systemd Services Installed:${NC}"
-rpm -ql linuxtweaks | grep systemd/user | while read service; do
-    echo "  ✓ $(basename $service)"
-done
-
-linuxtweaks
-
-# Service Status
-echo ""
-header "🫟 LinuxTweaks Service Status"
-
-echo -e "${CYAN}Timer:${NC}"
-systemctl --user status linuxtweaks.timer --no-pager 2>&1 | grep -E "Loaded|Active|Trigger" || true
-
-echo -e "\n${CYAN}Update Checker Service:${NC}"
-systemctl --user status linuxtweaks.service --no-pager 2>&1 | grep -E "Loaded|Active|TriggeredBy" || true
-
-echo -e "\n${CYAN}Autostart Service:${NC}"
-systemctl --user status linuxtweaks-autostart.service --no-pager 2>&1 | grep -E "Loaded|Active" || true
-
-echo -e "\n${CYAN}Enabled Status:${NC}"
-echo "  Timer: $(systemctl --user is-enabled linuxtweaks.timer 2>/dev/null || echo 'disabled')"
-echo "  Service: $(systemctl --user is-enabled linuxtweaks.service 2>/dev/null || echo 'static')"
-echo "  Autostart: $(systemctl --user is-enabled linuxtweaks-autostart.service 2>/dev/null || echo 'disabled')"
-
-echo -e "\n${CYAN}User Timer Configuration:${NC}"
-if [ -f ~/.config/systemd/user/linuxtweaks.timer ]; then
-    grep "OnUnitActiveSec" ~/.config/systemd/user/linuxtweaks.timer || echo "  (using system default: 30 minutes)"
+success "Package installed: $(rpm -q "$PACKAGE")"
+if rpm -q --qf '%{NAME}\n' linuxtweaks 2>/dev/null | grep -qx linuxtweaks; then
+    warn "old linuxtweaks 6.x still installed - remove it with: sudo dnf remove linuxtweaks"
 else
-    echo "  User timer not yet created (will be created on first settings change)"
+    success "Old LinuxTweaks 6.x app not present"
 fi
 
-echo -e "\n${CYAN}Application Config:${NC}"
-if [ -f ~/.config/linuxtweaks/config ]; then
-    CHECK_INTERVAL=$(grep "CHECK_INTERVAL" ~/.config/linuxtweaks/config | cut -d= -f2)
-    echo "  Configured interval: $CHECK_INTERVAL seconds"
+echo -e "\n${CYAN}Starting the tray app...${NC}"
+linuxtweaks-updater
+sleep 3
+
+echo -e "\n${CYAN}Background timers:${NC}"
+echo "  Update check:       $(systemctl --user is-enabled linuxtweaks-updater-check.timer 2>/dev/null || echo 'enables on first start')"
+echo "  Weekly maintenance: $(systemctl --user is-enabled linuxtweaks-updater-maintenance.timer 2>/dev/null || echo 'enables on first start')"
+if pgrep -u "$(id -u)" -f '^python3 /usr/lib/linuxtweaks-updater/tray/tray.py' >/dev/null; then
+    success "Tray app running"
 else
-    echo "  Config not yet created (will be created on first run)"
+    warn "Tray app not running - start it with: linuxtweaks-updater"
 fi
 
 echo -e "\n${CYAN}Repository Status:${NC}"
 sudo dnf repolist | grep linuxtweaks || warn "Repository not found >> check connectivity to 100.83.30.114:8080"
 
 echo -e "\n${CYAN}Recent Changelog:${NC}"
-rpm -q --changelog linuxtweaks | head -10
+rpm -q --changelog "$PACKAGE" | head -10
 
 # Bye
 echo ""
-header "✅ LinuxTweaks v${VERSION} - Installation Complete!"
-echo -e "${GREEN}All services configured and verified.${NC}"
+header "✅ LinuxTweaks Updater v${VERSION} - Installation Complete!"
 echo ""
 echo -e "${YELLOW}Next Steps:${NC}"
-echo -e "  1. ${CYAN}Run the app:${NC} ${GREEN}linuxtweaks${NC}"
-echo -e "  2. ${CYAN}Open Settings:${NC} Configure check interval and update options"
-echo -e "  3. ${CYAN}Default Timer will:${NC} Run every 30 minutes (configurable in Settings)"
-echo -e "  4. ${CYAN}Autostart on:${NC} Next login"
+echo -e "  1. ${CYAN}Look for the icon${NC} in your system tray - right-click it for the menu"
+echo -e "  2. ${CYAN}Help:${NC} tray menu > About > Help"
+echo -e "  3. ${CYAN}Checks for updates${NC} every 30 minutes by default (tray menu > Check interval)"
+echo -e "  4. ${CYAN}Starts by itself${NC} at every login"
+echo -e "  5. ${CYAN}New versions${NC} arrive with a normal: sudo dnf upgrade"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

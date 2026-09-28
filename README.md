@@ -6,224 +6,64 @@
 
 **🫟  A simple, no-nonsense system update manager for Fedora...**
 
-<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/9a1a78ba-f982-416f-87a1-149c7e30b4ad" />
+<!-- screenshot: LinuxTweaks Updater tray menu -->
 
 
 I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
 
 ## What It Does
 
-- **Real-time update detection**: DNF packages, Flatpak apps, firmware updates all in one view
-- **System tray icon**: Lives in your tray, shows red when updates are available
-- **One-click upgrades**: Click "Upgrade" and it handles everything
-- **Dry-run mode**: See what would change before actually upgrading
-- **Automatic checks**: Configurable intervals (1 min to 1 week)
-- **Settings that stick**: Configure once, it remembers
+**LinuxTweaks Updater** lives in your system tray and keeps Fedora up to date:
 
-## What my package contains: 
-
-📁 Installation Structure
-```bash
-LinuxTweaks v6.1.68 Installation Structure
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-/
-├── etc/
-│   ├── sudoers.d/
-│   │   └── linuxtweaks                           (sudo permissions)
-│   ├── systemd/
-│   │   └── user-preset/
-│   │       └── 50-linuxtweaks.preset             (enable by default)
-│   └── xdg/
-│       └── autostart/
-│           └── linuxtweaks.desktop               (autostart on login)
-│
-├── usr/
-│   ├── bin/
-│   │   ├── linuxtweaks                           (main wrapper)
-│   │   ├── linuxtweaks-autostart                 (autostart wrapper)
-│   │   ├── linuxtweaks-check                     (check wrapper)
-│   │   └── linuxtweaks-upgrade                   (upgrade wrapper)
-│   │
-│   ├── lib/
-│   │   └── linuxtweaks/
-│   │       ├── lib/
-│   │       │   ├── check.sh                      (check updates logic)
-│   │       │   ├── common.sh                     (common functions)
-│   │       │   ├── config.sh                     (config helpers)
-│   │       │   └── upgrade.sh                    (upgrade logic)
-│   │       │
-│   │       └── tray/
-│   │           ├── __init__.py                   (package init)
-│   │           ├── __main__.py                   (entry point)
-│   │           ├── app.py                        (main tray app)
-│   │           ├── tray.py                       (tray icon)
-│   │           ├── settings_dialog.py            (user settings)
-│   │           ├── about_dialog.py               (about dialog)
-│   │           ├── log_dialog.py                 (log viewer)
-│   │           ├── config.py                     (config reader/writer)
-│   │           ├── utils.py                      (utilities)
-│   │           ├── check_theme.py                (theme handler)
-│   │           └── linuxtweaks-icon.png          (icon asset)
-│   │
-│   └── lib/systemd/user/
-│       ├── linuxtweaks.timer                     (30min timer, user-configurable)
-│       ├── linuxtweaks.service                   (check updates service)
-│       └── linuxtweaks-autostart.service         (tray autostart service)
-│
-├── usr/share/
-│   ├── doc/
-│   │   └── linuxtweaks/
-│   │       └── README.md                         (documentation)
-│   │
-│   └── licenses/
-│       └── linuxtweaks/
-│           └── LICENSE                           (MIT license)
-│
-└── ~/.config/ (user-specific, created at runtime)
-    ├── linuxtweaks/
-    │   └── config                                (app settings)
-    └── systemd/user/
-        └── linuxtweaks.timer                     (user timer override, 1h default)
-
-
-SERVICE ARCHITECTURE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-System Services (in /usr/lib/systemd/user/):
-├── linuxtweaks.timer
-│   └── Runs every 30 minutes (default, user-configurable via Settings)
-│       └── Triggers: linuxtweaks.service
-│
-├── linuxtweaks.service
-│   └── Runs /usr/lib/linuxtweaks/lib/check.sh
-│       └── Checks for: DNF, Flatpak, Firmware, Distrobox updates
-│
-└── linuxtweaks-autostart.service
-    └── Runs /usr/bin/linuxtweaks (tray app)
-        └── Starts on: graphical-session.target (login)
-
-
-FLOW DIAGRAM
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-User Login
-    ↓
-50-linuxtweaks.preset enables services
-    ↓
-┌───────────────────────────────────────┐
-│ linuxtweaks-autostart.service starts  │
-│ Runs: /usr/bin/linuxtweaks            │
-│ → Starts systemctl services           │
-│ → Launches: python3 -m tray           │
-│ → Shows: System tray icon             │
-└───────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────┐
-│ linuxtweaks.timer runs every 1h       │
-│ (default 30min, user-configurable)    │
-└───────────────────────────────────────┘
-    ↓
-Every interval:
-    ↓
-┌───────────────────────────────────────┐
-│ linuxtweaks.service triggered         │
-│ Runs: /usr/lib/linuxtweaks/lib/check.sh
-│ Checks all update sources             │
-│ Updates tray icon with results        │
-│ Shows notifications (if enabled)      │
-└───────────────────────────────────────┘
-    ↓
-User clicks Settings → Changes interval to 1h/6h/12h/etc
-    ↓
-settings_dialog.py:
-  1. Saves CHECK_INTERVAL to ~/.config/linuxtweaks/config
-  2. Creates ~/.config/systemd/user/ if missing
-  3. Copies system timer to user override location
-  4. Modifies OnUnitActiveSec=1h (or selected interval)
-  5. Runs: systemctl --user daemon-reload
-  6. Runs: systemctl --user restart linuxtweaks.timer
-    ↓
-Timer now runs at new interval!
-
-
-CONFIGURATION LEVELS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-System Level (immutable):
-  /usr/lib/systemd/user/linuxtweaks.timer
-    - OnBootSec=30s (initial check on login)
-    - OnUnitActiveSec=30min (default interval)
-    - Persistent=true (survives suspend/resume)
-
-User Level (runtime override):
-  ~/.config/systemd/user/linuxtweaks.timer (created on first settings change)
-    - User's chosen interval (1h, 6h, 12h, etc)
-    - Overrides system timer
-
-App Config:
-  ~/.config/linuxtweaks/config
-    - CHECK_INTERVAL=3600 (user's choice in seconds)
-    - Update options (DNF, Flatpak, Firmware, Distrobox)
-    - Cleanup options (orphans, cache, journal)
-    - Notification settings
-
-
-FILE PERMISSIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Wrapper scripts (755):
-  /usr/bin/linuxtweaks
-  /usr/bin/linuxtweaks-autostart
-  /usr/bin/linuxtweaks-check
-  /usr/bin/linuxtweaks-upgrade
-
-Library scripts (755):
-  /usr/lib/linuxtweaks/lib/*.sh
-
-Python files (755):
-  /usr/lib/linuxtweaks/tray/*.py
-
-Config files (644):
-  /etc/sudoers.d/linuxtweaks (440)
-  /etc/xdg/autostart/linuxtweaks.desktop
-  /etc/systemd/user-preset/50-linuxtweaks.preset
-  /usr/lib/systemd/user/*.{timer,service}
-
-Documentation (644):
-  /usr/share/doc/linuxtweaks/README.md
-  /usr/share/licenses/linuxtweaks/LICENSE
-
-
-UNINSTALL CLEANUP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-When removed with: sudo dnf remove linuxtweaks
-
-%postun removes:
-  ✓ System services (via %systemd_user_postun)
-  ✓ All processes: python3 -m tray, check.sh
-  ✓ User config: ~/.config/linuxtweaks/
-  ✓ User timer override: ~/.config/systemd/user/linuxtweaks.timer
-  ✓ Systemd daemon reload
-
-Result: Clean uninstall, zero traces left
-```
-
+- **Checks in the background**: DNF packages and Flatpak apps, every 30 minutes by default (1 hour to 1 week to choose from), and again after the PC wakes from sleep
+- **Tray icon at a glance**: red with the number of updates, orange when a reboot is pending, green when you're up to date
+- **Notifications with buttons**: *Install all*, *DNF only*, *Flatpak only* or *Later* (reminds you again in 4 hours)
+- **Installs when you say so**: all updates, or just DNF or just Flatpak, in a terminal window so you can see everything
+- **Handles the after-update jobs**: tells you when a new kernel or core library needs a reboot, offers to restart services still running old code, lists changed config files (`.rpmnew`), cleans old caches and unused packages
+- **Weekly maintenance**: cleans the DNF cache, trims the journal to 7 days, runs SSD TRIM (skipped if Fedora's own `fstrim.timer` does it)
+- **What's new**: shows what changed after each update of the app itself
+- **Signed packages**: everything in my repo is signed with my LinuxTweaks key
 
 ## Installation
 
-### Add the linuxtweaks Repository
+### 👍 Quick Install
 
-```bash
-echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
-```
-
-## 👍 Quick Install
+🔹 Sets up my repo, installs LinuxTweaks Updater, checks everything and starts the tray:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
 ```
+
+### 🖖 Or by hand
+
+🔹 Add my repository:
+
+```bash
+echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY\nmetadata_expire=1h" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
+```
+
+Install it (dnf asks once to import my signing key - answer **y**):
+
+```bash
+sudo dnf install --refresh linuxtweaks-updater
+linuxtweaks-updater &
+```
+
+After that it starts by itself at every login, and new versions arrive with a normal `sudo dnf upgrade`.
+
+### Coming from the old LinuxTweaks 6.x or dnf-updater?
+
+Nothing special to do. LinuxTweaks Updater replaces both, so either of these swaps you over (and keeps your dnf-updater settings):
+
+```bash
+sudo dnf upgrade --refresh
+```
+
+```bash
+sudo dnf install --refresh linuxtweaks-updater
+```
+
+If your `/etc/yum.repos.d/linuxtweaks.repo` is older than September 2026, re-run the *Add my repository* command above first - older copies didn't check package signatures.
 
 ### Add the linuxtweaks-io Repository
 ```bash
@@ -233,153 +73,98 @@ sudo dnf clean all
 sudo dnf install -y linuxtweaks-io
 ```
 
-### 📥 Install linuxtweaks (Clean Slate)
-
-Clean up any old installations first (safe on fresh installs):
-
-```bash
-# Stop any old/new services
-systemctl --user stop linuxtweaks* 2>/dev/null || true
-systemctl --user disable linuxtweaks* 2>/dev/null || true
-systemctl --user reset-failed 2>/dev/null || true
-
-# Kill any running processes
-pkill -9 -f "python3 -m tray" 2>/dev/null || true
-pkill -9 -f "tray.py" 2>/dev/null || true
-pkill -9 -f "linuxtweaks" 2>/dev/null || true
-
-# Remove old user-location files (backward compat)
-rm -f ~/.config/systemd/user/linuxtweaks*.service
-rm -f ~/.config/systemd/user/linuxtweaks*.timer
-rm -f ~/.config/systemd/user/app-linuxtweaks@autostart.service
-rm -rf ~/.local/lib/linuxtweaks
-rm -f ~/.local/bin/linuxtweaks*
-
-# Remove new v6.1.68x user-specific files
-rm -rf ~/.config/linuxtweaks
-rm -f ~/.config/systemd/user/linuxtweaks.timer
-
-# Reload systemd
-systemctl --user daemon-reload
-
-echo "✅ Old installation cleaned up! Enjoy brother"
-```
-
-Then install fresh:
-
-<img width="1891" height="609" alt="image" src="https://github.com/user-attachments/assets/63ac9918-7232-43e4-ba92-392542129b89" />
-
-
-```bash
-sudo dnf clean all
-sudo dnf check-update
-sudo dnf install linuxtweaks -y
-```
-
 ### 📋 Verify Installation
 
 ```bash
-dnf info linuxtweaks
+dnf info linuxtweaks-updater
 ```
 
 ### 🪓 Uninstall
 
-<img width="1902" height="547" alt="image" src="https://github.com/user-attachments/assets/5f6281e6-d162-4142-a250-54e014c81ada" />
+From the tray: **About → Uninstall…**, or:
 
 ```bash
-sudo dnf remove linuxtweaks -y
+sudo dnf remove linuxtweaks-updater
 ```
+
+This removes the app, its timers, the menu launcher and its settings. Your installed packages and applied updates stay as they are.
 
 ### 📅 View Changelog
 
+In the tray menu: **What's new**, or:
+
 ```bash
-rpm -q --changelog linuxtweaks
+rpm -q --changelog linuxtweaks-updater
 ```
 
 ## Usage
 
-### 🔑 Start the App
+Right-click the tray icon for the menu:
 
-<img width="239" height="81" alt="image" src="https://github.com/user-attachments/assets/8a61b967-1b55-4d2a-93bd-fc762305132c" />
+| Menu item | What it does |
+|---|---|
+| **DNF (n)** / **Flatpak (n)** | The waiting updates - and *Install ... updates only* when both kinds have some |
+| **Run LinuxTweaks Updater** | Install all waiting updates |
+| **Check for updates** | Check right now |
+| **Check interval** | 1 hour, 6 hours, 1 day or 1 week |
+| **Notifications** | On or off |
+| **Weekly Maintenance** | On or off |
+| **Reboot now** | Only shown when an update needs a reboot |
+| **What's new** / **Logs** / **About** | Release notes, update history + the app's log, version, Help and Uninstall |
+
+The full user guide is in the app: **About → Help**.
+
+### From the Command Line
 
 ```bash
-linuxtweaks
-```
-
-The app appears in your system tray. Right click the icon to see options.
-
-### From Command Line
-
-```bash
-# Manual update check
-bash /usr/lib/linuxtweaks/lib/check.sh
-
-# View current state
-cat /run/user/$(id -u)/linuxtweaks/dnf_count
-```
-
-### Settings
-<img width="258" height="295" alt="image" src="https://github.com/user-attachments/assets/de698d80-7f6a-44bc-bfaa-ba2b35735c3c" />
-
-Click **⚙ Settings** in the tray menu to:
-- Set check interval (1 min to 1 week)
-- Enable/disable Flatpak, Firmware, Distrobox updates
-- Auto-answer "yes" to upgrade prompts
-- Customize DNF flags (`--best`, `--allowerasing`, etc.)
-
-<img width="500" height="658" alt="image" src="https://github.com/user-attachments/assets/eb095833-16de-477a-ad1d-be6303fceed7" />
-
-
-
-## Configuration
-
-Settings stored in: `~/.config/linuxtweaks/config`
-
-```ini
-CHECK_INTERVAL=1800         # Time between checks (seconds)
-AUTO_YES=true               # Auto-answer yes to upgrades
-FLATPAK_USE_SUDO=true
-USE_DISTRO_SYNC=true
-DNF_ARGUMENTS=--best
-INCLUDE_FLATPAK=true
-INCLUDE_FIRMWARE=true
-INCLUDE_DISTROBOX=true
-NOTIFICATIONS=true
-CLEANUP_ORPHANS=true
-CLEANUP_CACHE=true
-CLEANUP_JOURNAL=true
+linuxtweaks-updater                     # start the tray (detaches - you can close the terminal)
+linuxtweaks-updater --foreground        # start it attached, showing its output (troubleshooting)
+linuxtweaks-updater-check               # check for updates and list them
+linuxtweaks-updater-upgrade             # install all updates
+linuxtweaks-updater-upgrade --dnf       # DNF packages only
+linuxtweaks-updater-upgrade --flatpak   # Flatpak apps only
 ```
 
 ## How It Works
 
-1. **Systemd Timer**: Runs check every minute (configurable)
-2. **Check Script**: Queries DNF, Flatpak, fwupd for updates
-3. **State Files**: Stores counts in `/run/user/$(id -u)/linuxtweaks/`
-4. **Tray App**: Reads state, shows icon color (green=up-to-date, red=updates available)
-5. **Upgrade**: Runs full upgrade with your configured DNF flags
+1. **Timer**: `linuxtweaks-updater-check.timer` (systemd user timer) checks for updates, and so does the tray at your chosen interval
+2. **Check**: `dnf check-update` + `flatpak remote-ls --updates`, plus `dnf needs-restarting` to spot a pending reboot
+3. **State**: results are saved in `~/.local/state/linuxtweaks-updater/`
+4. **Tray**: watches that folder and updates the icon, menu and tooltip straight away
+5. **Upgrade**: runs in a terminal, then offers the reboot / service restarts and cleans up
 
 ## 🛠️ Troubleshooting
 
-**App won't start?**
+**No tray icon?**
 ```bash
-systemctl --user --no-pager status linuxtweaks.timer
-journalctl --user --no-pager -u linuxtweaks.service
+linuxtweaks-updater
+```
+It tells you whether it just started or was already running. To see what the tray prints while it runs:
+```bash
+linuxtweaks-updater --foreground
 ```
 
-**Updates not detecting?**
+**Checks not running?**
 ```bash
-bash /usr/lib/linuxtweaks/lib/check.sh
-ls /run/user/$(id -u)/linuxtweaks/
+systemctl --user --no-pager status linuxtweaks-updater-check.timer
+journalctl --user --no-pager -u linuxtweaks-updater-check.service
 ```
 
-**Upgrade conflicts?**
-Go to Settings and add `--allowerasing` to Custom DNF Flags.
+**See everything it did** - tray menu **Logs**, or check by hand:
+```bash
+linuxtweaks-updater-check
+```
+
+**`No match for argument: linuxtweaks-updater`?** Your dnf still has an old copy of the repo list:
+```bash
+sudo dnf install --refresh linuxtweaks-updater
+```
 
 ## Built For
 
 - **OS**: Fedora 44+
 - **Desktop**: KDE Plasma
-- **Language**: Python (PyQt5)
+- **Language**: Python (PyQt5) + Bash
 - **Init**: Systemd
 
 ## Author
