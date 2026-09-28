@@ -51,6 +51,7 @@ I built this because I was tired of hunting through different tools to check upd
 - **Signed packages**: everything in my repo is signed with my LinuxTweaks key
 
 <img width="1909" height="1022" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
+<img width="1165" height="699" alt="image" src="https://github.com/user-attachments/assets/e2b0f145-09a5-45af-bc42-025f2af7c991" />
 
 
 ## Installation
