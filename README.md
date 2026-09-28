@@ -93,6 +93,13 @@ sudo dnf upgrade --refresh
 sudo dnf install --refresh linuxtweaks-updater
 ```
 
+**Had an older LinuxTweaks installed?** Very old versions lived in your home folder (`~/.local/lib/linuxtweaks`) and their timers can keep starting the old app next to the new one. The Quick Install cleans this up for you; to check by hand (it only looks, until you add `--apply`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/cleanup-old-linuxtweaks.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/cleanup-old-linuxtweaks.sh | bash -s -- --apply
+```
+
 If your `/etc/yum.repos.d/linuxtweaks.repo` is older than September 2026, re-run the *Add my repository* command above first - older copies didn't check package signatures.
 
 ### Add the linuxtweaks-io Repository

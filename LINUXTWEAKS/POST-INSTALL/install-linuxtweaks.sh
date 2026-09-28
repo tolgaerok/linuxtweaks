@@ -61,6 +61,12 @@ pkill -9 -f "python3 -m tray" 2>/dev/null || true
 systemctl --user reset-failed 2>/dev/null || true
 success "Done"
 
+# Leftovers of older LinuxTweaks versions (pre-RPM copies in ~/.local, their
+# user timers/autostart that keep starting the old app, unowned /usr files)
+step "Cleaning up old LinuxTweaks leftovers"
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/cleanup-old-linuxtweaks.sh | bash -s -- --apply ||
+    warn "Couldn't run the old-version cleanup - you can run it later (see README)"
+
 # System Maintenance
 step "System Maintenance"
 sudo dnf clean all
