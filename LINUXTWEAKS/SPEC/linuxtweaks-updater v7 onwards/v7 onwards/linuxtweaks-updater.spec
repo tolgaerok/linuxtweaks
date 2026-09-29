@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.3.8
+Version:        7.3.10
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -248,6 +248,17 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.10-1
+- Fixed the popups for Check interval, Notifications and Weekly maintenance
+  only showing the first time: Plasma silently swallowed the later ones
+
+* Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.9-1
+- Fixed flatpak updates that never go away: apps from Fedora's own flatpak
+  remote were counted as updates forever. Only counts what "flatpak update"
+  would really update now
+- Fixed one real flatpak update being dropped from the count
+- Also updates flatpak apps installed just for your account (--user)
+
 * Mon Sep 28 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.8-1
 - Declares procps-ng (pgrep/pkill), which the launcher and the tray
   restart use - always there on a desktop, missing in minimal containers
