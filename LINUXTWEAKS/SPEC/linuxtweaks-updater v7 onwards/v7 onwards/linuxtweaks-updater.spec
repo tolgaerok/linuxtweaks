@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.3.10
+Version:        7.3.13
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -248,6 +248,20 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.13-1
+- Terminal lists tell the two Mesa updates apart too: "Mesa f44 (GL)" and
+  "Mesa f44 (CL)", like the tray already did
+
+* Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.12-1
+- Tidier flatpak list in the tooltip, menu and terminal: just
+  "Discord 1.0.159 → 1.0.160" instead of every column flatpak prints
+
+* Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.11-1
+- Fixed flatpak updates not being found at all since 7.3.9 (Discord
+  1.0.160 showed in Discover but not in the tray)
+- Counts flatpak runtimes too (Mesa, Fedora Platform...), same as Discover -
+  before, runtime-only updates showed as "up to date" and never installed
+
 * Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.10-1
 - Fixed the popups for Check interval, Notifications and Weekly maintenance
   only showing the first time: Plasma silently swallowed the later ones
