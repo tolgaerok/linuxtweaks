@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.3.13
+Version:        7.3.15
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -248,6 +248,15 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 30 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.15-1
+- Help has the What's new look too: a card for every topic, the topic links
+  jump to their card, and "Back to top" at the bottom of each card
+- Help now lists the 1, 5 and 30 minute check intervals (30 is the default)
+
+* Wed Sep 30 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.14-1
+- Logs and About now have the same look as What's new: a big headline,
+  rounded cards, flat tabs and slim scrollbars
+
 * Tue Sep 29 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.13-1
 - Terminal lists tell the two Mesa updates apart too: "Mesa f44 (GL)" and
   "Mesa f44 (CL)", like the tray already did
