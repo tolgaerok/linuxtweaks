@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.3.15
+Version:        7.3.17
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -248,6 +248,20 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Sep 30 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.17-1
+- Fixed a repository showing up as an update that never went away
+  ("gitlab.com_paulcarroty_vscodium_repo: package ... is not installed"):
+  dnf's download progress line for a repo was read as a package
+- Packages installed twice (64 and 32 bit, like glibc) show their version
+  properly instead of both versions glued together
+
+* Wed Sep 30 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.16-1
+- Fixed the tray crashing now and then: it threw the right-click menu away
+  and made a new one on every refresh, even while it was open. Now it keeps
+  one menu and only refills it once you close it
+- A Python error in the tray no longer takes the whole tray down with it,
+  it gets printed and the tray keeps going
+
 * Wed Sep 30 2026 Tolga Erok <kingtolga@gmail.com> - 7.3.15-1
 - Help has the What's new look too: a card for every topic, the topic links
   jump to their card, and "Back to top" at the bottom of each card
