@@ -154,10 +154,14 @@ find_old() {
 	done
 
 	# an old tray still running. 6.x ran as "python3 -m tray" from its own
-	# folder, so I only count it when that folder is one of mine
-	for p in $(pgrep -u "$(id -u)" -f 'python3 -m tray|/linuxtweaks/|/dnf-updater/|linuxtweaks-dnf-updater' 2>/dev/null); do
-		tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -q "$PACKAGE" && continue
-		if tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE '/linuxtweaks/|/dnf-updater/|linuxtweaks-dnf-updater' ||
+	# folder, so I only count it when that folder is one of mine. only real
+	# tray and check paths: the GitHub link has /linuxtweaks/ in it too, and
+	# run through ssh or sh -c this used to find its own shell and kill it
+	local old_paths='/linuxtweaks/(tray|lib)/|/dnf-updater/(tray|lib)/|/linuxtweaks-dnf-updater/(tray|lib)/'
+	for p in $(pgrep -u "$(id -u)" -f "python3 -m tray|$old_paths" 2>/dev/null); do
+		[ "$p" = "$$" ] || [ "$p" = "$PPID" ] && continue
+		tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE "$PACKAGE|install-linuxtweaks|githubusercontent" && continue
+		if tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE "$old_paths" ||
 			readlink "/proc/$p/cwd" 2>/dev/null | grep -qE '/linuxtweaks|dnf-updater'; then
 			OLD_PIDS+=("$p")
 		fi
