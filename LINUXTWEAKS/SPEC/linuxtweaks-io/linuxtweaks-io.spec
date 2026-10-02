@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           linuxtweaks-io
-Version: 1.1.41
+Version: 1.1.42
 Release:        1%{?dist}
 Summary:        🛠️ Personal fedora I/O Scheduler Manager >> Manage kernel I/O schedulers with GUI
 
@@ -14,6 +14,8 @@ Requires:       python3
 Requires:       python3-PyQt5
 Requires:       python3-dbus
 Requires:       kernel
+# the password box for changing a scheduler
+Requires:       polkit
 # the uninstall cleanup
 Requires(preun): bash
 Requires(preun): procps-ng
@@ -57,6 +59,10 @@ install -m 0644 tray/linuxtweaks-io-icon.png %{buildroot}%{_usr}/lib/linuxtweaks
 # Install the uninstall cleanup
 install -d %{buildroot}%{_usr}/lib/linuxtweaks-io/bin
 install -m 0755 bin/cleanup.sh %{buildroot}%{_usr}/lib/linuxtweaks-io/bin/
+# the one thing that runs as root, and the polkit rule that says so nicely
+install -m 0755 bin/set-scheduler %{buildroot}%{_usr}/lib/linuxtweaks-io/bin/
+install -d %{buildroot}%{_datadir}/polkit-1/actions
+install -m 0644 usr/share/polkit-1/actions/org.linuxtweaks.io.policy %{buildroot}%{_datadir}/polkit-1/actions/
 
 # Install executable wrapper
 install -d %{buildroot}%{_usr}/bin
@@ -77,6 +83,7 @@ install -m 0644 lib/icon-scheduler.png %{buildroot}%{_datadir}/icons/hicolor/48x
 %{_usr}/lib/linuxtweaks-io/
 %{_datadir}/applications/linuxtweaks-io.desktop
 %{_datadir}/icons/hicolor/48x48/apps/linuxtweaks-io.png
+%{_datadir}/polkit-1/actions/org.linuxtweaks.io.policy
 
 %post
 RED='\033[0;31m'
@@ -142,6 +149,22 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 %changelog
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.42-1
+- No more "Wayland does not support QWindow::requestActivate()" in the
+  terminal when the window comes to the front. On Wayland KWin decides
+  who gets focus, so I don't ask any more
+- Started from a terminal I let go of it now, so closing the terminal
+  doesn't close me too
+- Started from a folder with its own tray folder in it, like my updater's
+  project, I used to launch LinuxTweaks Updater instead of me. I always
+  start from my own folder now
+- Scrolling the drive list over a dropdown changed that drive's scheduler
+  and popped a password box. The dropdowns ignore the scroll wheel now
+- One password box per change instead of two, and it says what it's for
+  in plain words instead of a line of shell code. Change a few drives in a
+  row and it only asks once. A small helper does the root part and only
+  takes a real drive and a scheduler that drive has
+
 * Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.41-1
 - Cancelling the password box crashed the whole app, it doesn't now. You
   get a message and the list shows what the drive really uses
