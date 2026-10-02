@@ -441,7 +441,14 @@ case "$1" in
 	status
 	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
 	find_old
-	if [ "$(old_count)" -eq 0 ]; then ok "none found"; else show_old; echo "  Remove them with: bash install-linuxtweaks.sh --cleanup"; fi
+	if [ "$(old_count)" -eq 0 ]; then
+		ok "none found"
+		# say so when sudoers wasn't looked at, "none" shouldn't cover a place I couldn't see
+		[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
+	else
+		show_old
+		echo "  Remove them with: bash install-linuxtweaks.sh --cleanup"
+	fi
 	echo ""
 	;;
 --cleanup) cleanup_old ;;
