@@ -210,6 +210,22 @@ remove_old() {
 	ok "removed ${count} old leftover(s)"
 }
 
+# say why these matter, only for what was really found
+explain_old() {
+	# things systemd or the desktop can start: units, their enable links, autostart
+	local starts='systemd/user/|systemd/system/|\.wants/|autostart|user-preset' p live=0 inert=0
+	for p in "${OLD_HOME[@]}" "${OLD_SYSTEM[@]}"; do
+		if echo "$p" | grep -qE "$starts"; then live=1; else inert=1; fi
+	done
+	echo "  These are from my older apps:"
+	[ ${#OLD_PKGS[@]} -gt 0 ] && echo "    an old package is still installed, the new one replaces it"
+	[ ${#OLD_PIDS[@]} -gt 0 ] && echo "    an old tray is still running next to the new one"
+	[ ${#OLD_SUDOERS[@]} -gt 0 ] && echo -e "    ${RED}old sudo rules that give out root without a password${NC}"
+	[ "$live" = 1 ] && echo "    old timers or autostart entries that can start the old app again"
+	[ "$inert" = 1 ] && echo "    leftover files nothing uses any more"
+	echo "  Found:"
+}
+
 # look, show, ask, then clean
 cleanup_old() {
 	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
@@ -219,9 +235,7 @@ cleanup_old() {
 		[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
 		return
 	fi
-	echo "  These are from my older apps. Some can start the old app next to the"
-	echo "  new one, old sudo rules give out root without a password, and the old"
-	echo "  flatpak and podman timers do what the updater does now:"
+	explain_old
 	show_old
 	if ask "Remove them?"; then
 		remove_old
