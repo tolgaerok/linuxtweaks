@@ -5,12 +5,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # one script for my LinuxTweaks Updater. it installs it, updates it, checks
-# it, clears out what my old 6.x app left behind, removes it, and can fill
+# it, clears out what my older apps left behind (dnf-updater, then
+# linuxtweaks-dnf-updater, then LinuxTweaks 6.x), removes it, and can fill
 # the tray with fake updates so you can see how it looks.
 #
 #   bash install-linuxtweaks.sh               install it, or update it
 #   bash install-linuxtweaks.sh --check       only look, changes nothing
-#   bash install-linuxtweaks.sh --cleanup     only clear out old 6.x leftovers
+#   bash install-linuxtweaks.sh --cleanup     only clear out what my older apps left behind
 #   bash install-linuxtweaks.sh --remove      uninstall it
 #   bash install-linuxtweaks.sh --fake 3 20   3 dnf + 20 flatpak fake updates in the tray
 #   bash install-linuxtweaks.sh --restore     put the real update list back
@@ -46,99 +47,161 @@ bad() { echo -e "  ${RED}✗${NC} $*"; }
 
 # ask a yes/no question. works with curl | bash too, the answer comes from
 # your keyboard, not the pipe. no keyboard at all? the answer is no
+has_tty() { { : </dev/tty; } 2>/dev/null; }
 ask() {
 	local reply
-	[ -r /dev/tty ] || return 1
+	has_tty || return 1
 	read -r -p "  $1 [y/N] " reply </dev/tty || return 1
 	[[ $reply =~ ^[Yy] ]]
 }
 
-# ---- old 6.x leftovers ------------------------------------------------------
+# ---- old leftovers ------------------------------------------------------------
 
-# my old app lived in your home folder and had its own timers, they can keep
-# starting the old tray next to the new one. exact old names only, never
-# anything called linuxtweaks-updater
-OLD_UNITS="linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service app-linuxtweaks@autostart.service"
-OLD_SYSTEM_PATHS="/usr/lib/linuxtweaks /usr/lib64/linuxtweaks /usr/local/share/linuxtweaks
-/usr/local/lib/linuxtweaks /usr/local/bin/linuxtweaks /usr/local/bin/linuxtweaks-check
-/usr/local/bin/linuxtweaks-upgrade /usr/local/bin/linuxtweaks-autostart
-/etc/sudoers.d/linuxtweaks /etc/xdg/autostart/linuxtweaks.desktop
-/usr/lib/systemd/user/linuxtweaks.timer /usr/lib/systemd/user/linuxtweaks.service
-/usr/lib/systemd/user/linuxtweaks-autostart.service"
+# everything my older apps left behind. it had three names over the years:
+# dnf-updater, then linuxtweaks-dnf-updater, then LinuxTweaks 6.x (linuxtweaks).
+# exact names only. linuxtweaks* would also hit linuxtweaks-updater, so the 6.x
+# ones are spelled out
 
+OLD_PACKAGES="dnf-updater linuxtweaks-dnf-updater linuxtweaks"
+
+# in your home folder. the * patterns fill in right here, anything that
+# isn't there stays as text and gets skipped below
+OLD_HOME_GLOBS=(
+	"$HOME"/.config/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
+	"$HOME"/.config/systemd/user/*.wants/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
+	"$HOME"/.config/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
+	"$HOME"/.config/systemd/user/*.wants/{dnf-updater-,linuxtweaks-dnf-updater-}*
+	"$HOME"/.config/autostart/{linuxtweaks,linuxtweaks-tray,linuxtweaks-autostart,dnf-updater-tray,linuxtweaks-dnf-updater-tray}.desktop
+	"$HOME"/.config/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
+	"$HOME"/.local/state/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
+	"$HOME"/.cache/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
+	"$HOME"/.local/lib/linuxtweaks
+	"$HOME"/.local/share/linuxtweaks
+	"$HOME"/.local/bin/{linuxtweaks,linuxtweaks-autostart,linuxtweaks-check,linuxtweaks-upgrade,linuxtweaks-tray}
+	"$HOME"/.local/bin/{dnf-updater,linuxtweaks-dnf-updater}*
+	"$HOME"/.local/share/applications/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}.desktop
+	"$HOME"/.local/share/systemd/timers/stamp-{linuxtweaks.timer,linuxtweaks-autostart.service}
+	"$HOME"/.local/share/systemd/timers/stamp-{dnf-updater-,linuxtweaks-dnf-updater-}*
+)
+
+# on the system, only taken when no installed package owns it
+OLD_SYSTEM_GLOBS=(
+	/usr/{lib,lib64}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
+	/usr/{lib,lib64}/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service}
+	/usr/{lib,lib64}/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
+	/usr/local/{share,lib}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
+	/usr/{,local/}bin/{linuxtweaks,linuxtweaks-autostart,linuxtweaks-check,linuxtweaks-upgrade}
+	/usr/{,local/}bin/{dnf-updater,linuxtweaks-dnf-updater}*
+	/usr/share/applications/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}.desktop
+	/usr/share/icons/hicolor/*/apps/{dnf-updater,linuxtweaks-dnf-updater}.png
+	/etc/xdg/autostart/{linuxtweaks,dnf-updater-tray,linuxtweaks-dnf-updater-tray}.desktop
+	/etc/systemd/user-preset/50-linuxtweaks.preset
+	/etc/systemd/user/*.wants/{linuxtweaks.timer,linuxtweaks-autostart.service}
+	/etc/systemd/user/*.wants/{dnf-updater-,linuxtweaks-dnf-updater-}*
+)
+
+OLD_PKGS=()
 OLD_HOME=()
 OLD_SYSTEM=()
+OLD_SUDOERS=()
 OLD_PIDS=()
+SUDOERS_LOOKED=""
+
+# /etc/sudoers.d is the one place you can't look into without root.
+# the old rules gave passwordless dnf to everyone in wheel. .rpmsave and
+# .rpmnew copies don't count to sudo, but one rename switches them back on
+find_old_sudoers() {
+	local f
+	OLD_SUDOERS=()
+	SUDOERS_LOOKED=""
+	if ! sudo -n true 2>/dev/null; then
+		has_tty || return
+		echo "  Looking in /etc/sudoers.d needs your password, only root can read it."
+		sudo -v </dev/tty || return
+	fi
+	SUDOERS_LOOKED=1
+	while IFS= read -r f; do
+		rpm -qf "$f" >/dev/null 2>&1 || OLD_SUDOERS+=("$f")
+	done < <(sudo find /etc/sudoers.d -maxdepth 1 -type f \( -name 'linuxtweaks*' -o -name 'dnf-updater*' \) 2>/dev/null)
+}
 
 find_old() {
+	local p name
+	OLD_PKGS=()
 	OLD_HOME=()
 	OLD_SYSTEM=()
 	OLD_PIDS=()
-	local p u f
 
-	for u in $OLD_UNITS; do
-		for p in "$HOME/.config/systemd/user/$u" "$HOME"/.config/systemd/user/*.wants/"$u"; do
-			[ -e "$p" ] || [ -L "$p" ] && OLD_HOME+=("$p")
-		done
-	done
-	for f in autostart/linuxtweaks.desktop autostart/linuxtweaks-tray.desktop \
-		autostart/linuxtweaks-autostart.desktop linuxtweaks; do
-		[ -e "$HOME/.config/$f" ] && OLD_HOME+=("$HOME/.config/$f")
-	done
-	for p in "$HOME/.local/lib/linuxtweaks" "$HOME/.local/share/linuxtweaks" \
-		"$HOME/.local/share/applications/linuxtweaks.desktop" "$HOME/.cache/linuxtweaks"; do
-		[ -e "$p" ] && OLD_HOME+=("$p")
-	done
-	for f in linuxtweaks linuxtweaks-autostart linuxtweaks-check linuxtweaks-upgrade linuxtweaks-tray; do
-		[ -e "$HOME/.local/bin/$f" ] || [ -L "$HOME/.local/bin/$f" ] && OLD_HOME+=("$HOME/.local/bin/$f")
+	# the old packages themselves. by full name, so dnf can't mix them up
+	# with linuxtweaks-updater, which says it provides the old names
+	for name in $OLD_PACKAGES; do
+		[ "$(rpm -q --qf '%{NAME}' "$name" 2>/dev/null)" = "$name" ] && OLD_PKGS+=("$(rpm -q "$name")")
 	done
 
-	# system files, but only the ones no installed package owns
-	for p in $OLD_SYSTEM_PATHS /etc/systemd/user/*.wants/linuxtweaks.timer \
-		/etc/systemd/user/*.wants/linuxtweaks-autostart.service; do
+	for p in "${OLD_HOME_GLOBS[@]}"; do
+		[ -e "$p" ] || [ -L "$p" ] && OLD_HOME+=("$p")
+	done
+	for p in "${OLD_SYSTEM_GLOBS[@]}"; do
 		[ -e "$p" ] || [ -L "$p" ] || continue
 		rpm -qf "$p" >/dev/null 2>&1 || OLD_SYSTEM+=("$p")
 	done
 
-	# the old tray still running. it ran as "python3 -m tray" from its own
-	# folder, so I only count it when that folder is a linuxtweaks one
-	for p in $(pgrep -u "$(id -u)" -f 'python3 -m tray|/linuxtweaks/tray/|/linuxtweaks/lib/check.sh' 2>/dev/null); do
+	# an old tray still running. 6.x ran as "python3 -m tray" from its own
+	# folder, so I only count it when that folder is one of mine
+	for p in $(pgrep -u "$(id -u)" -f 'python3 -m tray|/linuxtweaks/|/dnf-updater/|linuxtweaks-dnf-updater' 2>/dev/null); do
 		tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -q "$PACKAGE" && continue
-		if tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -q '/linuxtweaks/' ||
-			readlink "/proc/$p/cwd" 2>/dev/null | grep -q '/linuxtweaks'; then
+		if tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE '/linuxtweaks/|/dnf-updater/|linuxtweaks-dnf-updater' ||
+			readlink "/proc/$p/cwd" 2>/dev/null | grep -qE '/linuxtweaks|dnf-updater'; then
 			OLD_PIDS+=("$p")
 		fi
 	done
+
+	find_old_sudoers
 }
 
 show_old() {
 	local p
+	for p in "${OLD_PKGS[@]}"; do note "old package still installed: $p"; done
 	for p in "${OLD_PIDS[@]}"; do note "old tray running, pid $p"; done
+	for p in "${OLD_SUDOERS[@]}"; do note "$p ${RED}(old sudo rules)${NC}"; done
 	for p in "${OLD_HOME[@]}"; do note "$p"; done
 	for p in "${OLD_SYSTEM[@]}"; do note "$p (no package owns it)"; done
+	[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
 }
 
-old_count() { echo $((${#OLD_HOME[@]} + ${#OLD_SYSTEM[@]} + ${#OLD_PIDS[@]})); }
+old_count() { echo $((${#OLD_PKGS[@]} + ${#OLD_HOME[@]} + ${#OLD_SYSTEM[@]} + ${#OLD_SUDOERS[@]} + ${#OLD_PIDS[@]})); }
 
 remove_old() {
+	local count
+	count=$(old_count)
 	[ ${#OLD_PIDS[@]} -gt 0 ] && kill "${OLD_PIDS[@]}" 2>/dev/null
-	systemctl --user disable --now $OLD_UNITS >/dev/null 2>&1
+	systemctl --user stop 'dnf-updater-*' 'linuxtweaks-dnf-updater-*' \
+		linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service >/dev/null 2>&1
+	# by exact name and version, never just "linuxtweaks"
+	[ ${#OLD_PKGS[@]} -gt 0 ] && sudo dnf remove -y "${OLD_PKGS[@]}"
+	[ ${#OLD_SUDOERS[@]} -gt 0 ] && sudo rm -f "${OLD_SUDOERS[@]}"
 	[ ${#OLD_HOME[@]} -gt 0 ] && rm -rf "${OLD_HOME[@]}"
-	[ ${#OLD_SYSTEM[@]} -gt 0 ] && sudo rm -rf "${OLD_SYSTEM[@]}"
+	if [ ${#OLD_SYSTEM[@]} -gt 0 ]; then
+		sudo rm -rf "${OLD_SYSTEM[@]}"
+		sudo systemctl daemon-reload 2>/dev/null
+		sudo gtk-update-icon-cache -q /usr/share/icons/hicolor 2>/dev/null
+	fi
 	systemctl --user daemon-reload 2>/dev/null
 	systemctl --user reset-failed 2>/dev/null
-	ok "removed $(old_count) old leftover(s)"
+	ok "removed ${count} old leftover(s)"
 }
 
 # look, show, ask, then clean
 cleanup_old() {
-	step "Old LinuxTweaks 6.x leftovers"
+	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
 	find_old
 	if [ "$(old_count)" -eq 0 ]; then
 		ok "none found"
+		[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
 		return
 	fi
-	echo "  These are from my old app and can start it next to the new one:"
+	echo "  These are from my older apps. Some can start the old app next to the"
+	echo "  new one, and old sudo rules give out root without a password:"
 	show_old
 	if ask "Remove them?"; then
 		remove_old
@@ -234,14 +297,8 @@ EOF
 		ok "$IO_REPO_FILE now checks my signature too"
 	fi
 
-	# my old 6.x app. the new package replaces it in the same dnf step,
-	# this only stops it running first
-	if rpm -q linuxtweaks >/dev/null 2>&1 && [ "$(rpm -q --qf '%{NAME}' linuxtweaks)" = linuxtweaks ]; then
-		step "Old LinuxTweaks 6.x"
-		systemctl --user stop $OLD_UNITS >/dev/null 2>&1
-		systemctl --user disable $OLD_UNITS >/dev/null 2>&1
-		ok "stopped, dnf swaps it for the new one next"
-	fi
+	# my older apps, the packages included. say no and dnf still swaps
+	# linuxtweaks 6.x and linuxtweaks-dnf-updater for the new one anyway
 	cleanup_old
 
 	step "Installing"
@@ -362,7 +419,7 @@ case "$1" in
 --check)
 	header "🫟  LinuxTweaks Updater check (only looking)"
 	status
-	step "Old LinuxTweaks 6.x leftovers"
+	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
 	find_old
 	if [ "$(old_count)" -eq 0 ]; then ok "none found"; else show_old; echo "  Remove them with: bash install-linuxtweaks.sh --cleanup"; fi
 	echo ""
@@ -375,7 +432,7 @@ case "$1" in
 	# $0 is just "bash" when this comes through curl, so the list lives here
 	echo "  bash install-linuxtweaks.sh               install it, or update it"
 	echo "  bash install-linuxtweaks.sh --check       only look, changes nothing"
-	echo "  bash install-linuxtweaks.sh --cleanup     only clear out old 6.x leftovers"
+	echo "  bash install-linuxtweaks.sh --cleanup     only clear out what my older apps left behind"
 	echo "  bash install-linuxtweaks.sh --remove      uninstall it"
 	echo "  bash install-linuxtweaks.sh --fake 3 20   3 dnf + 20 flatpak fake updates in the tray"
 	echo "  bash install-linuxtweaks.sh --restore     put the real update list back"

@@ -103,10 +103,9 @@ What it does, in order:
 
 1. Checks it can reach my repo
 2. Writes `/etc/yum.repos.d/linuxtweaks.repo` with the signature check on
-3. Stops my old 6.x app if you still have it
-4. Looks for leftovers of my old app, shows you the list and asks before removing anything
-5. Installs LinuxTweaks Updater, or updates it if you have it. Only my package, the rest of your system is left alone
-6. Starts the tray and shows you what's on and what's off
+3. Looks for anything my older apps left behind, shows you the list and asks before removing anything
+4. Installs LinuxTweaks Updater, or updates it if you have it. Only my package, the rest of your system is left alone
+5. Starts the tray and shows you what's on and what's off
 
 dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
 
@@ -118,7 +117,7 @@ Only look, changes nothing:
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
 ```
 
-Only clear out old 6.x leftovers. Shows you the list and asks first:
+Only clear out what my older apps left behind. Shows you the list and asks first:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
@@ -166,21 +165,17 @@ linuxtweaks-updater
 
 From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`.
 
-### Coming from my old LinuxTweaks 6.x or dnf-updater?
+### Coming from dnf-updater, linuxtweaks-dnf-updater or LinuxTweaks 6.x?
 
-Nothing special. LinuxTweaks Updater replaces both:
+Those are all this app under its old names. Run the quick install, it swaps you over.
 
-```bash
-sudo dnf upgrade --refresh
-```
-
-Very old versions lived in your home folder (`~/.local/lib/linuxtweaks`) and their timers can keep starting the old app next to the new one. The quick install finds those. To only look for them:
+The old versions left stuff behind. Some of it keeps starting the old app next to the new one, and the old sudo rules in `/etc/sudoers.d` handed out root without a password. Uninstalling the old app doesn't always take them with it, a sudo rule you edited gets kept as a `.rpmsave` copy. The quick install looks for all of it. To do only that part:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
 ```
 
-It shows the list and asks first.
+It shows you the list and asks first. Looking in `/etc/sudoers.d` needs your password, only root can read it.
 
 If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run the quick install again. Older copies didn't check my signature.
 
