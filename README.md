@@ -179,16 +179,6 @@ It shows you the list and asks first. Looking in `/etc/sudoers.d` needs your pas
 
 If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run the quick install again. Older copies didn't check my signature.
 
-### My I/O scheduler app, linuxtweaks-io
-
-Same repo server, same signing key:
-
-```bash
-echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
-
-sudo dnf install --refresh linuxtweaks-io
-```
-
 ### 📋 Is it installed?
 
 ```bash
@@ -286,6 +276,71 @@ sudo dnf install --refresh linuxtweaks-updater
 ```
 
 **Install stops at "Can I reach my repo?"** It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
+
+## 💽 LinuxTweaks-IO, my I/O scheduler app
+
+Every drive has an I/O scheduler. It decides in what order the reads and writes reach the disk. The right one depends on the drive: NVMe does its own queueing and is happiest with `none`, a SATA SSD likes `mq-deadline`, an old spinning disk does best with `bfq` or `mq-deadline`. Fedora picks for you, and it doesn't always pick well.
+
+LinuxTweaks-IO shows every drive and what it's using, and lets you change it with a click.
+
+- **Every drive at a glance.** NVMe, SSD, hard disk, USB stick, with the scheduler each one uses right now
+- **Only what your kernel has.** It lists the schedulers your kernel really offers, so on CachyOS you'll see `adios` too
+- **Plain explanations.** What each scheduler is good at and when to pick it
+- **Changes it straight away.** Pick one and it's live. It asks for your password, it's a system setting
+- **Keeps it after a reboot, for that exact drive.** It writes a udev rule matched by the drive's serial number: `/etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules`
+- **Shows what's locked in.** A 🔒 *kept at boot* on a drive's card means it has a saved pick
+- **Tray and log.** Sits in the tray and keeps a log of what it changed
+
+### Install
+
+Same repo server and same signing key as the updater, so the same Tailscale heads up applies. Add the repo:
+
+```bash
+echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
+```
+
+Then install it and start it:
+
+```bash
+sudo dnf install --refresh linuxtweaks-io
+linuxtweaks-io
+```
+
+It doesn't start by itself at login. Start it from the app menu when you want it, the udev rule does the work at boot.
+
+If your `/etc/yum.repos.d/linuxtweaks-io.repo` has `gpgcheck=0` in it, run the add the repo command again. Older copies didn't check my signature. Installing the updater with the quick install fixes it too.
+
+### Why the serial number
+
+Linux names your drives at boot: sda, sdb and so on. Usually in the same order, but not always. A USB disk plugged in at boot, or a cable moved to another port, is enough to shuffle them, and a pick saved for "sda" would land on the wrong drive.
+
+So LinuxTweaks-IO saves each pick against the drive's serial number, which never changes. Your pick stays with that exact drive whatever Linux calls it. Drives without a serial, like zram, are matched by name. Picks saved by older versions, by name, switch over to serials the next time you change any drive.
+
+One thing to know: `adios` only exists on CachyOS kernels. Boot another kernel and that drive keeps the kernel's own pick for that boot. It's back on the next CachyOS boot.
+
+### Check what each drive uses
+
+```bash
+grep "" /sys/block/*/queue/scheduler
+```
+
+The one in `[brackets]` is the one in use.
+
+### Go back to Fedora's defaults
+
+```bash
+sudo rm /etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules
+```
+
+Then reboot.
+
+### Uninstall
+
+```bash
+sudo dnf remove linuxtweaks-io
+```
+
+That closes the tray for everyone and removes everybody's picks and log. The udev rule stays on purpose, your drives keep the schedulers you picked. To go back to Fedora's own, see above.
 
 ## Built for
 

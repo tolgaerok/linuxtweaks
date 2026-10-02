@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           linuxtweaks-io
-Version: 1.1.40
+Version: 1.1.41
 Release:        1%{?dist}
 Summary:        🛠️ Personal fedora I/O Scheduler Manager >> Manage kernel I/O schedulers with GUI
 
@@ -14,23 +14,23 @@ Requires:       python3
 Requires:       python3-PyQt5
 Requires:       python3-dbus
 Requires:       kernel
+# the uninstall cleanup
+Requires(preun): bash
+Requires(preun): procps-ng
 
 BuildArch:      noarch
 
 %description
-LinuxTweaks-IO is a professional system tray application for managing Linux kernel I/O schedulers in real-time. It provides a modern GUI to view, monitor, and change I/O schedulers for block devices (NVMe, SSD, HDD, optical drives).
+My I/O scheduler app for Fedora. It shows every drive with the scheduler
+it uses right now, explains what each scheduler is good at, and changes it
+with a click. It asks for your password to change it and writes a udev rule
+so your pick stays after a reboot.
 
-Features:
-- Real-time scheduler detection and monitoring
-- Change schedulers per-device with pkexec authentication
-- Udev rules for automatic persistence across reboots
-- System tray integration with quick access menu
-- Dark mode with cyan accent theme
-- Device information and scheduler details
-- Activity logging and debugging tools
-- Lightweight PyQt5 interface
+It only offers the schedulers your kernel really has: none, mq-deadline,
+kyber and bfq, plus adios on a CachyOS kernel.
 
-Supported schedulers: none, noop, mq-deadline, kyber, bfq, deadline, CFQ
+It sits in the tray and keeps a log of what it changed. It doesn't start
+by itself at login, start it from the app menu when you want it.
 
  👁️‍🗨️ Created by: Tolga Erok
  📧 Email:      kingtolga@gmail.com
@@ -48,10 +48,15 @@ install -d %{buildroot}%{_usr}/lib/linuxtweaks-io/tray
 install -m 0644 tray/__init__.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/__main__.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/app.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
-install -m 0644 tray/check_theme.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
+install -m 0644 tray/theme.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/log_dialog.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
+install -m 0644 tray/about_dialog.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/utils.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/linuxtweaks-io-icon.png %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
+
+# Install the uninstall cleanup
+install -d %{buildroot}%{_usr}/lib/linuxtweaks-io/bin
+install -m 0755 bin/cleanup.sh %{buildroot}%{_usr}/lib/linuxtweaks-io/bin/
 
 # Install executable wrapper
 install -d %{buildroot}%{_usr}/bin
@@ -59,7 +64,7 @@ install -m 0755 usr/bin/linuxtweaks-io %{buildroot}%{_usr}/bin/
 
 # Install desktop entry
 install -d %{buildroot}%{_datadir}/applications
-install -m 0644 etc/xdg/autostart/linuxtweaks-io.desktop %{buildroot}%{_datadir}/applications/
+install -m 0644 usr/share/applications/linuxtweaks-io.desktop %{buildroot}%{_datadir}/applications/
 
 # Install icon
 install -d %{buildroot}%{_datadir}/icons/hicolor/48x48/apps
@@ -94,16 +99,23 @@ echo -e "${YELLOW}      🫟  LinuxTweaks-IO ${GREEN}%{version}${YELLOW} install
 echo ""
 echo -e "${BLUE} 👁️‍🗨️ Created by: Tolga Erok${NC}"
 echo -e "${BLUE} 📧 Email:      kingtolga@gmail.com${NC}"
-echo -e "${BLUE} 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks-io${NC}"
+echo -e "${BLUE} 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks${NC}"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "${YELLOW}✓ Manage I/O schedulers in real-time${NC}"
-echo -e "${YELLOW}✓ Autostart on login${NC}"
-echo -e "${YELLOW}✓ Udev persistence across reboots${NC}"
+echo -e "${YELLOW}✓ Change your I/O schedulers with a click${NC}"
+echo -e "${YELLOW}✓ Your picks stay after a reboot (udev rule)${NC}"
+echo -e "${YELLOW}✓ Start it from the app menu${NC}"
 echo ""
 echo -e "${GREEN}😎 👉 Run: linuxtweaks-io${NC}"
 echo ""
+
+# $1 = how many copies are left after this: 0 = real uninstall, 1+ = upgrade.
+# only a real uninstall cleans up, an upgrade keeps your picks and the rule
+%preun
+if [ "$1" -eq 0 ]; then
+	%{_usr}/lib/linuxtweaks-io/bin/cleanup.sh || :
+fi
 
 %postun
 CYAN='\033[0;36m'
@@ -124,12 +136,37 @@ echo -e "${YELLOW}  🫟  LinuxTweaks-IO ${RED}REMOVED${NC} Thanks for using it!
 echo ""
 echo -e "${BLUE} 👁️‍🗨️ Created by: Tolga Erok${NC}"
 echo -e "${BLUE} 📧 Email:      kingtolga@gmail.com${NC}"
-echo -e "${BLUE} 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks-io${NC}"
+echo -e "${BLUE} 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks${NC}"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
 %changelog
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.41-1
+- Cancelling the password box crashed the whole app, it doesn't now. You
+  get a message and the list shows what the drive really uses
+- Saving the rule and reloading udev is one step with one password box.
+  The reload used to run through sudo with nowhere to ask and failed quietly
+- Only ever one of me. Start me again and the open one comes to the front,
+  no lock file that can go stale
+- Uninstalling cleans up properly now: the tray closes for every user, and
+  everybody's picks, log and any autostart entry go too. The udev rule
+  stays, your drives keep the schedulers you picked
+- Took out the claims that weren't true: no autostart, and no noop,
+  deadline or CFQ, modern kernels dropped those years ago
+- The GitHub link pointed at a page that doesn't exist
+- Binned the leftover systemd service code, udev does that job
+- Bigger window, 890 by 486
+- Your picks belong to the drive now, not its name. I save them against the
+  drive's serial number, so if Linux swaps sda and sdb at boot your pick
+  still lands on the right drive. Old picks switch over the next time you
+  change any drive. A lock on the card shows a drive has a saved pick
+- An About window, same cards as LinuxTweaks Updater: what I do, how I keep
+  your picks, which scheduler for which drive and where I keep things
+- Same look as LinuxTweaks Updater. Every drive gets its own card with its
+  model, size, the scheduler it uses and what that means. Scheduler info and
+  the log use the same cards and headline
+
 * Mon Sep 14 2026 Tolga Erok <tolga@example.com> - 1.1.30-1
 - I/O scheduler management with udev persistence
 - Modern dark theme with cyan accents
