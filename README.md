@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-7.3.13-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
+[![Version](https://img.shields.io/badge/Version-7.5.1-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
 [![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -23,32 +23,32 @@
 # 🫟 LinuxTweaks 2026 {#top}
 
 
-**🫟  A simple, no-nonsense system update manager for Fedora...**
+**🫟 My simple update manager for Fedora.**
 
-<!-- screenshot: LinuxTweaks Updater tray menu -->
-
-I built this because I was tired of hunting through different tools to check updates. DNF, Flatpak, firmware all scattered. I wanted one place that just works.
+I built this because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. I wanted one place that just works.
 
 ### The tray icon and app
-
-
 
 <img width="292" height="479" alt="image" src="https://github.com/user-attachments/assets/99139b76-969c-4591-979e-424faffae4ae" />
 <img width="429" height="219" alt="image" src="https://github.com/user-attachments/assets/524a2e40-508a-4ed9-9f71-cd19ab47cbd3" />
 <img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
 
-## What It Does
+## What it does
 
-**LinuxTweaks Updater** lives in your system tray and keeps Fedora up to date:
+**LinuxTweaks Updater** sits in your system tray and keeps Fedora up to date.
 
-- **Checks in the background**: DNF packages and Flatpak apps, every 30 minutes by default (1 hour to 1 week to choose from), and again after the PC wakes from sleep
-- **Tray icon at a glance**: red with the number of updates, orange when a reboot is pending, green when you're up to date
-- **Notifications with buttons**: *Install all*, *DNF only*, *Flatpak only* or *Later* (reminds you again in 4 hours)
-- **Installs when you say so**: all updates, or just DNF or just Flatpak, in a terminal window so you can see everything
-- **Handles the after-update jobs**: tells you when a new kernel or core library needs a reboot, offers to restart services still running old code, lists changed config files (`.rpmnew`), cleans old caches and unused packages
-- **Weekly maintenance**: cleans the DNF cache, trims the journal to 7 days, runs SSD TRIM (skipped if Fedora's own `fstrim.timer` does it)
-- **What's new**: shows what changed after each update of the app itself
-- **Signed packages**: everything in my repo is signed with my LinuxTweaks key
+- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and again after the PC wakes up
+- **Security fixes stand out.** A 🔴 marks them in the menu, the tooltip and the popup, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
+- **What changed in a package.** Click any package in the DNF list and you get its advisory and its changelog since your version
+- **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date
+- **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later*, which reminds you again in 4 hours
+- **Installs when you say so.** In a terminal window so you see everything. It asks for your password once
+- **Cleans up after.** Tells you when a new kernel needs a reboot, offers to restart services still running old code, lists changed config files (`.rpmnew`), clears old caches and unused packages
+- **Weekly maintenance, if you want it.** Cleans the DNF cache, keeps 7 days of journal, runs SSD TRIM if Fedora isn't already doing it. Off until you switch it on
+- **What's new.** Shows what changed every time the app itself updates
+- **Signed.** Everything in my repo is signed with my LinuxTweaks key
+
+**What it doesn't do.** No sudo rules, no passwordless root. Checks run as you. Weekly maintenance is a normal system timer, and switching it on asks for your password.
 
 <img width="1909" height="1022" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
 <img width="1165" height="699" alt="image" src="https://github.com/user-attachments/assets/e2b0f145-09a5-45af-bc42-025f2af7c991" />
@@ -56,119 +56,184 @@ I built this because I was tired of hunting through different tools to check upd
 
 ## Installation
 
-### 👍 Quick Install
+> **Heads up.** My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing.
 
-🔹 Sets up my repo, installs LinuxTweaks Updater, checks everything and starts the tray:
+### 🔐 First time? Set up Tailscale
+
+Tailscale is a private network between your PCs. It's free for personal use and takes about 5 minutes.
+
+**1.** Make a free account at [tailscale.com](https://tailscale.com). Google, Microsoft or GitHub login all work.
+
+**2.** Add Tailscale's own repo and install it:
+
+```bash
+sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+sudo dnf install tailscale
+```
+
+**3.** Start it, and have it start with the PC:
+
+```bash
+sudo systemctl enable --now tailscaled
+```
+
+**4.** Log in. It prints a link, open it in your browser and log in with the account from step 1:
+
+```bash
+sudo tailscale up
+```
+
+**5.** Send me the email you log in to Tailscale with. I share my repo server with you, you get an email from Tailscale, click accept. You only see my repo server, nothing else of mine, and I can't see your PCs.
+
+**6.** Check you can see it:
+
+```bash
+tailscale ping 100.83.30.114
+```
+
+`pong` means you're in. Now do the quick install below.
+
+### 👍 Quick install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
 ```
 
+What it does, in order:
+
+1. Checks it can reach my repo
+2. Writes `/etc/yum.repos.d/linuxtweaks.repo` with the signature check on
+3. Stops my old 6.x app if you still have it
+4. Looks for leftovers of my old app, shows you the list and asks before removing anything
+5. Installs LinuxTweaks Updater, or updates it if you have it. Only my package, the rest of your system is left alone
+6. Starts the tray and shows you what's on and what's off
+
+dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
+
+The same script does a few more things:
+
+```bash
+bash install-linuxtweaks.sh --check       # only look, changes nothing
+bash install-linuxtweaks.sh --cleanup     # only clear out old 6.x leftovers
+bash install-linuxtweaks.sh --remove      # uninstall it
+bash install-linuxtweaks.sh --fake 3 20   # 3 dnf + 20 flatpak fake updates, to see the tray
+bash install-linuxtweaks.sh --restore     # put the real update list back
+```
+
+Running it straight from GitHub works too, for example:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
+```
+
 ### 🖖 Or by hand
 
-🔹 Add my repository:
+Add my repo:
 
 ```bash
 echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY\nmetadata_expire=1h" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
 ```
 
-Install it (dnf asks once to import my signing key - answer **y**):
+Install it. dnf asks once to import my key, answer **y**:
 
 ```bash
 sudo dnf install --refresh linuxtweaks-updater
-linuxtweaks-updater &
+linuxtweaks-updater
 ```
 
-After that it starts by itself at every login, and new versions arrive with a normal `sudo dnf upgrade`.
+From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`.
 
-### Coming from the old LinuxTweaks 6.x or dnf-updater?
+### Coming from my old LinuxTweaks 6.x or dnf-updater?
 
-Nothing special to do. LinuxTweaks Updater replaces both, so either of these swaps you over (and keeps your dnf-updater settings):
+Nothing special. LinuxTweaks Updater replaces both:
 
 ```bash
 sudo dnf upgrade --refresh
 ```
 
-```bash
-sudo dnf install --refresh linuxtweaks-updater
-```
-
-**Had an older LinuxTweaks installed?** Very old versions lived in your home folder (`~/.local/lib/linuxtweaks`) and their timers can keep starting the old app next to the new one. The Quick Install cleans this up for you; to check by hand (it only looks, until you add `--apply`):
+Very old versions lived in your home folder (`~/.local/lib/linuxtweaks`) and their timers can keep starting the old app next to the new one. The quick install finds those. To only look for them:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/cleanup-old-linuxtweaks.sh | bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/cleanup-old-linuxtweaks.sh | bash -s -- --apply
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
 ```
 
-If your `/etc/yum.repos.d/linuxtweaks.repo` is older than September 2026, re-run the *Add my repository* command above first - older copies didn't check package signatures.
+It shows the list and asks first.
 
-### Add the linuxtweaks-io Repository
-```bash
-echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=0" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
+If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run the quick install again. Older copies didn't check my signature.
 
-sudo dnf clean all
-sudo dnf install -y linuxtweaks-io
-```
+### My I/O scheduler app, linuxtweaks-io
 
-### 📋 Verify Installation
+Same repo server, same signing key:
 
 ```bash
-dnf info linuxtweaks-updater
+echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
+
+sudo dnf install --refresh linuxtweaks-io
 ```
+
+### 📋 Is it installed?
+
+```bash
+bash install-linuxtweaks.sh --check
+```
+
+or just `dnf info linuxtweaks-updater`.
 
 ### 🪓 Uninstall
 
-From the tray: **About → Uninstall…**, or:
+In the tray: **About → Uninstall…**, or:
 
 ```bash
 sudo dnf remove linuxtweaks-updater
 ```
 
-This removes the app, its timers, the menu launcher and its settings. Your installed packages and applied updates stay as they are.
+That takes the app, its timers, the menu launcher and its settings. Your installed packages and updates stay as they are.
 
-### 📅 View Changelog
+### 📅 Changelog
 
-In the tray menu: **What's new**, or:
+In the tray: **What's new**, or:
 
 ```bash
 rpm -q --changelog linuxtweaks-updater
 ```
 
-## Usage
+## Using it
 
-Right-click the tray icon for the menu:
+Right click the tray icon:
 
 | Menu item | What it does |
 |---|---|
-| **DNF (n)** / **Flatpak (n)** | The waiting updates - and *Install ... updates only* when both kinds have some |
-| **Run LinuxTweaks Updater** | Install all waiting updates |
-| **Check for updates** | Check right now |
-| **Check interval** | 1 hour, 6 hours, 1 day or 1 week |
-| **Notifications** | On or off |
-| **Weekly Maintenance** | On or off |
-| **Reboot now** | Only shown when an update needs a reboot |
-| **What's new** / **Logs** / **About** | Release notes, update history + the app's log, version, Help and Uninstall |
+| **🔴 N security fixes** | Only there when a security fix is waiting, with the worst severity |
+| **DNF (n)** / **Flatpak (n)** | What's waiting. Click a DNF package to see what changed in it. *Install ... updates only* shows up when both kinds are waiting |
+| **Reboot now** | Only there when an update needs a reboot |
+| **Run LinuxTweaks Updater** | Installs everything that's waiting |
+| **Check for updates** | Checks right now, you always get a popup with the answer |
+| **Check interval** | 1 hour, 6 hours, 1 day or 1 week. The 1, 5 and 30 minute ones are for testing, 30 minutes is the default |
+| **Notifications** | Popups on or off |
+| **Weekly Maintenance** | On or off, asks for your password |
+| **What's new** / **Logs** / **About** | Release notes, your update history and my app's log, version, Help and Uninstall |
 
-The full user guide is in the app: **About → Help**.
+The full guide is in the app: **About → Help**.
 
-### From the Command Line
+### From the terminal
 
 ```bash
-linuxtweaks-updater                     # start the tray (detaches - you can close the terminal)
-linuxtweaks-updater --foreground        # start it attached, showing its output (troubleshooting)
-linuxtweaks-updater-check               # check for updates and list them
-linuxtweaks-updater-upgrade             # install all updates
-linuxtweaks-updater-upgrade --dnf       # DNF packages only
-linuxtweaks-updater-upgrade --flatpak   # Flatpak apps only
+linuxtweaks-updater                     # start the tray, you can close the terminal after
+linuxtweaks-updater --foreground        # start it and keep its output in the terminal
+linuxtweaks-updater-check               # check and list what's waiting
+linuxtweaks-updater-upgrade             # install everything
+linuxtweaks-updater-upgrade --dnf       # DNF only
+linuxtweaks-updater-upgrade --flatpak   # Flatpak only
 ```
 
-## How It Works
+## How it works
 
-1. **Timer**: `linuxtweaks-updater-check.timer` (systemd user timer) checks for updates, and so does the tray at your chosen interval
-2. **Check**: `dnf check-update` + `flatpak remote-ls --updates`, plus `dnf needs-restarting` to spot a pending reboot
-3. **State**: results are saved in `~/.local/state/linuxtweaks-updater/`
-4. **Tray**: watches that folder and updates the icon, menu and tooltip straight away
-5. **Upgrade**: runs in a terminal, then offers the reboot / service restarts and cleans up
+1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
+2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed
+3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
+4. **Tray.** Watches that folder and redraws the icon, menu and tooltip
+5. **Upgrade.** Runs in Konsole, asks for your password once, then offers the reboot or service restarts and cleans up
+6. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
 ## 🛠️ Troubleshooting
 
@@ -176,7 +241,7 @@ linuxtweaks-updater-upgrade --flatpak   # Flatpak apps only
 ```bash
 linuxtweaks-updater
 ```
-It tells you whether it just started or was already running. To see what the tray prints while it runs:
+It tells you if it just started or was already running. To see what it prints while it runs:
 ```bash
 linuxtweaks-updater --foreground
 ```
@@ -187,17 +252,24 @@ systemctl --user --no-pager status linuxtweaks-updater-check.timer
 journalctl --user --no-pager -u linuxtweaks-updater-check.service
 ```
 
-**See everything it did** - tray menu **Logs**, or check by hand:
+**Weekly maintenance not running?** It's a system timer, so no `--user`:
+```bash
+systemctl --no-pager status linuxtweaks-updater-maintenance.timer
+```
+
+**Want to see everything it did?** Tray menu **Logs**, or check by hand:
 ```bash
 linuxtweaks-updater-check
 ```
 
-**`No match for argument: linuxtweaks-updater`?** Your dnf still has an old copy of the repo list:
+**`No match for argument: linuxtweaks-updater`?** dnf still has an old copy of my repo's list:
 ```bash
 sudo dnf install --refresh linuxtweaks-updater
 ```
 
-## Built For
+**Install stops at "Can I reach my repo?"** It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
+
+## Built for
 
 - **OS**: Fedora 44+
 - **Desktop**: KDE Plasma
@@ -209,11 +281,11 @@ sudo dnf install --refresh linuxtweaks-updater
 **Tolga Erok**  
 Hamilton Hill, Perth, Western Australia  
 📧 kingtolga@gmail.com  
-🐙 [My other GitHub repo's](https://github.com/tolgaerok)
+🐙 [My other GitHub repos](https://github.com/tolgaerok)
 
 ---
 
-## Other Repositories
+## Other repositories
 
 <div align="center">
   <table style="border-collapse: collapse; width: 100%; border: none;">
@@ -248,7 +320,7 @@ Hamilton Hill, Perth, Western Australia
 
 ---
 
-[⬆ Back to Top](#top)
+[⬆ Back to top](#top)
 
 ---
 
