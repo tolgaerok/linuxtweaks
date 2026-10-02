@@ -110,20 +110,43 @@ What it does, in order:
 
 dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
 
-The same script does a few more things:
+The same script does a few more things. Put the option after `bash -s --`, everything after the `--` goes to my script. Any questions and the sudo password still come from your keyboard, not the pipe.
 
-```bash
-bash install-linuxtweaks.sh --check       # only look, changes nothing
-bash install-linuxtweaks.sh --cleanup     # only clear out old 6.x leftovers
-bash install-linuxtweaks.sh --remove      # uninstall it
-bash install-linuxtweaks.sh --fake 3 20   # 3 dnf + 20 flatpak fake updates, to see the tray
-bash install-linuxtweaks.sh --restore     # put the real update list back
-```
-
-Running it straight from GitHub works too, for example:
+Only look, changes nothing:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
+```
+
+Only clear out old 6.x leftovers. Shows you the list and asks first:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
+```
+
+Uninstall it. Asks first, then asks about the repo file:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --remove
+```
+
+Fake updates in the tray, to see how it looks. Here 3 dnf and 20 flatpak, one of them a pretend security fix:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --fake 3 20
+```
+
+Put the real update list back after a fake test:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --restore
+```
+
+Rather have a copy on your PC? Download it once and run it with any of the options above:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh
+bash install-linuxtweaks.sh --check
 ```
 
 ### 🖖 Or by hand
@@ -174,7 +197,7 @@ sudo dnf install --refresh linuxtweaks-io
 ### 📋 Is it installed?
 
 ```bash
-bash install-linuxtweaks.sh --check
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
 ```
 
 or just `dnf info linuxtweaks-updater`.
