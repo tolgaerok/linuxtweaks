@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.5.1
+Version:        7.5.6
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -286,6 +286,51 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.6-1
+- Updated me with dnf or Discover? The tray restarts itself into the new
+  version within a couple of minutes, so you get What's new and the new
+  version without logging out. It waits till you're not using it
+- Starting the tray while the upgrade window is open now tells you to
+  finish or close that window. Alex tried five times and got no clue why
+- An upgrade only counts as running when it really is mine. The old pid
+  file could point at some other program after a while, and then the tray
+  wouldn't start and checks got skipped for no reason
+
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.5-1
+- Updating from the popup could leave you with no tray till you logged in
+  again, Alex found this one too. After an upgrade I restart the tray, and
+  it was starting inside the upgrade window, so closing the window closed
+  the tray. It gets its own unit now
+- No tray when an upgrade ends, because you said n or there was nothing to
+  install? It starts one now. Before, it only came back when something
+  got installed
+
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.4-1
+- Install now on the popup could flash the upgrade window and close it
+  again, Alex caught it. The tray and the timer both check every 30
+  minutes and could run together. Both popped up, and the second popup
+  closed the first, taking your upgrade window with it. Only one check
+  runs at a time now, and the upgrade window gets its own unit so
+  nothing that closes a popup can close it
+
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.3-1
+- Found the real stuck bug, thanks Alex. dnf run as you keeps its own copy
+  of the repo keys and asked to import them (TeamViewer, Tailscale). The
+  question was hidden, so the upgrade window waited forever, and the timer
+  got a no and lost every dnf update. The check never asks anything now,
+  it only reads. The real upgrade still checks keys as root
+- Same fix for the package window, it could sit on Loading forever
+- When the upgrade window has to check first you now see dnf loading each
+  repo, instead of a cursor that looks stuck
+
+* Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.2-1
+- No more checking while an upgrade is running. It saw the updates that
+  were busy installing and put up a popup for them, and Install now on
+  that popup looked stuck. Alex found this one
+- Starting an upgrade closes a popup that's still waiting
+- When the upgrade has to check first it tells you, dnf may need a few
+  minutes to download its package lists
+
 * Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.1-1
 - The updates popup used to stay on screen after an uninstall, or when a
   newer check replaced it, with buttons that did nothing. It closes
