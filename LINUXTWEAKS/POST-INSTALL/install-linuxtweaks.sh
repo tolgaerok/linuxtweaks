@@ -59,6 +59,8 @@ ask() {
 
 # everything my older apps left behind. it had three names over the years:
 # dnf-updater, then linuxtweaks-dnf-updater, then LinuxTweaks 6.x (linuxtweaks).
+# before those, some PCs got hand made bits from me: a tray and resume unit,
+# and timers to clear out flatpak runtimes and podman images.
 # exact names only. linuxtweaks* would also hit linuxtweaks-updater, so the 6.x
 # ones are spelled out
 
@@ -70,6 +72,8 @@ OLD_HOME_GLOBS=(
 	"$HOME"/.config/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
 	"$HOME"/.config/systemd/user/*.wants/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
 	"$HOME"/.config/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
+	"$HOME"/.config/systemd/user/{linuxtweaks-tray.service,linuxtweaks-resume.service}
+	"$HOME"/.config/systemd/user/*.wants/{linuxtweaks-tray.service,linuxtweaks-resume.service}
 	"$HOME"/.config/systemd/user/*.wants/{dnf-updater-,linuxtweaks-dnf-updater-}*
 	"$HOME"/.config/autostart/{linuxtweaks,linuxtweaks-tray,linuxtweaks-autostart,dnf-updater-tray,linuxtweaks-dnf-updater-tray}.desktop
 	"$HOME"/.config/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
@@ -89,6 +93,9 @@ OLD_SYSTEM_GLOBS=(
 	/usr/{lib,lib64}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
 	/usr/{lib,lib64}/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service}
 	/usr/{lib,lib64}/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
+	/usr/{lib,lib64}/systemd/user/{linuxtweaks-tray.service,linuxtweaks-resume.service}
+	/etc/systemd/system/{linuxtweaks-flatpak-cleanup,linuxtweaks-podman-prune}.{service,timer}
+	/etc/systemd/system/*.wants/{linuxtweaks-flatpak-cleanup,linuxtweaks-podman-prune}.timer
 	/usr/local/{share,lib}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
 	/usr/{,local/}bin/{linuxtweaks,linuxtweaks-autostart,linuxtweaks-check,linuxtweaks-upgrade}
 	/usr/{,local/}bin/{dnf-updater,linuxtweaks-dnf-updater}*
@@ -176,7 +183,15 @@ remove_old() {
 	count=$(old_count)
 	[ ${#OLD_PIDS[@]} -gt 0 ] && kill "${OLD_PIDS[@]}" 2>/dev/null
 	systemctl --user stop 'dnf-updater-*' 'linuxtweaks-dnf-updater-*' \
-		linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service >/dev/null 2>&1
+		linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service \
+		linuxtweaks-tray.service linuxtweaks-resume.service >/dev/null 2>&1
+	# my old hand made system timers can still be running. switch off only
+	# the ones whose file is on the list, so never anything a package owns
+	local u
+	for u in linuxtweaks-flatpak-cleanup.timer linuxtweaks-podman-prune.timer; do
+		printf '%s\n' "${OLD_SYSTEM[@]}" | grep -qx "/etc/systemd/system/$u" &&
+			sudo systemctl disable --now "$u" >/dev/null 2>&1
+	done
 	# by exact name and version, never just "linuxtweaks"
 	[ ${#OLD_PKGS[@]} -gt 0 ] && sudo dnf remove -y "${OLD_PKGS[@]}"
 	[ ${#OLD_SUDOERS[@]} -gt 0 ] && sudo rm -f "${OLD_SUDOERS[@]}"
@@ -201,7 +216,8 @@ cleanup_old() {
 		return
 	fi
 	echo "  These are from my older apps. Some can start the old app next to the"
-	echo "  new one, and old sudo rules give out root without a password:"
+	echo "  new one, old sudo rules give out root without a password, and the old"
+	echo "  flatpak and podman timers do what the updater does now:"
 	show_old
 	if ask "Remove them?"; then
 		remove_old
