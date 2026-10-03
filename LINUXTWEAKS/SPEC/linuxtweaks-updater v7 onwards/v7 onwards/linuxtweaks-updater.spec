@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.5.6
+Version:        7.5.9
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -88,7 +88,7 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh
 
 # --- desktop entries --------------------------------------------------------
 install -Dm644 -t %{buildroot}%{_datadir}/applications etc/xdg/applications/%{name}.desktop
@@ -219,7 +219,8 @@ for run in /run/user/[0-9]*; do
 	timeout 10 systemctl --user -M "$user@" daemon-reload >/dev/null 2>&1
 	timeout 10 systemctl --user -M "$user@" reset-failed >/dev/null 2>&1
 done
-:
+# restart running trays into the new version straight away
+%{_prefix}/lib/%{name}/bin/restart-tray.sh || :
 
 # ---------------------------------------------------------------------------
 # files
@@ -286,6 +287,24 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 03 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.9-1
+- Clicking a package in the DNF list is way faster. It only asks the repo
+  the update comes from now. Before, dnf grabbed the changelogs for every
+  repo first, 13 seconds on my PC, now 4. Once cached it's about a second
+
+* Sat Oct 03 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.8-1
+- Updated me with dnf or Discover? The tray restarts into the new version
+  the moment the install finishes, like other apps do. Before, it could
+  take a couple of minutes
+
+* Sat Oct 03 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.7-1
+- The desktop could freeze for a few seconds right after you log in. The
+  tray checked the moment it started, then the timer checked again 30s
+  after boot, so dnf ran four times while Plasma was still loading. Now
+  only the timer checks at login
+- Checks run at low priority, so dnf gives way to whatever you're doing.
+  Clicking Check for updates still runs at full speed
+
 * Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.6-1
 - Updated me with dnf or Discover? The tray restarts itself into the new
   version within a couple of minutes, so you get What's new and the new
