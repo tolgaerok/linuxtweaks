@@ -29,8 +29,13 @@ I built this because I was sick of hunting through different tools to check for 
 
 ### The tray icon and app
 
-<img width="292" height="479" alt="image" src="https://github.com/user-attachments/assets/99139b76-969c-4591-979e-424faffae4ae" />
-<img width="429" height="219" alt="image" src="https://github.com/user-attachments/assets/524a2e40-508a-4ed9-9f71-cd19ab47cbd3" />
+
+<img width="730" height="707" alt="image" src="https://github.com/user-attachments/assets/dae91ae8-89c4-4a63-9461-bad671bbfde3" />
+<img width="770" height="797" alt="image" src="https://github.com/user-attachments/assets/2d4c4c51-4c46-4382-baf3-30906675f62b" />
+<img width="890" height="812" alt="image" src="https://github.com/user-attachments/assets/2c017dfe-a325-4901-931b-455c6fca0b82" />
+<img width="852" height="1027" alt="image" src="https://github.com/user-attachments/assets/220a035d-e202-4ea0-a31b-b830f8cf27ad" />
+<img width="389" height="224" alt="image" src="https://github.com/user-attachments/assets/3fa4476d-7c39-40ab-a5ea-73a6a03fb755" />
+
 <img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
 
 ## What it does
