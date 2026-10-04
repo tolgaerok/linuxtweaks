@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.5.9
+Version:        7.5.11
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -287,6 +287,20 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 04 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.11-1
+- After you installed updates, the tray still said "5 security fixes"
+  next to "System up to date" until the next check. The upgrade now
+  clears them too, and the tray only counts fixes for packages that are
+  still waiting, so updating with dnf or Discover clears them as well
+
+* Sun Oct 04 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.10-1
+- Clicking a package in the DNF list opens instantly now. Each check
+  already collects every waiting package's advisory and changelog in the
+  background, so the click just reads them. Before, every click ran dnf
+  twice, and after 6 hours it downloaded the repo data again first
+- Security advisories show which CVEs they fix, with the bug title next
+  to each link instead of a bare bugzilla link
+
 * Sat Oct 03 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.9-1
 - Clicking a package in the DNF list is way faster. It only asks the repo
   the update comes from now. Before, dnf grabbed the changelogs for every
