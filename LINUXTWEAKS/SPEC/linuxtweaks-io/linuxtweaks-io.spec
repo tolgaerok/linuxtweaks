@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           linuxtweaks-io
-Version: 1.1.42
+Version: 1.1.44
 Release:        1%{?dist}
 Summary:        🛠️ Personal fedora I/O Scheduler Manager >> Manage kernel I/O schedulers with GUI
 
@@ -54,6 +54,7 @@ install -m 0644 tray/theme.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/log_dialog.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/about_dialog.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/utils.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
+install -m 0644 tray/whats_new_dialog.py %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 install -m 0644 tray/linuxtweaks-io-icon.png %{buildroot}%{_usr}/lib/linuxtweaks-io/tray/
 
 # Install the uninstall cleanup
@@ -117,6 +118,11 @@ echo ""
 echo -e "${GREEN}😎 👉 Run: linuxtweaks-io${NC}"
 echo ""
 
+# an open window would keep running the old code. close it, the next start
+# is the new version. only my exact command line, nothing else gets hit
+%posttrans
+pkill -TERM -f '^/usr/bin/python3 -m tray.__main__ --linuxtweaks-io' 2>/dev/null || :
+
 # $1 = how many copies are left after this: 0 = real uninstall, 1+ = upgrade.
 # only a real uninstall cleans up, an upgrade keeps your picks and the rule
 %preun
@@ -149,6 +155,21 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 %changelog
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.44-1
+- What's new, same as in LinuxTweaks Updater. It pops up once after every
+  install or update, and the What's new button or the tray menu opens it
+  any time
+- Starting me twice could still open a second window when the two starts
+  had a different TMPDIR. I keep my lock in your runtime folder now, so
+  it's one window no matter what
+- An update closes my window if it's open, it was still running the old
+  code. Start me again and you're on the new version
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.43-1
+- Only real drives show up now. Mounted ISOs and snaps (loop), zram swap
+  and LUKS or LVM volumes were listed too, but they only have none and
+  there's nothing to change on them
+
 * Fri Oct 02 2026 Tolga Erok <kingtolga@gmail.com> - 1.1.42-1
 - No more "Wayland does not support QWindow::requestActivate()" in the
   terminal when the window comes to the front. On Wayland KWin decides

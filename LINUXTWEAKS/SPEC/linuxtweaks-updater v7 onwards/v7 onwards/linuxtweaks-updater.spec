@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.5.11
+Version:        7.7.1
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -27,6 +27,8 @@ Requires:       konsole
 Requires:       dnf5-command(needs-restarting)
 # pgrep/pkill: the launcher's already-running check, tray restart after upgrade
 Requires:       procps-ng
+# the install window's password box
+Requires:       polkit
 # what my install/uninstall scripts need while they run
 Requires(post):  systemd
 Requires(post):  coreutils
@@ -88,7 +90,9 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper
+# the install window's root part and the polkit rule that asks for it in plain words
+install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 
 # --- desktop entries --------------------------------------------------------
 install -Dm644 -t %{buildroot}%{_datadir}/applications etc/xdg/applications/%{name}.desktop
@@ -237,6 +241,7 @@ done
 %{_unitdir}/%{name}-maintenance.service
 %{_unitdir}/%{name}-maintenance.timer
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
+%{_datadir}/polkit-1/actions/org.linuxtweaks.updater.policy
 %dir %{_sharedstatedir}/%{name}
 %ghost %attr(0644, root, root) %{_sharedstatedir}/%{name}/linger-users
 %ghost %attr(0644, root, root) %{_sharedstatedir}/%{name}/maintenance-last
@@ -287,6 +292,63 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.1-1
+- The help guide explains the install window now. It still talked about
+  the old terminal upgrade
+- Bigger icon at the top of the panel, same size as in About
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.0-1
+- Left click the tray icon for my new panel, in the same cards as my other
+  windows. It shows what's waiting with the install button, if you need a
+  reboot and why, and the settings
+- The settings are a dropdown and two switches now, instead of three
+  submenus. Plasma draws the right click menu itself and it can't do cards,
+  so that menu only keeps the quick things: install, check, open the panel
+  and exit
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.6.2-1
+- Every install or upgrade of mine checks for updates 10 seconds later, it
+  doesn't wait for the tray's next check any more. You get a fresh popup
+  straight away if anything is waiting
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.6.1-1
+- The popup still stayed up after an install when the tray wasn't running
+  at that moment, like my build script's test install, which stops it
+  first. Every logged in user gets the waiting popup closed and a fresh
+  check now, tray running or not
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.6.0-1
+- Installing has its own window now, in my cards instead of a terminal.
+  You see the steps, a progress bar and dnf's own output as it goes, and
+  one password box that says what it's for
+- No more questions in a terminal. When it's done, a reboot, services
+  still running old code, packages nothing needs and changed config files
+  are cards with a button each, and only when there's something to do
+- Show in terminal follows the same log in Konsole, and Stop after this
+  step never cuts dnf off halfway. With the tray closed the popup still
+  opens the terminal upgrade, and linuxtweaks-updater-upgrade still works
+- A popup still waiting closes when an install starts, and when my own
+  package gets installed or upgraded. It used to stay up next to What's new
+  with old numbers. A minute later the tray checks again, and if anything
+  is still waiting you get a fresh one
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.13-1
+- What's new comes up after every install now, a reinstall of the same
+  version too, so you can see it worked. Before it only came up once per
+  version
+- Run LinuxTweaks Updater in the menu is Install updates now. It opens
+  Available updates first, so you see what's waiting and pick all, DNF or
+  Flatpak, instead of it starting straight away
+
+* Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.12-1
+- A new Available updates window, same cards as the rest of my windows.
+  Security fixes come first with a red or orange stripe and how bad they
+  are, then the rest of DNF in green and Flatpak in blue. Click a DNF one
+  for what changed in it, install all or one side from the buttons
+- The long DNF and Flatpak lists in the menu are one line now that opens
+  the window. Plasma draws the menu itself, so it can't do cards
+- Click the updates popup and it opens the window too
+
 * Sun Oct 04 2026 Tolga Erok <kingtolga@gmail.com> - 7.5.11-1
 - After you installed updates, the tray still said "5 security fixes"
   next to "System up to date" until the next check. The upgrade now
