@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-7.5.13-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
+[![Version](https://img.shields.io/badge/Version-7.7.1-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
 [![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -47,8 +47,8 @@ I built this because I was sick of hunting through different tools to check for 
 - **What changed in a package.** Everything waiting is in one window, a card per update. Click a DNF one and you get its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date
 - **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later*, which reminds you again in 4 hours
-- **Installs when you say so.** In a terminal window so you see everything. It asks for your password once
-- **Cleans up after.** Tells you when a new kernel needs a reboot, offers to restart services still running old code, lists changed config files (`.rpmnew`), clears old caches and unused packages
+- **Installs when you say so.** In its own window, in the same cards as the rest: the steps, a progress bar and dnf's own output as it goes. One password box that says what it's for. **Show in terminal** follows the same output in Konsole if you like it that way
+- **Cleans up after.** When it's done, a card with a button for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew`). Only the cards that apply show up
 - **Weekly maintenance, if you want it.** Cleans the DNF cache, keeps 7 days of journal, runs SSD TRIM if Fedora isn't already doing it. Off until you switch it on
 - **What's new.** Shows what changed every time the app itself updates
 - **Signed.** Everything in my repo is signed with my LinuxTweaks key
@@ -245,7 +245,7 @@ linuxtweaks-updater-upgrade --flatpak   # Flatpak only
 2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, menu and tooltip
-5. **Upgrade.** Runs in Konsole, asks for your password once, then offers the reboot or service restarts and cleans up
+5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. When it's done the reboot, service restarts and clean up are buttons. With the tray closed, the popup still opens the terminal upgrade, and `linuxtweaks-updater-upgrade` still works
 6. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
 ## 🛠️ Troubleshooting
