@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-7.5.11-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
+[![Version](https://img.shields.io/badge/Version-7.5.13-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
 [![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -44,7 +44,7 @@ I built this because I was sick of hunting through different tools to check for 
 
 - **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and again after the PC wakes up
 - **Security fixes stand out.** A 🔴 marks them in the menu, the tooltip and the popup, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
-- **What changed in a package.** Click any package in the DNF list and you get its advisory and its changelog since your version
+- **What changed in a package.** Everything waiting is in one window, a card per update. Click a DNF one and you get its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date
 - **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later*, which reminds you again in 4 hours
 - **Installs when you say so.** In a terminal window so you see everything. It asks for your password once
@@ -217,9 +217,9 @@ Right click the tray icon:
 | Menu item | What it does |
 |---|---|
 | **🔴 N security fixes** | Only there when a security fix is waiting, with the worst severity |
-| **DNF (n)** / **Flatpak (n)** | What's waiting. Click a DNF package to see what changed in it. *Install ... updates only* shows up when both kinds are waiting |
+| **Available updates (n)…** | A window with every waiting update on its own card. Security fixes first with a red or orange stripe, then DNF in green and Flatpak in blue. Click a DNF one for what changed in it. Clicking the updates popup opens it too |
 | **Reboot now** | Only there when an update needs a reboot |
-| **Run LinuxTweaks Updater** | Installs everything that's waiting |
+| **Install updates…** | Opens Available updates, so you see what's waiting and pick Install all, DNF only or Flatpak only |
 | **Check for updates** | Checks right now, you always get a popup with the answer |
 | **Check interval** | 1 hour, 6 hours, 1 day or 1 week. The 1, 5 and 30 minute ones are for testing, 30 minutes is the default |
 | **Notifications** | Popups on or off |
