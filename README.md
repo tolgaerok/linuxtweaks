@@ -86,7 +86,7 @@ A quick look over the whole PC: failed services, errors, disk space, memory, cra
 
 ## Installation
 
-> **Heads up.** My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing.
+> **Heads up.** My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing. No access to my server? [Install the RPM file](#-no-tailscale-install-the-rpm-file) instead.
 
 ### 🔐 First time? Set up Tailscale
 
@@ -196,6 +196,28 @@ linuxtweaks-updater
 From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`.
 
 The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
+
+### 📦 No Tailscale? Install the RPM file
+
+The same signed RPM is here on GitHub. This finds the newest one in my folder, downloads the real file, shows you it's an RPM and installs it:
+
+```bash
+url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS/RPM/linuxtweaks-updater%20v7x" | grep -o '"download_url": *"[^"]*\.rpm"' | cut -d'"' -f4 | sort -V | tail -1) && curl -fLO "$url" && file linuxtweaks-updater-*.rpm && sudo dnf install ./linuxtweaks-updater-*.rpm
+```
+
+`file` should say `RPM v3.0 bin linuxtweaks-updater-…` before dnf starts.
+
+**Don't save it from the GitHub page.** Right click → Save, or a `github.com/…/blob/…` link, gets you the web page with an `.rpm` name, and dnf says `not a rpm`. In the browser use the **Download raw file** button on the file's page instead. A broken one says `HTML document` when you run `file` on it, delete it and download it again.
+
+**Use a terminal, not Yum Extender.** Yumex crashes with `Transaction has to be resolved first` when something's wrong, and hides the real reason. `sudo dnf install` tells you.
+
+**Had my repo before?** If `/etc/yum.repos.d/linuxtweaks.repo` is there and you can't reach my server, dnf won't install anything at all. Take it out first:
+
+```bash
+sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.repo
+```
+
+Without my repo, LinuxTweaks doesn't update itself. Your other updates work as normal, it still checks and installs those. For a new version of LinuxTweaks, run the same line again.
 
 ### Coming from dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x or LinuxTweaks-IO?
 
