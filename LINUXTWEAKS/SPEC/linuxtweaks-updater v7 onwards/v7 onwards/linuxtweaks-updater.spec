@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        7.7.1
+Version:        8.0.6
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -90,7 +90,7 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 
@@ -292,6 +292,74 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.6-1
+- What these mean opens 1200 wide, so most lines fit on one row and you
+  scroll less
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.5-1
+- The Memory tab has a What these mean button. Every setting on a card in
+  plain words: what zram is, what each compression is good at, what the
+  swappiness numbers do and what Apply changes. Every choice in the
+  dropdowns has a tooltip too. I had no idea what half of it meant myself
+- The help guide is rewritten for LinuxTweaks: the window and its tabs, new
+  I/O Scheduler and Memory sections, the new files, and what stays when you
+  uninstall
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.4-1
+- You can resize the LinuxTweaks window now, wider and taller. It was
+  locked at one width. It still won't go smaller than the cards need
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.3-1
+- In the I/O Scheduler tab the description sits on its own line under the
+  dropdown, so you can read all of it. Next to the dropdown it got cut off.
+  What it's best for and the drive's serial are in the tooltip
+- Refresh doesn't flash the old cards on top of the new ones any more
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.2-1
+- The window is wider, 760 instead of 680. The I/O Scheduler cards were
+  tight, the description got cut off early next to the dropdown
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.1-1
+- New Memory tab, the zram side of my memtune script. It shows how big the
+  compressed swap in RAM is, how much is in use, the compression and the
+  swappiness, and lets you change them. Recommended for this pc picks the
+  same values memtune would
+- Apply asks for your password once. Swappiness changes straight away, a
+  new size or compression restarts zram, but only when what's in swap fits
+  back into free RAM, otherwise it says so and changes nothing
+- zswap stays in the script, it changes the kernel command line
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.0-1
+- LinuxTweaks Updater is turning into LinuxTweaks, one app for my tweaks.
+  The window has tabs now, Updates is the first one
+- LinuxTweaks-IO moved in as the I/O Scheduler tab. Same cards, same
+  rules file, so your picks and the kept at boot ones carry straight over.
+  A change asks for your password once and stays after a reboot
+- The package is still called linuxtweaks-updater for now, so this is a
+  normal upgrade
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.4-1
+- After an install or upgrade of mine the check did run, but in the
+  background, so the tray never went yellow and it looked like nothing
+  happened. Now the tray restarts with the check lined up itself: yellow
+  dot, Checking for updates in 10s, then the check. Users without the tray
+  running still get the background check
+- The countdown says Checking for updates in…, not Woke up, since it's
+  used after an install too
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.3-1
+- A short sleep didn't count as waking up. I only noticed a wake up when my
+  clock skipped more than 30 seconds, so a 23 second suspend got no check
+  at all. Now logind tells me every time the pc wakes up, however short the
+  sleep was. The clock gap stays as a backup
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.2-1
+- After the pc wakes up the countdown sat on 0s with no yellow dot for half
+  a minute, it looked frozen. It was waiting 30 seconds for the network on
+  purpose. Now the dot goes yellow straight away, the countdown says Woke
+  up, checking in 25s, and the check starts as soon as the network is
+  back, usually after about 5 seconds
+
 * Mon Oct 05 2026 Tolga Erok <kingtolga@gmail.com> - 7.7.1-1
 - The help guide explains the install window now. It still talked about
   the old terminal upgrade
