@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.0.6
+Version:        8.1.2
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -45,6 +45,11 @@ Provides:       linuxtweaks-dnf-updater = %{version}-%{release}
 # dnf upgrade swaps it over, and "dnf install linuxtweaks" gets this instead
 Obsoletes:      linuxtweaks < 7.0
 Provides:       linuxtweaks = %{version}-%{release}
+# LinuxTweaks-IO is the Drives tab now: an upgrade removes it (its own
+# cleanup runs, the udev rule with your picks stays) and "dnf install
+# linuxtweaks-io" gets this instead
+Obsoletes:      linuxtweaks-io < 2.0
+Provides:       linuxtweaks-io = %{version}-%{release}
 
 %description
 🫟 LinuxTweaks %{version} > My personal Fedora system update manager <
@@ -90,7 +95,7 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 
@@ -292,6 +297,57 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.2-1
+- LinuxTweaks-IO is retired, the Drives tab does everything it did and the
+  read-ahead too. This update removes it for you. Your picks stay, the rules
+  file is the same one, only its window and its tray icon go
+- Using both at once wasn't safe, the old app dropped your read-ahead when
+  it saved a scheduler
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.1-1
+- The LinuxTweaks window opens at 1200 by 790, the cards have room to
+  breathe. Still drag it to any size you like
+- The window says it's LinuxTweaks, KDE called it python3 in window rules
+  and the task manager
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.0-1
+- New Network tab. What your connection uses now, and switches for my
+  network tweaks: faster TCP with BBR, bigger buffers, CAKE on Wi-Fi and
+  wired, Wi-Fi power saving off and IPv6 off. Each one says what it does
+- Desktop tweaks in the Memory tab, the rest of my sysctl-desktop script:
+  smooth big file copies, more file watchers and the safety net
+- The settings go in 99-zz-desktop-performance.conf like my script writes.
+  The first change moves my old 99-desktop-performance.conf out of the way
+- Health has fixes now. Count from now for errors and crashes, restart or
+  forget failed services, compare config files, reboot for a new kernel,
+  remove dead login entries
+- The I/O Scheduler tab is called Drives now, it has the read-ahead too and
+  six tabs didn't fit
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.9-1
+- New Health tab, a quick look over the whole pc. Failed services, errors
+  since boot, disk space, memory, crashes, SELinux, packages, the kernel,
+  the logs and autostart, each on a green, orange or red card. Read only,
+  no password, it's my check-system-health script
+- Keep logs up to in the Updates settings, how much disk the system logs
+  may take. 500 MB holds weeks, Fedora lets them grow to 4 GB. From my
+  journal-cap script
+- The tabs scroll when they don't fit, so the window opens at a size that
+  fits a 1080 screen
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.8-1
+- New Kernels tab. Every installed kernel with its package and NVIDIA
+  build, which one is running, which one boots by default, Boot by default
+  and Remove. Remove never touches the running kernel, the last one, or
+  kernel-headers. You also pick which new kernels take over as default when
+  they install, so a Fedora kernel update doesn't push out your CachyOS one.
+  I got caught by exactly that this week
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.7-1
+- Read-ahead on every drive card in the I/O Scheduler tab, next to the
+  scheduler. Kept after a reboot in the same rules file. If a tuned profile
+  sets read-ahead too, the tab says so, tuned wins at boot
+
 * Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.0.6-1
 - What these mean opens 1200 wide, so most lines fit on one row and you
   scroll less

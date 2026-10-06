@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-8.0.6-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
+[![Version](https://img.shields.io/badge/Version-8.1.2-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
 [![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -23,9 +23,9 @@
 # 🫟 LinuxTweaks 2026 {#top}
 
 
-**🫟 My simple update manager for Fedora.**
+**🫟 My one app for keeping Fedora up to date and running well.**
 
-I built this because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. I wanted one place that just works.
+It started as my update manager, because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. Then my tweak scripts moved in, one tab each. Now it's one place for all of it, and it just works.
 
 ### The tray icon and app
 
@@ -40,20 +40,45 @@ I built this because I was sick of hunting through different tools to check for 
 
 ## What it does
 
-**LinuxTweaks Updater** sits in your system tray and keeps Fedora up to date.
+**LinuxTweaks** sits in your system tray. Left click it for the window, every part is its own tab.
 
-- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and again after the PC wakes up
-- **Security fixes stand out.** A 🔴 marks them in the menu, the tooltip and the popup, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
+### 🫟 Updates
+
+- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up
+- **Security fixes stand out.** A 🔴 marks them in the tooltip, the popup and the window, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
 - **What changed in a package.** Everything waiting is in one window, a card per update. Click a DNF one and you get its advisory and its changelog since your version
-- **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date
+- **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date, yellow while it checks
 - **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later*, which reminds you again in 4 hours
-- **Installs when you say so.** In its own window, in the same cards as the rest: the steps, a progress bar and dnf's own output as it goes. One password box that says what it's for. **Show in terminal** follows the same output in Konsole if you like it that way
-- **Cleans up after.** When it's done, a card with a button for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew`). Only the cards that apply show up
-- **Weekly maintenance, if you want it.** Cleans the DNF cache, keeps 7 days of journal, runs SSD TRIM if Fedora isn't already doing it. Off until you switch it on
-- **What's new.** Shows what changed every time the app itself updates
-- **Signed.** Everything in my repo is signed with my LinuxTweaks key
+- **Installs when you say so.** In its own window: the steps, a progress bar and dnf's own output as it goes. One password box that says what it's for
+- **Cleans up after.** A card for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew`)
+- **Weekly maintenance, if you want it.** Cleans the DNF cache, trims the journal, runs SSD TRIM if Fedora isn't already doing it
+- **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, Fedora lets it grow to 4 GB
 
-**What it doesn't do.** No sudo rules, no passwordless root. Checks run as you. Weekly maintenance is a normal system timer, and switching it on asks for your password.
+### 💽 Drives
+
+Every real drive on a card, with its I/O scheduler and read-ahead and a dropdown to change each one. A change works straight away and stays after a reboot, for that exact drive. This used to be my LinuxTweaks-IO app.
+
+### 🧠 Memory
+
+Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, and a safety net for kernel crashes.
+
+### 🌐 Network
+
+What your connection uses right now, and switches for faster TCP (BBR), bigger buffers, CAKE on Wi-Fi and wired, Wi-Fi power saving off and IPv6 off. Every switch says what it does.
+
+### 🐧 Kernels
+
+Every installed kernel, which one you're running and which one boots by default. Make another one the default, remove old ones safely, and pick which new kernels take over when they install, so a Fedora kernel update doesn't push out your CachyOS one.
+
+### 🩺 Health
+
+A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it.
+
+### What it doesn't do
+
+- **No sudo rules, no passwordless root.** Checks run as you. Every change that needs root asks for your password first, through a small helper that only does that one job and checks everything it's handed
+- **Nothing changes by itself.** Every tab shows your PC as it is. A tweak only happens when you flip it
+- **Signed.** Everything in my repo is signed with my LinuxTweaks key
 
 <img width="1909" height="1022" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
 <img width="1165" height="699" alt="image" src="https://github.com/user-attachments/assets/e2b0f145-09a5-45af-bc42-025f2af7c991" />
@@ -109,7 +134,7 @@ What it does, in order:
 1. Checks it can reach my repo
 2. Writes `/etc/yum.repos.d/linuxtweaks.repo` with the signature check on
 3. Looks for anything my older apps left behind, shows you the list and asks before removing anything
-4. Installs LinuxTweaks Updater, or updates it if you have it. Only my package, the rest of your system is left alone
+4. Installs LinuxTweaks, or updates it if you have it. Only my package, the rest of your system is left alone
 5. Starts the tray and shows you what's on and what's off
 
 dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
@@ -170,11 +195,15 @@ linuxtweaks-updater
 
 From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`.
 
-### Coming from dnf-updater, linuxtweaks-dnf-updater or LinuxTweaks 6.x?
+The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
 
-Those are all this app under its old names. Run the quick install, it swaps you over.
+### Coming from dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x or LinuxTweaks-IO?
 
-The old versions left stuff behind. Some of it keeps starting the old app next to the new one, and the old sudo rules in `/etc/sudoers.d` handed out root without a password. Uninstalling the old app doesn't always take them with it, a sudo rule you edited gets kept as a `.rpmsave` copy. The quick install looks for all of it. To do only that part:
+Those are all this app under old names. A normal update swaps you over, or run the quick install.
+
+**LinuxTweaks-IO**, my I/O scheduler app, is the 💽 Drives tab now. The update removes the old app for you. Your scheduler picks stay, it's the same rules file, only the old window and its tray icon go.
+
+The older updater versions left stuff behind. Some of it keeps starting the old app next to the new one, and the old sudo rules in `/etc/sudoers.d` handed out root without a password. Uninstalling the old app doesn't always take them with it, a sudo rule you edited gets kept as a `.rpmsave` copy. The quick install looks for all of it. To do only that part:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
@@ -194,17 +223,17 @@ or just `dnf info linuxtweaks-updater`.
 
 ### 🪓 Uninstall
 
-In the tray: **About → Uninstall…**, or:
+In the window: **About → Uninstall…**, or:
 
 ```bash
 sudo dnf remove linuxtweaks-updater
 ```
 
-That takes the app, its timers, the menu launcher and its settings. Your installed packages and updates stay as they are.
+That takes the app, its timers, the menu launcher and its settings. Your installed packages stay as they are, and so do the tweaks you made. They're your system settings, not part of the app. To undo one by hand, see [Undo a tweak](#undo-a-tweak).
 
 ### 📅 Changelog
 
-In the tray: **What's new**, or:
+In the window: **What's new**, or:
 
 ```bash
 rpm -q --changelog linuxtweaks-updater
@@ -212,21 +241,55 @@ rpm -q --changelog linuxtweaks-updater
 
 ## Using it
 
-Right click the tray icon:
+**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Along the bottom on every tab: **What's new**, **Logs** and **About**, which has the full guide under **Help**.
+
+| Tab | What's in it |
+|---|---|
+| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to |
+| **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
+| **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
+| **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
+| **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and which new kernels take over |
+| **🩺 Health** | Ten checks on cards, Check again, and a fix button where there is one |
+
+**Right click** the tray icon for the short menu:
 
 | Menu item | What it does |
 |---|---|
-| **🔴 N security fixes** | Only there when a security fix is waiting, with the worst severity |
-| **Available updates (n)…** | A window with every waiting update on its own card. Security fixes first with a red or orange stripe, then DNF in green and Flatpak in blue. Click a DNF one for what changed in it. Clicking the updates popup opens it too |
+| **Status line** | Updates waiting or up to date, and the security fixes |
 | **Reboot now** | Only there when an update needs a reboot |
-| **Install updates…** | Opens Available updates, so you see what's waiting and pick Install all, DNF only or Flatpak only |
+| **Install updates…** | Opens Available updates, pick Install all, DNF only or Flatpak only |
 | **Check for updates** | Checks right now, you always get a popup with the answer |
-| **Check interval** | 1 hour, 6 hours, 1 day or 1 week. The 1, 5 and 30 minute ones are for testing, 30 minutes is the default |
-| **Notifications** | Popups on or off |
-| **Weekly Maintenance** | On or off, asks for your password |
-| **What's new** / **Logs** / **About** | Release notes, your update history and my app's log, version, Help and Uninstall |
+| **Open LinuxTweaks** | The window |
+| **Exit** | Closes the tray until you log in again |
 
-The full guide is in the app: **About → Help**.
+### 💽 Why your drive picks go by serial number
+
+Linux names your drives at boot: sda, sdb and so on. Usually in the same order, but not always. A USB disk plugged in at boot, or a cable moved to another port, is enough to shuffle them, and a pick saved for "sda" would land on the wrong drive. A serial number never changes, so your pick stays with that exact drive. Drives without a serial are matched by name.
+
+`adios` only exists on CachyOS kernels. Boot another kernel and that drive keeps the kernel's own pick for that boot.
+
+If a tuned profile sets read-ahead (Fedora's throughput-performance does), tuned applies it at boot after mine and wins. The Drives tab tells you when that's the case.
+
+### 🌐 About CAKE and bufferbloat
+
+CAKE on your PC keeps the flows it sends fair, so one big upload doesn't make calls lag. It's unlimited, it never caps your speed. The real fix for lag while downloading is SQM on the router, CAKE set to your real internet speed, if your router has it. A speed cap on the PC itself also slows your LAN and NAS copies, so I don't put one there.
+
+### Undo a tweak
+
+Turning a switch off in the app is the easy way. By hand, delete the file and reboot:
+
+| Tweak | File |
+|---|---|
+| Drive schedulers and read-ahead | `/etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules` |
+| zram size and compression | `/etc/systemd/zram-generator.conf` (a `.bak` copy of your old one sits next to it) |
+| Swappiness and memory | `/etc/sysctl.d/99-zz-memtune.conf` |
+| Network and Desktop tweaks | `/etc/sysctl.d/99-zz-desktop-performance.conf` |
+| CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
+| Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
+| Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
+
+Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one in `[brackets]` is in use.
 
 ### From the terminal
 
@@ -244,9 +307,10 @@ linuxtweaks-updater-upgrade --flatpak   # Flatpak only
 1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
 2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
-4. **Tray.** Watches that folder and redraws the icon, menu and tooltip
-5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. When it's done the reboot, service restarts and clean up are buttons. With the tray closed, the popup still opens the terminal upgrade, and `linuxtweaks-updater-upgrade` still works
-6. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
+4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up and checks again as soon as the network is back
+5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. With the tray closed, the popup still opens the terminal upgrade
+6. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
+7. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
 ## 🛠️ Troubleshooting
 
@@ -270,7 +334,7 @@ journalctl --user --no-pager -u linuxtweaks-updater-check.service
 systemctl --no-pager status linuxtweaks-updater-maintenance.timer
 ```
 
-**Want to see everything it did?** Tray menu **Logs**, or check by hand:
+**Want to see everything it did?** **Logs** in the window, or check by hand:
 ```bash
 linuxtweaks-updater-check
 ```
@@ -282,70 +346,9 @@ sudo dnf install --refresh linuxtweaks-updater
 
 **Install stops at "Can I reach my repo?"** It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
 
-## 💽 LinuxTweaks-IO, my I/O scheduler app
+**A change says "the password box was cancelled".** Nothing changed. Try again and type your password. It's remembered for about 5 minutes after.
 
-Every drive has an I/O scheduler. It decides in what order the reads and writes reach the disk. The right one depends on the drive: NVMe does its own queueing and is happiest with `none`, a SATA SSD likes `mq-deadline`, an old spinning disk does best with `bfq` or `mq-deadline`. Fedora picks for you, and it doesn't always pick well.
-
-LinuxTweaks-IO shows every drive and what it's using, and lets you change it with a click.
-
-- **Every drive at a glance.** NVMe, SSD, hard disk, USB stick, with the scheduler each one uses right now
-- **Only what your kernel has.** It lists the schedulers your kernel really offers, so on CachyOS you'll see `adios` too
-- **Plain explanations.** What each scheduler is good at and when to pick it
-- **Changes it straight away.** Pick one and it's live. It asks for your password, it's a system setting
-- **Keeps it after a reboot, for that exact drive.** It writes a udev rule matched by the drive's serial number: `/etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules`
-- **Shows what's locked in.** A 🔒 *kept at boot* on a drive's card means it has a saved pick
-- **Tray and log.** Sits in the tray and keeps a log of what it changed
-
-### Install
-
-Same repo server and same signing key as the updater, so the same Tailscale heads up applies. Add the repo:
-
-```bash
-echo -e "[linuxtweaks-io]\nname=LinuxTweaks-IO Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks-io/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY" | sudo tee /etc/yum.repos.d/linuxtweaks-io.repo > /dev/null
-```
-
-Then install it and start it:
-
-```bash
-sudo dnf install --refresh linuxtweaks-io
-linuxtweaks-io
-```
-
-It doesn't start by itself at login. Start it from the app menu when you want it, the udev rule does the work at boot.
-
-If your `/etc/yum.repos.d/linuxtweaks-io.repo` has `gpgcheck=0` in it, run the add the repo command again. Older copies didn't check my signature. Installing the updater with the quick install fixes it too.
-
-### Why the serial number
-
-Linux names your drives at boot: sda, sdb and so on. Usually in the same order, but not always. A USB disk plugged in at boot, or a cable moved to another port, is enough to shuffle them, and a pick saved for "sda" would land on the wrong drive.
-
-So LinuxTweaks-IO saves each pick against the drive's serial number, which never changes. Your pick stays with that exact drive whatever Linux calls it. Drives without a serial, like zram, are matched by name. Picks saved by older versions, by name, switch over to serials the next time you change any drive.
-
-One thing to know: `adios` only exists on CachyOS kernels. Boot another kernel and that drive keeps the kernel's own pick for that boot. It's back on the next CachyOS boot.
-
-### Check what each drive uses
-
-```bash
-grep "" /sys/block/*/queue/scheduler
-```
-
-The one in `[brackets]` is the one in use.
-
-### Go back to Fedora's defaults
-
-```bash
-sudo rm /etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules
-```
-
-Then reboot.
-
-### Uninstall
-
-```bash
-sudo dnf remove linuxtweaks-io
-```
-
-That closes the tray for everyone and removes everybody's picks and log. The udev rule stays on purpose, your drives keep the schedulers you picked. To go back to Fedora's own, see above.
+**Memory won't restart zram.** What's in swap wouldn't fit in your free RAM. Close a few big apps, or change it right after a reboot. Swappiness on its own always works.
 
 ## Built for
 
