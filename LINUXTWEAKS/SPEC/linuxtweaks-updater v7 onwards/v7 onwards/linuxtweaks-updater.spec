@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.1.3
+Version:        8.1.4
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -297,6 +297,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.4-1
+- Health counted every line of a crash's stack trace as its own error.
+  Alex's pc showed 804, now it's 59 real ones and his USB fault is on top
+  where it belongs. One message counts once
+- Waydroid's Android inside and every printer applet message go in with the
+  known noise too
+
 * Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.3-1
 - My read-ahead wins over tuned, a switch in the Drives tab. KDE's
   Performance mode runs tuned's throughput-performance, which sets every
