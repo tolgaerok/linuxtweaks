@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.1.2
+Version:        8.1.3
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -297,6 +297,19 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.3-1
+- My read-ahead wins over tuned, a switch in the Drives tab. KDE's
+  Performance mode runs tuned's throughput-performance, which sets every
+  drive to 4 MB read-ahead on every boot, so your pick never stuck. Now
+  your picks go back on straight after tuned, at boot, on a power mode
+  change and after a resume
+- The read-ahead dropdown says what I'd pick for that kind of drive
+- Health leaves known noise out of the errors: crash reports, kernel trace
+  lines, Waydroid, the printer applet, KDE's file indexer. Alex's pc showed
+  861 errors, most of it that. It counts them on their own now, so a real
+  problem stands out
+- SELinux said blocked 1 kinds of thing
+
 * Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.2-1
 - LinuxTweaks-IO is retired, the Drives tab does everything it did and the
   read-ahead too. This update removes it for you. Your picks stay, the rules
