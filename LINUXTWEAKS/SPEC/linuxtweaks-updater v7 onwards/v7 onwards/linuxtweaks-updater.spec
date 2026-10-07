@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.1.4
+Version:        8.1.6
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -297,6 +297,18 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Oct 07 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.6-1
+- Updates show up within the hour now. Fedora's update list only counts as
+  old after 6 hours, so every check kept reading the same copy and said up
+  to date while Alex had cairo, git, SDL3 and more waiting. Check for
+  updates always gets a fresh list
+
+* Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.5-1
+- Health checks in under a second now. dnf check took 20 of it every time,
+  it only runs again after packages change and I keep its answer till then
+- One Count from now button at the top for errors and crashes both, it
+  turns into Count from boot. No more one on every card
+
 * Tue Oct 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.4-1
 - Health counted every line of a crash's stack trace as its own error.
   Alex's pc showed 804, now it's 59 real ones and his USB fault is on top
