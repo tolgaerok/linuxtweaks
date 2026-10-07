@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.1.6
+Version:        8.1.7
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -297,6 +297,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Oct 07 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.7-1
+- What's new, Logs and About moved up to the top right next to my name.
+  They're about the app, not the tab you're on, and the bottom is just
+  Close now
+
 * Wed Oct 07 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.6-1
 - Updates show up within the hour now. Fedora's update list only counts as
   old after 6 hours, so every check kept reading the same copy and said up

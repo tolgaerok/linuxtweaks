@@ -1,6 +1,14 @@
+<a id="top"></a>
+
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-8.1.6-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
+![Linux Tweaks](https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png)
+
+# 🫟 LinuxTweaks 2026
+
+**My one app for keeping Fedora up to date and running well.**
+
+[![Version](https://img.shields.io/badge/Version-8.1.7-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
 [![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -13,38 +21,52 @@
 [![Last commit](https://img.shields.io/github/last-commit/tolgaerok/linuxtweaks)](https://github.com/tolgaerok/linuxtweaks/commits/main)
 [![Stars](https://img.shields.io/github/stars/tolgaerok/linuxtweaks?style=flat)](https://github.com/tolgaerok/linuxtweaks/stargazers)
 
+[What it does](#what-it-does) · [Install](#installation) · [Using it](#using-it) · [How it works](#how-it-works) · [Troubleshooting](#%EF%B8%8F-troubleshooting) · [Sources](SOURCES.md)
+
 </div>
 
-----------------
-
-![Linux Tweaks](https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png)
-[![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](https://github.com/tolgaerok/linuxtweaks)
-
-# 🫟 LinuxTweaks 2026 {#top}
-
-
-**🫟 My one app for keeping Fedora up to date and running well.**
+---
 
 It started as my update manager, because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. Then my tweak scripts moved in, one tab each. Now it's one place for all of it, and it just works.
 
-### The tray icon and app
+<div align="center">
 
+<img width="770" alt="LinuxTweaks window" src="https://github.com/user-attachments/assets/2d4c4c51-4c46-4382-baf3-30906675f62b" />
 
-<img width="730" height="707" alt="image" src="https://github.com/user-attachments/assets/dae91ae8-89c4-4a63-9461-bad671bbfde3" />
-<img width="770" height="797" alt="image" src="https://github.com/user-attachments/assets/2d4c4c51-4c46-4382-baf3-30906675f62b" />
-<img width="890" height="812" alt="image" src="https://github.com/user-attachments/assets/2c017dfe-a325-4901-931b-455c6fca0b82" />
-<img width="852" height="1027" alt="image" src="https://github.com/user-attachments/assets/220a035d-e202-4ea0-a31b-b830f8cf27ad" />
-<img width="389" height="224" alt="image" src="https://github.com/user-attachments/assets/3fa4476d-7c39-40ab-a5ea-73a6a03fb755" />
+<img width="730" alt="Updates" src="https://github.com/user-attachments/assets/dae91ae8-89c4-4a63-9461-bad671bbfde3" />
 
-<img width="980" height="184" alt="tray-badges-and-icons-dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
+<img width="980" alt="Tray icons, light and dark" src="https://github.com/user-attachments/assets/542c928b-db3f-4867-81d0-3b4f2f231d55" />
+
+</div>
+
+<details>
+<summary><b>More screenshots</b></summary>
+<br>
+
+<img width="890" alt="image" src="https://github.com/user-attachments/assets/2c017dfe-a325-4901-931b-455c6fca0b82" />
+<img width="852" alt="image" src="https://github.com/user-attachments/assets/220a035d-e202-4ea0-a31b-b830f8cf27ad" />
+<img width="389" alt="image" src="https://github.com/user-attachments/assets/3fa4476d-7c39-40ab-a5ea-73a6a03fb755" />
+<img width="1909" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
+<img width="1165" alt="image" src="https://github.com/user-attachments/assets/e2b0f145-09a5-45af-bc42-025f2af7c991" />
+
+</details>
 
 ## What it does
 
 **LinuxTweaks** sits in your system tray. Left click it for the window, every part is its own tab.
 
+| Tab | In short |
+|---|---|
+| 🫟 **Updates** | DNF and Flatpak in one place, security fixes marked, installs when you say so |
+| 💽 **Drives** | I/O scheduler and read-ahead per drive, kept after a reboot |
+| 🧠 **Memory** | zram, swappiness and a few desktop tweaks, explained in plain words |
+| 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6 |
+| 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
+| 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one |
+
 ### 🫟 Updates
 
-- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up
+- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up. New Fedora updates show up within the hour
 - **Security fixes stand out.** A 🔴 marks them in the tooltip, the popup and the window, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
 - **What changed in a package.** Everything waiting is in one window, a card per update. Click a DNF one and you get its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date, yellow while it checks
@@ -80,17 +102,18 @@ A quick look over the whole PC: failed services, errors, disk space, memory, cra
 - **Nothing changes by itself.** Every tab shows your PC as it is. A tweak only happens when you flip it
 - **Signed.** Everything in my repo is signed with my LinuxTweaks key
 
-<img width="1909" height="1022" alt="image" src="https://github.com/user-attachments/assets/a6050385-cdc3-478c-94af-7b40fd16c85b" />
-<img width="1165" height="699" alt="image" src="https://github.com/user-attachments/assets/e2b0f145-09a5-45af-bc42-025f2af7c991" />
-
-
 ## Installation
 
-> **Heads up.** My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing. No access to my server? [Install the RPM file](#-no-tailscale-install-the-rpm-file) instead.
+> [!NOTE]
+> My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing. No access to my server? [Install the RPM file](#-no-tailscale-install-the-rpm-file) instead.
 
 ### 🔐 First time? Set up Tailscale
 
 Tailscale is a private network between your PCs. It's free for personal use and takes about 5 minutes.
+
+<details>
+<summary><b>The six steps</b></summary>
+<br>
 
 **1.** Make a free account at [tailscale.com](https://tailscale.com). Google, Microsoft or GitHub login all work.
 
@@ -123,6 +146,8 @@ tailscale ping 100.83.30.114
 
 `pong` means you're in. Now do the quick install below.
 
+</details>
+
 ### 👍 Quick install
 
 ```bash
@@ -139,44 +164,34 @@ What it does, in order:
 
 dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
 
-The same script does a few more things. Put the option after `bash -s --`, everything after the `--` goes to my script. Any questions and the sudo password still come from your keyboard, not the pipe.
+<details>
+<summary><b>More things the same script does</b></summary>
+<br>
 
-Only look, changes nothing:
+Put the option after `bash -s --`, everything after the `--` goes to my script. Any questions and the sudo password still come from your keyboard, not the pipe.
+
+| Option | What it does |
+|---|---|
+| `--check` | Only looks, changes nothing |
+| `--cleanup` | Only clears out what my older apps left behind. Shows you the list and asks first |
+| `--remove` | Uninstalls it. Asks first, then asks about the repo file |
+| `--fake 3 20` | Fake updates in the tray to see how it looks, here 3 dnf and 20 flatpak, one a pretend security fix |
+| `--restore` | Puts the real update list back after a fake test |
+
+For example:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
 ```
 
-Only clear out what my older apps left behind. Shows you the list and asks first:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
-```
-
-Uninstall it. Asks first, then asks about the repo file:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --remove
-```
-
-Fake updates in the tray, to see how it looks. Here 3 dnf and 20 flatpak, one of them a pretend security fix:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --fake 3 20
-```
-
-Put the real update list back after a fake test:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --restore
-```
-
-Rather have a copy on your PC? Download it once and run it with any of the options above:
+Rather have a copy on your PC? Download it once and run it with any of the options:
 
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh
 bash install-linuxtweaks.sh --check
 ```
+
+</details>
 
 ### 🖖 Or by hand
 
@@ -193,9 +208,7 @@ sudo dnf install --refresh linuxtweaks-updater
 linuxtweaks-updater
 ```
 
-From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`.
-
-The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
+From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`. The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
 
 ### 📦 No Tailscale? Install the RPM file
 
@@ -207,7 +220,8 @@ url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LI
 
 `file` should say `RPM v3.0 bin linuxtweaks-updater-…` before dnf starts.
 
-**Don't save it from the GitHub page.** Right click → Save, or a `github.com/…/blob/…` link, gets you the web page with an `.rpm` name, and dnf says `not a rpm`. In the browser use the **Download raw file** button on the file's page instead. A broken one says `HTML document` when you run `file` on it, delete it and download it again.
+> [!WARNING]
+> **Don't save it from the GitHub page.** Right click → Save, or a `github.com/…/blob/…` link, gets you the web page with an `.rpm` name, and dnf says `not a rpm`. In the browser use the **Download raw file** button on the file's page instead. A broken one says `HTML document` when you run `file` on it, delete it and download it again.
 
 **Use a terminal, not Yum Extender.** Yumex crashes with `Transaction has to be resolved first` when something's wrong, and hides the real reason. `sudo dnf install` tells you.
 
@@ -219,9 +233,13 @@ sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.rep
 
 Without my repo, LinuxTweaks doesn't update itself. Your other updates work as normal, it still checks and installs those. For a new version of LinuxTweaks, run the same line again.
 
-### Coming from dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x or LinuxTweaks-IO?
+### Coming from an older name?
 
-Those are all this app under old names. A normal update swaps you over, or run the quick install.
+dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all this app under old names. A normal update swaps you over, or run the quick install.
+
+<details>
+<summary><b>What the old versions left behind</b></summary>
+<br>
 
 **LinuxTweaks-IO**, my I/O scheduler app, is the 💽 Drives tab now. The update removes the old app for you. Your scheduler picks stay, it's the same rules file, only the old window and its tray icon go.
 
@@ -235,35 +253,21 @@ It shows you the list and asks first. Looking in `/etc/sudoers.d` needs your pas
 
 If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run the quick install again. Older copies didn't check my signature.
 
-### 📋 Is it installed?
+</details>
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
-```
+### 📋 Installed? Uninstall? What's new?
 
-or just `dnf info linuxtweaks-updater`.
+| | |
+|---|---|
+| **Is it installed?** | `dnf info linuxtweaks-updater`, or the quick install with `--check` |
+| **Uninstall** | In the window: **About → Uninstall…**, or `sudo dnf remove linuxtweaks-updater` |
+| **Changelog** | In the window: **What's new**, or `rpm -q --changelog linuxtweaks-updater` |
 
-### 🪓 Uninstall
-
-In the window: **About → Uninstall…**, or:
-
-```bash
-sudo dnf remove linuxtweaks-updater
-```
-
-That takes the app, its timers, the menu launcher and its settings. Your installed packages stay as they are, and so do the tweaks you made. They're your system settings, not part of the app. To undo one by hand, see [Undo a tweak](#undo-a-tweak).
-
-### 📅 Changelog
-
-In the window: **What's new**, or:
-
-```bash
-rpm -q --changelog linuxtweaks-updater
-```
+Uninstalling takes the app, its timers, the menu launcher and its settings. Your installed packages stay as they are, and so do the tweaks you made. They're your system settings, not part of the app. To undo one by hand, see [Undo a tweak](#undo-a-tweak).
 
 ## Using it
 
-**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Along the bottom on every tab: **What's new**, **Logs** and **About**, which has the full guide under **Help**.
+**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Top right on every tab: **What's new**, **Logs** and **About**, which has the full guide under **Help**.
 
 | Tab | What's in it |
 |---|---|
@@ -281,9 +285,20 @@ rpm -q --changelog linuxtweaks-updater
 | **Status line** | Updates waiting or up to date, and the security fixes |
 | **Reboot now** | Only there when an update needs a reboot |
 | **Install updates…** | Opens Available updates, pick Install all, DNF only or Flatpak only |
-| **Check for updates** | Checks right now, you always get a popup with the answer |
+| **Check for updates** | Checks right now with a fresh list, you always get a popup with the answer |
 | **Open LinuxTweaks** | The window |
 | **Exit** | Closes the tray until you log in again |
+
+### From the terminal
+
+```bash
+linuxtweaks-updater                     # start the tray, you can close the terminal after
+linuxtweaks-updater --foreground        # start it and keep its output in the terminal
+linuxtweaks-updater-check               # check and list what's waiting
+linuxtweaks-updater-upgrade             # install everything
+linuxtweaks-updater-upgrade --dnf       # DNF only
+linuxtweaks-updater-upgrade --flatpak   # Flatpak only
+```
 
 ### 💽 Why your drive picks go by serial number
 
@@ -313,30 +328,23 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 
 Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one in `[brackets]` is in use.
 
-### From the terminal
-
-```bash
-linuxtweaks-updater                     # start the tray, you can close the terminal after
-linuxtweaks-updater --foreground        # start it and keep its output in the terminal
-linuxtweaks-updater-check               # check and list what's waiting
-linuxtweaks-updater-upgrade             # install everything
-linuxtweaks-updater-upgrade --dnf       # DNF only
-linuxtweaks-updater-upgrade --flatpak   # Flatpak only
-```
-
 ## How it works
 
 1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
-2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed
+2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up and checks again as soon as the network is back
 5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. With the tray closed, the popup still opens the terminal upgrade
 6. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
 7. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
+Everything I read and leaned on to build it is on its own page: **[Sources and references](SOURCES.md)**.
+
 ## 🛠️ Troubleshooting
 
-**No tray icon?**
+<details>
+<summary><b>No tray icon?</b></summary>
+
 ```bash
 linuxtweaks-updater
 ```
@@ -344,64 +352,92 @@ It tells you if it just started or was already running. To see what it prints wh
 ```bash
 linuxtweaks-updater --foreground
 ```
+</details>
 
-**Checks not running?**
+<details>
+<summary><b>Checks not running?</b></summary>
+
 ```bash
 systemctl --user --no-pager status linuxtweaks-updater-check.timer
 journalctl --user --no-pager -u linuxtweaks-updater-check.service
 ```
+</details>
 
-**Weekly maintenance not running?** It's a system timer, so no `--user`:
+<details>
+<summary><b>Weekly maintenance not running?</b></summary>
+
+It's a system timer, so no `--user`:
 ```bash
 systemctl --no-pager status linuxtweaks-updater-maintenance.timer
 ```
+</details>
 
-**Want to see everything it did?** **Logs** in the window, or check by hand:
+<details>
+<summary><b>Want to see everything it did?</b></summary>
+
+**Logs** in the window, or check by hand:
 ```bash
 linuxtweaks-updater-check
 ```
+</details>
 
-**`No match for argument: linuxtweaks-updater`?** dnf still has an old copy of my repo's list:
+<details>
+<summary><b><code>No match for argument: linuxtweaks-updater</code>?</b></summary>
+
+dnf still has an old copy of my repo's list:
 ```bash
 sudo dnf install --refresh linuxtweaks-updater
 ```
+</details>
 
-**Install stops at "Can I reach my repo?"** It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
+<details>
+<summary><b>Install stops at "Can I reach my repo?"</b></summary>
 
-**A change says "the password box was cancelled".** Nothing changed. Try again and type your password. It's remembered for about 5 minutes after.
+It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
+</details>
 
-**Memory won't restart zram.** What's in swap wouldn't fit in your free RAM. Close a few big apps, or change it right after a reboot. Swappiness on its own always works.
+<details>
+<summary><b>A change says "the password box was cancelled"</b></summary>
+
+Nothing changed. Try again and type your password. It's remembered for about 5 minutes after.
+</details>
+
+<details>
+<summary><b>Memory won't restart zram</b></summary>
+
+What's in swap wouldn't fit in your free RAM. Close a few big apps, or change it right after a reboot. Swappiness on its own always works.
+</details>
 
 ## Built for
 
-- **OS**: Fedora 44+
-- **Desktop**: KDE Plasma
-- **Language**: Python (PyQt5) + Bash
-- **Init**: Systemd
+| | |
+|---|---|
+| **OS** | Fedora 44+ |
+| **Desktop** | KDE Plasma 6 |
+| **Language** | Python (PyQt5) and Bash |
+| **Init** | systemd |
 
 ## Author
 
-**Tolga Erok**  
-Hamilton Hill, Perth, Western Australia  
-📧 kingtolga@gmail.com  
+**Tolga Erok**
+Hamilton Hill, Perth, Western Australia
+📧 kingtolga@gmail.com
 🐙 [My other GitHub repos](https://github.com/tolgaerok)
 
----
-
-## Other repositories
+### Other repositories
 
 <div align="center">
-  <table style="border-collapse: collapse; width: 100%; border: none;">
+  <table>
     <tr>
-      <td align="center" style="border: none;">
+      <td align="center">
         <a href="https://github.com/tolgaerok/fedora-tolga">
-          <img src="https://flathub.org/img/distro/fedora.svg" alt="Fedora" style="width: 100%;">
+          <img src="https://flathub.org/img/distro/fedora.svg" alt="Fedora" width="160">
           <br>Fedora
         </a>
       </td>
-      <td align="center" style="border: none;">
+      <td align="center">
         <a href="https://github.com/tolgaerok/Debian-tolga">
-          <img src="https://flathub.org/img/distro/debian.svg" alt="Debian" style="width: 100%;">
+          <img src="https://flathub.org/img/distro/debian.svg" alt="Debian" width="160">
           <br>Debian
         </a>
       </td>
@@ -409,22 +445,20 @@ Hamilton Hill, Perth, Western Australia
   </table>
 </div>
 
-## Stats
+### Stats
 
 <div align="center">
   <a href="https://git.io/streak-stats" target="_blank">
     <img src="http://github-readme-streak-stats.herokuapp.com?user=tolgaerok&theme=dark&background=000000" alt="GitHub Streak">
   </a>
-  <br>
-  <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank">
-    <img src="https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/FUN/FUN_IMAGES/1744722407588.png" alt="Top Languages">
-  </a>
 </div>
 
 ---
 
-[⬆ Back to top](#top)
-
----
+<div align="center">
 
 **Made for my own system. Works great on yours too.**
+
+[⬆ Back to top](#top)
+
+</div>
