@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.1.7
+Version:        8.2.4
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -95,9 +95,11 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-pty
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
+# my signing key, so Check for LinuxTweaks updates can check a download from GitHub
+install -Dm644 -t %{buildroot}%{_datadir}/%{name} usr/share/%{name}/RPM-GPG-KEY-linuxtweaks
 
 # --- desktop entries --------------------------------------------------------
 install -Dm644 -t %{buildroot}%{_datadir}/applications etc/xdg/applications/%{name}.desktop
@@ -247,6 +249,7 @@ done
 %{_unitdir}/%{name}-maintenance.timer
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/polkit-1/actions/org.linuxtweaks.updater.policy
+%{_datadir}/%{name}/
 %dir %{_sharedstatedir}/%{name}
 %ghost %attr(0644, root, root) %{_sharedstatedir}/%{name}/linger-users
 %ghost %attr(0644, root, root) %{_sharedstatedir}/%{name}/maintenance-last
@@ -297,6 +300,56 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.4-1
+- Available updates groups the security fixes by how bad they are, the
+  worst first: Critical, Important, Moderate, then Low, each under its own
+  heading. Everything is A to Z inside its group, DNF and Flatpak too
+- A DNF card says What changed instead of update. It looked like a button
+  to update just that one package
+- Long names like kernel-modules-extra don't run into their version
+
+* Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.3-1
+- Spinning dots wherever the app waits on something. Next to my name in
+  the LinuxTweaks window while any tab is busy, a password box, Apply, a
+  kernel or drive change, keep logs or weekly maintenance. In About while
+  it looks for LinuxTweaks updates, in a package's changelog while it
+  loads, and next to the title while updates install
+- The dots stay up for a moment, my repo answers so quick you never saw
+  them in About
+- Changing a drive's scheduler or read-ahead doesn't freeze the window
+  any more while the password box is up
+
+* Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.2-1
+- An install or upgrade starts clean. A snooze and your Later pick from
+  before carried over, I'd set 1 hour and the new version still waited.
+  Popup clicks nobody picked up, Health's Count from now and its dnf check
+  answer go too. Check every, popups on or off and What's new stay
+
+* Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.1-1
+- Live output in the install window really is live now. dnf5 only draws
+  its progress bars in a terminal, into my window it printed a line once
+  each package was done, so a big download looked stuck. It runs in a
+  pretend terminal now and the bars move like they do in Konsole. Flatpak
+  too
+- The install window is wider, 1180, so you see dnf's full lines
+
+* Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.0-1
+- Check for LinuxTweaks updates in About. It looks in my repo, and on
+  GitHub when you can't reach my Tailscale, so everyone gets my updates.
+  It only installs a download that's signed with my key, the key comes
+  with the app now
+- Later… on the updates popup opens a window with − and +, 1 hour to 2
+  days, instead of always 4 hours. It remembers your pick
+- Versions read old in yellow, a blue arrow, new in green, like my old
+  terminal upgrade
+- Security fixes are a filled card in their severity's colour with a
+  coloured badge: red for Important and Critical, orange for Moderate,
+  yellow for Low
+- The coloured dots really are coloured now. Qt drew the emoji ones grey
+- Spinning dots while it checks for updates or does the Health checks
+- The tabs are filled in, the one you're on stands out
+- Closing Available updates takes you back to the Updates tab
+
 * Wed Oct 07 2026 Tolga Erok <kingtolga@gmail.com> - 8.1.7-1
 - What's new, Logs and About moved up to the top right next to my name.
   They're about the app, not the tab you're on, and the bottom is just
