@@ -67,11 +67,12 @@ It started as my update manager, because I was sick of hunting through different
 ### 🫟 Updates
 
 - **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up. New Fedora updates show up within the hour
-- **Security fixes stand out.** A 🔴 marks them in the tooltip, the popup and the window, with how bad they are. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
-- **What changed in a package.** Everything waiting is in one window, a card per update. Click a DNF one and you get its advisory and its changelog since your version
+- **Security fixes stand out.** Grouped by how bad they are, the worst first: Critical, Important, Moderate, then Low, each a card filled in its colour. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
+- **What changed in a package.** Everything waiting is in one window, a card per update, A to Z. The versions read old in yellow, a blue arrow, new in green. Click a DNF one for its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date, yellow while it checks
-- **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later*, which reminds you again in 4 hours
-- **Installs when you say so.** In its own window: the steps, a progress bar and dnf's own output as it goes. One password box that says what it's for
+- **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later…*, which opens a small window to pick when I remind you, 1 hour to 2 days with − and +. It remembers your pick
+- **Installs when you say so.** In its own window: the steps, a progress bar and dnf's own live output, its download bars moving like in a terminal. One password box that says what it's for
+- **Spinning dots** whenever it's busy: checking, a password job, Apply, installing
 - **Cleans up after.** A card for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew`)
 - **Weekly maintenance, if you want it.** Cleans the DNF cache, trims the journal, runs SSD TRIM if Fedora isn't already doing it
 - **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, Fedora lets it grow to 4 GB
@@ -231,7 +232,7 @@ url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LI
 sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.repo
 ```
 
-Without my repo, LinuxTweaks doesn't update itself. Your other updates work as normal, it still checks and installs those. For a new version of LinuxTweaks, run the same line again.
+Without my repo, LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It looks in my repo first and on GitHub when it can't reach that, downloads the new version, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
 
 ### Coming from an older name?
 
@@ -267,11 +268,11 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 
 ## Using it
 
-**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Top right on every tab: **What's new**, **Logs** and **About**, which has the full guide under **Help**.
+**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Top right on every tab: **What's new**, **Logs** and **About**, which has **Check for LinuxTweaks updates** and the full guide under **Help**. Dots spin next to the name while anything is busy.
 
 | Tab | What's in it |
 |---|---|
-| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to |
+| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to. Closing Available updates brings you back here |
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
@@ -334,9 +335,11 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up and checks again as soon as the network is back
-5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. With the tray closed, the popup still opens the terminal upgrade
-6. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
-7. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
+5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, the popup still opens the terminal upgrade
+6. **Updating itself.** About checks my repo, then GitHub. The RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it
+7. **A clean start.** Every install or upgrade clears a snooze, popup clicks nobody picked up and Health's Count from now. Your settings stay
+8. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
+9. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
 Everything I read and leaned on to build it is on its own page: **[Sources and references](SOURCES.md)**.
 

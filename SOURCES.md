@@ -49,6 +49,7 @@ The spec file is where I spent the most time reading. Getting scriptlets right m
 | [RPM spec file reference](https://rpm-software-management.github.io/rpm/manual/spec.html) | Every section and tag |
 | [RPM dependencies](https://rpm-software-management.github.io/rpm/manual/dependencies.html) | `Requires(post)` and friends, so a scriptlet's tools are there when it runs |
 | [RPM man pages](https://rpm-software-management.github.io/rpm/man/) | `rpmsign` for signing, `rpm -q --changelog` for the What's new window |
+| [rpmkeys](https://rpm-software-management.github.io/rpm/man/rpmkeys.8) | Checking a download is signed with my key, in a keyring of its own so the system's keys stay as they are |
 
 How it looks in my spec. The weekly maintenance timer is handled by Fedora's own macros, and the renamed apps are swapped out with `Obsoletes`:
 
@@ -63,6 +64,26 @@ Obsoletes:      linuxtweaks-io < 2.0
 %preun
 %systemd_preun %{name}-maintenance.timer %{name}-maintenance.service
 ```
+
+### Try it yourself
+
+What's in an RPM, before you install it:
+
+```bash
+rpm -qip linuxtweaks-updater-8.2.4-1.fc44.noarch.rpm      # name, version, summary
+rpm -qlp linuxtweaks-updater-8.2.4-1.fc44.noarch.rpm      # every file it puts on your PC
+rpm -qp --scripts linuxtweaks-updater-8.2.4-1.fc44.noarch.rpm   # what it runs when it installs
+```
+
+Is it really signed by me? A throwaway keyring, so nothing on your system changes:
+
+```bash
+mkdir -p /tmp/keys
+rpmkeys --dbpath /tmp/keys --import /usr/share/linuxtweaks-updater/RPM-GPG-KEY-linuxtweaks
+rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.4-1.fc44.noarch.rpm
+```
+
+`digests signatures OK` means it's mine and nobody changed it.
 
 ## 📡 DNF and Flatpak
 
@@ -87,6 +108,18 @@ dnf -y "${dnf_fresh[@]}" check-update </dev/null
 ```
 
 The `-y` and `</dev/null` are there because dnf run as you keeps its own copy of repo keys and can stop to ask about one. Nobody sees that question in a background check.
+
+### Try it yourself
+
+The same questions the app asks, by hand:
+
+```bash
+dnf check-upgrade                  # what's waiting
+dnf advisory list --security       # which of those are security fixes
+dnf needs-restarting -r            # does the last update need a reboot
+flatpak remote-ls --updates        # Flatpak apps with an update
+rpm -q --changelog firefox | head  # what changed in a package you have
+```
 
 ## ⚙️ systemd: timers, services and sleep
 
@@ -121,6 +154,36 @@ QDBusConnection.systemBus().connect(
 )
 ```
 
+### Try it yourself
+
+```bash
+systemctl --user list-timers                        # my check timer and when it runs next
+systemctl --user status linuxtweaks-updater-check.timer
+journalctl --user -u linuxtweaks-updater-check.service -n 20   # its last runs
+```
+
+Run anything in its own little unit, so closing the terminal doesn't stop it:
+
+```bash
+systemd-run --user --collect sleep 60
+systemctl --user list-units 'run-*'
+```
+
+The smallest service file there is, `~/.config/systemd/user/hello.service`:
+
+```ini
+[Unit]
+Description=Says hello
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/notify-send "Hello" "from systemd"
+```
+
+```bash
+systemctl --user daemon-reload && systemctl --user start hello
+```
+
 ## 🔐 Root without sudo rules: polkit
 
 Older versions of my updater used sudo rules with no password. That's gone. Now every change that needs root goes through a small helper and one polkit password box.
@@ -137,6 +200,29 @@ Each helper only does its one job and checks everything it's handed. The Drives 
 rule='^ACTION=="add\|change", SUBSYSTEM=="block", ENV\{DEVTYPE\}=="disk", ...'
 ```
 
+### Try it yourself
+
+One command as root, after the normal password box:
+
+```bash
+pkexec whoami    # prints root, after the password box
+```
+
+A minimal polkit action, it's what lets one of my helpers run without a sudo rule. In `/usr/share/polkit-1/actions/`:
+
+```xml
+<action id="org.example.hello">
+  <description>Say hello as root</description>
+  <message>Hello wants to run as root</message>
+  <defaults>
+    <allow_active>auth_admin_keep</allow_active>
+  </defaults>
+  <annotate key="org.freedesktop.policykit.exec.path">/usr/local/bin/hello-helper</annotate>
+</action>
+```
+
+`auth_admin_keep` remembers your password for a few minutes, so two changes in a row only ask once.
+
 ## 🖥️ Desktop standards
 
 | Source | What I used it for |
@@ -146,6 +232,17 @@ rule='^ACTION=="add\|change", SUBSYSTEM=="block", ENV\{DEVTYPE\}=="disk", ...'
 | [Desktop Entry spec](https://specifications.freedesktop.org/desktop-entry-spec/latest/) | The menu launcher |
 | [Autostart spec](https://specifications.freedesktop.org/autostart-spec/latest/) | Starting the tray when you log in |
 | [XDG Base Directory spec](https://specifications.freedesktop.org/basedir-spec/latest/) | Why the results live in `~/.local/state/linuxtweaks-updater/` |
+
+### Try it yourself
+
+A popup with buttons. notify-send waits and prints the one you clicked:
+
+```bash
+choice=$(notify-send -A install="Install now" -A later="Later" "3 updates waiting" "Pick one")
+echo "you clicked: $choice"
+```
+
+`-t 0` keeps it up till you click, `-p` prints its number so you can close it from a script later.
 
 ## 🐍 The tray and window: Python and Qt
 
@@ -159,11 +256,74 @@ rule='^ACTION=="add\|change", SUBSYSTEM=="block", ENV\{DEVTYPE\}=="disk", ...'
 | [QTimer](https://doc.qt.io/qt-5/qtimer.html) | The countdown to the next check |
 | [Qt Style Sheets](https://doc.qt.io/qt-5/stylesheet-reference.html) | The cards, buttons and tabs |
 | [Python subprocess](https://docs.python.org/3/library/subprocess.html), [json](https://docs.python.org/3/library/json.html), [pathlib](https://docs.python.org/3/library/pathlib.html) | The small jobs around it |
+| [QThread](https://doc.qt.io/qt-5/qthread.html) | Checking for LinuxTweaks updates and downloading them without freezing About |
+| [QPainter](https://doc.qt.io/qt-5/qpainter.html) | Drawing the on/off switches and the spinning dots |
+| [Python pty](https://docs.python.org/3/library/pty.html) | A pretend terminal, so dnf5 draws its live progress bars in the install window |
+| [console_codes](https://man7.org/linux/man-pages/man4/console_codes.4.html) | What `\r`, `ESC[1A` and `ESC[0J` mean, so the window can redraw dnf's bars in place |
+| [Python urllib](https://docs.python.org/3/library/urllib.request.html) | Downloading the new RPM from my repo or GitHub |
+| [GitHub REST API: contents](https://docs.github.com/en/rest/repos/contents) | Finding the newest RPM in my GitHub folder |
 
 The tray doesn't ask for anything, it watches the state folder and redraws when a check is done:
 
 ```python
 self.file_watcher = QFileSystemWatcher([str(STATE_DIR)])
+```
+
+### Try it yourself
+
+The smallest tray icon, save it as `tray.py` and run `python3 tray.py`:
+
+```python
+import sys
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+
+app = QApplication(sys.argv)
+tray = QSystemTrayIcon(QIcon.fromTheme("system-software-update"))
+menu = QMenu()
+menu.addAction("Quit", app.quit)
+tray.setContextMenu(menu)
+tray.setToolTip("Hello from my tray")
+tray.show()
+app.exec_()
+```
+
+Run a command without freezing the window, and read its output as it comes:
+
+```python
+from PyQt5.QtCore import QProcess
+
+proc = QProcess()
+proc.readyReadStandardOutput.connect(lambda: print(bytes(proc.readAllStandardOutput()).decode()))
+proc.finished.connect(lambda code, _: print("done, exit code", code))
+proc.start("dnf", ["check-upgrade"])
+```
+
+Something every second, like my countdown:
+
+```python
+from PyQt5.QtCore import QTimer
+
+timer = QTimer()
+timer.timeout.connect(lambda: print("tick"))
+timer.start(1000)
+```
+
+Why dnf's bars only move in a terminal. Into a pipe it prints a line per finished package, in a pretend terminal it draws its bars:
+
+```python
+import pty
+pty.spawn(["dnf", "makecache", "--refresh"])
+```
+
+The newest RPM in my GitHub folder, the same way About looks for it:
+
+```python
+import json, urllib.request
+
+url = "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS/RPM/linuxtweaks-updater%20v7x"
+files = json.load(urllib.request.urlopen(url))
+print([f["name"] for f in files if f["name"].endswith(".rpm")])
 ```
 
 ## 💽 Drives: schedulers and read-ahead
@@ -181,6 +341,28 @@ What a Drives tab rule looks like, pinned to the drive's serial so it can't land
 
 ```
 ACTION=="add|change", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_SERIAL}=="Samsung_SSD_870_EVO_1TB_S1234", ATTR{queue/scheduler}="kyber", ATTR{queue/read_ahead_kb}="512"
+```
+
+### Try it yourself
+
+Which scheduler each drive uses, the one in brackets is on:
+
+```bash
+grep "" /sys/block/*/queue/scheduler
+grep "" /sys/block/*/queue/read_ahead_kb
+```
+
+Change one now, it's back to normal after a reboot (a udev rule is what keeps it):
+
+```bash
+echo kyber | sudo tee /sys/block/sda/queue/scheduler
+echo 256 | sudo tee /sys/block/sda/queue/read_ahead_kb
+```
+
+A drive's serial, what my rules match on:
+
+```bash
+udevadm info --query=property --name=/dev/sda | grep ID_SERIAL=
 ```
 
 ## 🧠 Memory: zram and sysctl
@@ -204,6 +386,16 @@ zram-size = ram * 50 / 100
 compression-algorithm = zstd
 ```
 
+### Try it yourself
+
+```bash
+zramctl                          # your zram: size, compression, how much is in it
+swapon --show                    # every swap you have
+sysctl vm.swappiness             # how keen Linux is to swap
+sudo sysctl vm.swappiness=150    # change it till the next boot
+free -h                          # memory and swap in use
+```
+
 ## 🌐 Network: BBR, CAKE and NetworkManager
 
 | Source | What I used it for |
@@ -223,6 +415,17 @@ The dispatcher script puts CAKE on a connection when it comes up. Unlimited, so 
     triple-isolate rtt ${RTT}ms noatm overhead $OVERHEAD split-gso
 ```
 
+### Try it yourself
+
+```bash
+sysctl net.ipv4.tcp_congestion_control     # bbr or cubic
+tc qdisc show                              # cake, fq or fq_codel on each card
+nmcli -f GENERAL.DEVICE,GENERAL.TYPE device show   # your network cards
+iw dev wlp3s0 get power_save               # Wi-Fi power saving on or off
+```
+
+Swap your Wi-Fi card's name in for `wlp3s0`, `ip link` lists them.
+
 ## 🐧 Kernels
 
 | Source | What I used it for |
@@ -232,6 +435,15 @@ The dispatcher script puts CAKE on a connection when it comes up. Unlimited, so 
 
 ```bash
 grubby --set-default "/boot/vmlinuz-$k"
+```
+
+### Try it yourself
+
+```bash
+uname -r                          # the kernel you're running
+ls /lib/modules                   # every kernel you have
+sudo grubby --default-kernel      # the one that boots next time
+rpm -qa 'kernel*core*'            # which package each one came from
 ```
 
 ## 🐚 Bash
@@ -245,6 +457,32 @@ grubby --set-default "/boot/vmlinuz-$k"
 ```bash
 exec {check_lock}>"$STATE_DIR/.check.lock"
 flock -n "$check_lock" || exit 0
+```
+
+### Try it yourself
+
+Only one copy of a script at a time:
+
+```bash
+exec {lock}>/tmp/my-script.lock
+flock -n "$lock" || { echo "already running"; exit 0; }
+echo "working…"; sleep 10
+```
+
+Check what you're handed before using it, like every one of my root helpers does:
+
+```bash
+size="$1"
+[[ $size =~ ^[0-9]+$ ]] && ((size >= 10 && size <= 150)) || { echo "not a size: $size"; exit 2; }
+echo "ok, $size"
+```
+
+Read `key=value` lines into variables:
+
+```bash
+while IFS='=' read -r key value; do
+    echo "$key is $value"
+done < <(printf 'swappiness=180\nsize=50\n')
 ```
 
 ## 🎨 The look
