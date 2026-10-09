@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.12
+Version:        8.2.13
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -29,6 +29,8 @@ Requires:       dnf5-command(needs-restarting)
 Requires:       procps-ng
 # the install window's password box
 Requires:       polkit
+# the font for the live output and logs
+Requires:       fira-code-fonts
 # what my install/uninstall scripts need while they run
 Requires(post):  systemd
 Requires(post):  coreutils
@@ -300,6 +302,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.13-1
+- The live output and logs use FiraCode Nerd Font like my Konsole. Fira
+  Code when the Nerd Font isn't there, my RPM installs that one from
+  Fedora so everyone gets it
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.12-1
 - What's new for a LinuxTweaks update reads the notes from the new RPM
   itself, so they show the moment I upload. Before it waited for my spec
