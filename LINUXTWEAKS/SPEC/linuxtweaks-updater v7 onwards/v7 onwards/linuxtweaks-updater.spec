@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.4
+Version:        8.2.8
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -300,6 +300,38 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.8-1
+- A new LinuxTweaks in About lights up: the card green all round and
+  tinted, and Install is a green button you can't miss. Install updates…
+  on the Updates tab is green the same way
+- The quieter buttons, Show, Recommended for this pc, What these mean,
+  Check now and the rest, have a blue border now. They looked flat
+
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.7-1
+- When updates are waiting the Updates card lights up like the running
+  kernel does: a border all round and tinted, red for an Important or
+  Critical fix, orange for other security fixes, blue for plain updates.
+  The Reboot card goes orange the same way when a reboot is needed.
+  Nothing waiting, they stay quiet with the green stripe
+
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.6-1
+- Flatpak updates show live in the install window too. I ran flatpak with
+  --noninteractive, which prints plain lines and no progress, so it looked
+  frozen. Now it draws its table with the percentages like in Konsole. My
+  pretend terminal answers flatpak when it asks where the cursor is, and
+  the window follows its jumps up the screen
+- The kernel you're running has a green border all round and a green tint,
+  not just the stripe
+
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.5-1
+- The LinuxTweaks window opens straight away, 0.06 seconds instead of most
+  of a second. It built all six tabs before showing you anything, now each
+  tab gets built the first time you open it
+- Kernels reads every kernel and its NVIDIA driver with one rpm call, it
+  was one rpm and one modinfo per kernel
+- Drives reads tuned's profile from its own file instead of asking
+  tuned-adm
+
 * Thu Oct 08 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.4-1
 - Available updates groups the security fixes by how bad they are, the
   worst first: Critical, Important, Moderate, then Low, each under its own
