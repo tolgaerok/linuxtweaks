@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.13
+Version:        8.2.15
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -302,6 +302,20 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.15-1
+- Clicking the LinuxTweaks X is out popup really opens About now. It used
+  notify-send, which stopped listening after 3 seconds while Plasma kept
+  the popup up longer, so a click did nothing. The tray talks to Plasma
+  itself now and keeps listening
+
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.14-1
+- A new LinuxTweaks shows without pressing anything. The About button at
+  the top goes green and says LinuxTweaks 8.x, and About opens with the
+  card lit up, What's new and Install ready. Before you only saw it after
+  pressing Check for LinuxTweaks updates
+- About looks by itself every time you open it when nothing's been found
+  yet, so it's never an old answer
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.13-1
 - The live output and logs use FiraCode Nerd Font like my Konsole. Fira
   Code when the Nerd Font isn't there, my RPM installs that one from
