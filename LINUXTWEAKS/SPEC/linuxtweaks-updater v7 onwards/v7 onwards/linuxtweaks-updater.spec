@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.11
+Version:        8.2.12
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -300,6 +300,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.12-1
+- What's new for a LinuxTweaks update reads the notes from the new RPM
+  itself, so they show the moment I upload. Before it waited for my spec
+  on GitHub and showed nothing until I pushed it
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.11-1
 - After an install the old tray sometimes has to be killed to make way for
   the new one. That left its unit failed and Health showed it as a failed
