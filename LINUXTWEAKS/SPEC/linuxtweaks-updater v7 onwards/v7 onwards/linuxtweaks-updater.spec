@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.15
+Version:        8.2.16
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -302,6 +302,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.16-1
+- Flatpak updates count what flatpak installs new too, like the NVIDIA GL
+  extension for a new driver. I only counted updates to what you already
+  had, so the one your flatpak apps need after a driver update was missing
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.15-1
 - Clicking the LinuxTweaks X is out popup really opens About now. It used
   notify-send, which stopped listening after 3 seconds while Plasma kept
