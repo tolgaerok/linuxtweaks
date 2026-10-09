@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.8
+Version:        8.2.11
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -300,12 +300,28 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.11-1
+- After an install the old tray sometimes has to be killed to make way for
+  the new one. That left its unit failed and Health showed it as a failed
+  service. Now the install forgets it, it was me and not a real fault
+
+* Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.9-1
+- LinuxTweaks tells you when a new version of itself is out, like other
+  apps do. It looks every time it checks for updates and a minute after it
+  starts, and shows a notification for 3 seconds. Click it and About opens
+  with Install ready
+- What's new in that version shows before you install it, read from my
+  spec on GitHub. Once per version, it never nags twice
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.8-1
 - A new LinuxTweaks in About lights up: the card green all round and
   tinted, and Install is a green button you can't miss. Install updates…
   on the Updates tab is green the same way
 - The quieter buttons, Show, Recommended for this pc, What these mean,
   Check now and the rest, have a blue border now. They looked flat
+- A fake LinuxTweaks update for testing: touch fake_self_update in my
+  state folder and About pretends a newer version is out. Install does
+  nothing then, and a real install clears it
 
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.7-1
 - When updates are waiting the Updates card lights up like the running
