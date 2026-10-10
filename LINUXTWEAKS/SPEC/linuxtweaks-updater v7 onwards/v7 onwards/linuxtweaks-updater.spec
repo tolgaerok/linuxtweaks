@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.16
+Version:        8.2.17
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -302,6 +302,21 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.17-1
+- Health opens in half a second, even right after an install. dnf check
+  took 30 seconds and the whole tab waited for it every time packages
+  changed. it runs in the background now, Packages says it's checking and
+  the tab fills it in when dnf is done
+- Health leaves out network mounts waiting for their server. an NFS or SMB
+  share that was asleep at boot isn't broken, its automount mounts it the
+  next time something opens it, so Services stays green and says how many
+- Restart them works on mounts. their names have a backslash in them,
+  mnt-nfs\x2ddata.mount, and the helper said not a unit name
+- Compare on a changed config file can sort it out now. Keep mine drops
+  the package's .rpmnew, Use the new one puts it in place and keeps yours
+  next to it as .rpmold. before it only showed the difference and you had
+  to do the rest as root yourself
+
 * Fri Oct 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.16-1
 - Flatpak updates count what flatpak installs new too, like the NVIDIA GL
   extension for a new driver. I only counted updates to what you already
