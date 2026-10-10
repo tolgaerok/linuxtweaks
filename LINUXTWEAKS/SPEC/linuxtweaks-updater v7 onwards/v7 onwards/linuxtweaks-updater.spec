@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.23
+Version:        8.2.24
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.24-1
+- Installing a new LinuxTweaks from About is safer. the root helper
+  checked the signature on the RPM in your cache, then installed that
+  same file, so something running as you could swap it in between. it
+  copies it somewhere only root can touch first, checks that copy and
+  installs that copy
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.23-1
 - Flatpaks have What changed too. click one in Available updates for its
   release notes, from the AppStream data flatpak already keeps. long ones
