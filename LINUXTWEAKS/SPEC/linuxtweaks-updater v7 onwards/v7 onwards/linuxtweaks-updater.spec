@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.17
+Version:        8.2.18
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
