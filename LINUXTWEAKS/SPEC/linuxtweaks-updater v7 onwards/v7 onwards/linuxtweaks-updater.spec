@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.20
+Version:        8.2.21
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -31,8 +31,6 @@ Requires:       procps-ng
 Requires:       polkit
 # the font for the live output and logs
 Requires:       fira-code-fonts
-# colour emoji for the icons, Qt5 draws them grey without it
-Requires:       google-noto-color-emoji-fonts
 # what my install/uninstall scripts need while they run
 Requires(post):  systemd
 Requires(post):  coreutils
@@ -104,6 +102,8 @@ install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upg
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 # my signing key, so Check for LinuxTweaks updates can check a download from GitHub
 install -Dm644 -t %{buildroot}%{_datadir}/%{name} usr/share/%{name}/RPM-GPG-KEY-linuxtweaks
+# colour emoji for the icons. Fedora's Noto Color Emoji is COLRv1, Qt5 draws it blank
+install -Dm644 -t %{buildroot}%{_datadir}/%{name}/fonts usr/share/%{name}/fonts/linuxtweaks-emoji.ttf usr/share/%{name}/fonts/OFL.txt
 
 # --- desktop entries --------------------------------------------------------
 install -Dm644 -t %{buildroot}%{_datadir}/applications etc/xdg/applications/%{name}.desktop
@@ -304,6 +304,12 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.21-1
+- The icons really are in colour now. 8.2.20 asked Fedora's Noto Color
+  Emoji, but that's the new COLRv1 kind and Qt5 can't draw it, so every
+  icon came out blank. I bring my own copy of the old bitmap Noto Color
+  Emoji now, the same one Solus has, and only LinuxTweaks uses it
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.20-1
 - The icons are in colour now, like on Solus. Qt5 grabbed flat grey ones
   from whatever font had them, the Nerd Fonts mostly. it asks Noto Color
