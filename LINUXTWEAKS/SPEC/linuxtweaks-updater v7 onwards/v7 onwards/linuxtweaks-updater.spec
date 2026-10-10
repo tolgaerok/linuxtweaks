@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.21
+Version:        8.2.22
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.22-1
+- The colour icons are a little bigger, a fifth bigger than the text
+  next to them, so they're easy to make out on the tabs and buttons
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.21-1
 - The icons really are in colour now. 8.2.20 asked Fedora's Noto Color
   Emoji, but that's the new COLRv1 kind and Qt5 can't draw it, so every
