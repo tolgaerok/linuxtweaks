@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.18
+Version:        8.2.19
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -302,6 +302,15 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.19-1
+- Settings files an update left behind make sense now. Health says "an
+  update left 1 settings file to sort out" instead of config files to
+  merge, and Sort it out says in plain words what happened: the update
+  brought a new default, yours wasn't touched and is still in use. each
+  file says how many settings are really different, or that only the
+  comments are, with Keep mine in green as the safe pick. the raw diff is
+  behind Show the differences, Keep all mine does them all at once
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.17-1
 - Health opens in half a second, even right after an install. dnf check
   took 30 seconds and the whole tab waited for it every time packages
