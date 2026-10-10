@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.19
+Version:        8.2.20
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -31,6 +31,8 @@ Requires:       procps-ng
 Requires:       polkit
 # the font for the live output and logs
 Requires:       fira-code-fonts
+# colour emoji for the icons, Qt5 draws them grey without it
+Requires:       google-noto-color-emoji-fonts
 # what my install/uninstall scripts need while they run
 Requires(post):  systemd
 Requires(post):  coreutils
@@ -302,6 +304,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.20-1
+- The icons are in colour now, like on Solus. Qt5 grabbed flat grey ones
+  from whatever font had them, the Nerd Fonts mostly. it asks Noto Color
+  Emoji first now, and my RPM pulls that in
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.19-1
 - Settings files an update left behind make sense now. Health says "an
   update left 1 settings file to sort out" instead of config files to
