@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.22
+Version:        8.2.23
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,16 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.23-1
+- Flatpaks have What changed too. click one in Available updates for its
+  release notes, from the AppStream data flatpak already keeps. long ones
+  like RustDesk show the first 12 lines and "and 71 more", without the
+  #15535 pull request numbers. no notes? a link to the app's GitHub
+  releases or its website. runtimes say they don't publish any
+- Every check refreshes the Flatpak AppStream data, it was a day behind
+  and didn't know the new drawio yet. only while you're logged in and
+  active, any other time polkit would ask for a password
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.22-1
 - The colour icons are a little bigger, a fifth bigger than the text
   next to them, so they're easy to make out on the tabs and buttons
