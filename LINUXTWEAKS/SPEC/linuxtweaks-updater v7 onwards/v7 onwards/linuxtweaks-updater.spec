@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.28
+Version:        8.2.29
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.29-1
+- Health report: the Errors part leaves out the noise the card already
+  leaves out, and the same line 39 times shows once with ×39. Brian's
+  real errors were getting pushed off the end by plasmashell spam
+- Health: KDE's crash pickup timing out after 30 minutes isn't a failed
+  service any more, it does that on every KDE desktop
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.28-1
 - Health: a program checking whether sudo still has your password
   (sudo -n true, my release window does it) no longer shows up as an
