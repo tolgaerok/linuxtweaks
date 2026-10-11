@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.24
+Version:        8.2.25
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -97,7 +97,7 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-pty
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 # my signing key, so Check for LinuxTweaks updates can check a download from GitHub
@@ -304,6 +304,19 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.25-1
+- New GPU tab, Fedora only. Where your NVIDIA driver comes from:
+  Negativo17 or RPM Fusion, never both. They ship the same things
+  under different names, so with both on it says they WILL clash and
+  keeps the one you pick
+- Negativo17's multimedia repo on or off: full ffmpeg and the codecs,
+  NVENC/NVDEC. Not with RPM Fusion, their codecs clash
+- Driver branch: newest for GTX 16xx and RTX, 580 for the GTX 900 and
+  10 series, like the GTX 950M in my laptop. 590 and up dropped them
+- The tweaks Solus ships in its own nvidia package: faster GPU memory
+  (PAT), no memory wiping, nova blocked, egl-wayland 1, full preemption
+  and hugepages. Same as Solus turns them all on with one password
+
 * Sat Oct 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.24-1
 - Installing a new LinuxTweaks from About is safer. the root helper
   checked the signature on the RPM in your cache, then installed that
