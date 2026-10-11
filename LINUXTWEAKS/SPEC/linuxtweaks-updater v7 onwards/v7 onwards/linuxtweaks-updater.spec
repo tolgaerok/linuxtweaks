@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.25
+Version:        8.2.26
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,17 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.26-1
+- Health has a Report button, Brian's idea. Everything the checks
+  found as plain text, to send to whoever's helping you: your distro,
+  kernel, desktop, CPU, RAM and graphics up top, every card worst
+  first with all its details, then the real lines behind the red and
+  orange ones (systemctl status of a failed service, the journal's
+  errors, the crashes, df for a full disk)
+- You see it all before it goes anywhere. Copy it into a message or
+  save it as a text file, nothing leaves the pc unless you send it
+- Shout out to Brother Brian for the suggestion, thank you!!
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.25-1
 - New GPU tab, Fedora only. Where your NVIDIA driver comes from:
   Negativo17 or RPM Fusion, never both. They ship the same things
