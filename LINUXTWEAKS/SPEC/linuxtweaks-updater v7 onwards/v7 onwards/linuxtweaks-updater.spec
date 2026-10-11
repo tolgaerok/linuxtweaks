@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.26
+Version:        8.2.27
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.27-1
+- Health's report puts the extra detail worst first too, the same as
+  the cards above it
+- Health: "1 entry starts" reads right on the Autostart card, and an
+  error with no words in it (the kernel prints a blank one at boot)
+  no longer counts as noise or shows up as an empty line
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.26-1
 - Health has a Report button, Brian's idea. Everything the checks
   found as plain text, to send to whoever's helping you: your distro,
