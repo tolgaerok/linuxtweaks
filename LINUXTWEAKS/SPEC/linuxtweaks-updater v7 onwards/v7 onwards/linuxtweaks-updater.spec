@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.30
+Version:        8.2.31
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,16 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.31-1
+- Fixed: updates that dnf skipped kept showing as waiting and the
+  update window still said they were installed. it now checks what
+  really went in and shows what dnf held back and why
+- Fixed: the update count was 2 too many when an update replaces other
+  packages, dnf's "Obsoleting packages" list isn't more updates
+- GPU tab: switching to Negativo17 multimedia sorts out RPM Fusion's
+  *-freeworld packages too, they were pinning old libraries and holding
+  updates back (vlc-plugins-freeworld on my laptop)
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.30-1
 - Health: KDE's monitor brightness chatter (powerdevil talking DDC to
   your screens, and losing a race when they change) is known noise now,
