@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.29
+Version:        8.2.30
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.30-1
+- Health: KDE's monitor brightness chatter (powerdevil talking DDC to
+  your screens, and losing a race when they change) is known noise now,
+  not errors
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.29-1
 - Health report: the Errors part leaves out the noise the card already
   leaves out, and the same line 39 times shows once with ×39. Brian's
