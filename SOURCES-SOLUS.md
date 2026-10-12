@@ -83,6 +83,7 @@ curl -s https://raw.githubusercontent.com/getsolus/packages/main/packages/n/nano
 | [Package management basics](https://help.getsol.us/docs/user/package-management/basics) | `eopkg up`, `lu`, `it`, `rm`, `history` |
 | [Repository management](https://help.getsol.us/docs/user/package-management/repo-management) | The Solus repo and its index |
 | [eopkg](https://github.com/getsolus/eopkg) | How it works inside, and `/var/lib/eopkg/package`, its install database |
+| [systemd.service: Restart=](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html#Restart=) and [systemd.unit: StartLimitBurst=](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#StartLimitIntervalSec=interval) | The index refresh tries 3 times, 30 seconds apart, so a DNS blip (Tailscale renegotiating) doesn't fail it |
 
 The tray reads the repo index and the install database as you, no root and no eopkg on every click. Since 8.2.33 the update window checks that database after an install, and shows anything that didn't get its new version instead of saying it all went in.
 
@@ -181,6 +182,7 @@ Solus uses AppArmor where Fedora uses SELinux, and eopkg's pending list where Fe
 | Source | What I used it for |
 |---|---|
 | [AppArmor](https://apparmor.net/) | The AppArmor card, and what a `DENIED` line means |
+| [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Solus has no coredumpctl, so the Crashes card always said none. Since 8.2.35 it reads the "dumped core" lines in the journal instead |
 | [ddcutil: i2c permissions](https://www.ddcutil.com/i2c_permissions/) | Solus gives the monitor's i2c devices to whoever's logged in (uaccess), there's no `i2c` group to join |
 
 ### Try it yourself
@@ -188,6 +190,7 @@ Solus uses AppArmor where Fedora uses SELinux, and eopkg's pending list where Fe
 ```bash
 cat /sys/module/apparmor/parameters/enabled                    # Y means it's on
 journalctl -b -k -o cat | grep -c 'apparmor="DENIED"'           # how often it blocked something this boot
+journalctl --since -7d -t systemd-coredump -o cat | grep 'dumped core'   # crashes, no coredumpctl needed
 getfacl -p /dev/i2c-1 | grep user:                              # you, not a group, can talk to the monitor
 ddcutil getvcp 10                                               # your monitor's brightness, 0 to 100
 ```

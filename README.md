@@ -105,7 +105,7 @@ Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it
 
 ### 🩺 Health
 
-A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out.
+A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and a network share never counts as your disk.
 
 **📋 Report…** puts it all in plain text, worst first, with the real error lines behind the red and orange cards. Copy it into a message or save it, nothing leaves the PC unless you send it. Brian's idea, thanks Brian.
 
@@ -250,6 +250,8 @@ sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.rep
 
 Without my repo, LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It looks in my repo first and on GitHub when it can't reach that, downloads the new version, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
 
+When a new one's out you get a popup in the LinuxTweaks look with what's new right on it, once per version. **See what's new** opens About with Install ready, **Later** leaves it till you go looking.
+
 #### Coming from an older name?
 
 dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all this app under old names. A normal update swaps you over, or run the quick install.
@@ -286,7 +288,7 @@ cd /tmp && url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/
 linuxtweaks-updater
 ```
 
-From then on it starts by itself when you log in. New versions come from **About → Check for LinuxTweaks updates**: it finds the newest eopkg in my GitHub folder, checks its signature against the key that comes with the app, and installs it with one password box. One that isn't signed by me never gets installed.
+From then on it starts by itself when you log in. New versions come from **About → Check for LinuxTweaks updates**: it finds the newest eopkg in my GitHub folder, checks its signature against the key that comes with the app, and installs it with one password box. One that isn't signed by me never gets installed. A new one pops up once in the LinuxTweaks look with what's new on it.
 
 The NVIDIA driver, codecs and the rest of your system stay the Solus way: from the Solus repo, and apps from outside through Flatpak, as [Solus recommends](https://help.getsol.us/docs/user/software/third-party/).
 

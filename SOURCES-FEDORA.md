@@ -280,10 +280,14 @@ The Health tab is a quick look over the whole PC, read only and no password: fai
 
 The hard part is noise. Every desktop logs errors that mean nothing, and a report full of them hides the one that matters. Brian's first report had the same plasmashell line 39 times and his real errors pushed off the end. So the card and the report share one list of known noise, repeats show once with ×N, and the report just says how many it left out.
 
+Logging out was the other one. Plasma stops KWin, and everything still on the desktop (kwallet, the portal, tray apps) falls over with it and dumps core. Those aren't crashes, so since 8.2.34 any dump within 15 seconds of `org.kde.Shutdown` starting is left out.
+
 | Source | What I used it for |
 |---|---|
 | [journalctl](https://www.freedesktop.org/software/systemd/man/latest/journalctl.html) | `-b -p err` for this boot's errors, `--since` for Count from now |
-| [coredumpctl](https://www.freedesktop.org/software/systemd/man/latest/coredumpctl.html) | The Crashes card and the report's crash list |
+| [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Every crash lands in the journal as "dumped core". Since 8.2.34 the Crashes card and the report read those lines, Solus doesn't have coredumpctl |
+| [coredumpctl](https://www.freedesktop.org/software/systemd/man/latest/coredumpctl.html) | Looking at a crash yourself, where your distro has it |
+| [df](https://man7.org/linux/man-pages/man1/df.1.html) | The disk card. `-x fuse.sshfs -x autofs` so a network share isn't counted as your disk, my sshfs mount was showing the server's disk as mine |
 | [systemctl](https://www.freedesktop.org/software/systemd/man/latest/systemctl.html) | `--failed`, `status` for the report, and `reset-failed` behind the Forget them button |
 | [sudo](https://www.sudo.ws/docs/man/sudo.man/) | Why `sudo -n true` logs "a password is required" every time it says no, so it counts as noise |
 | [DrKonqi](https://invent.kde.org/plasma/drkonqi) | KDE's crash pickup, which times out after 30 minutes on every KDE desktop and isn't a real failed service |
@@ -321,6 +325,18 @@ journalctl --list-boots --no-pager | tail -2
 ```
 
 Crashes a few seconds before a boot's last line are apps getting killed on the way down. Nothing to fix.
+
+**Crashes from the journal, the way the card reads them.** Works on Solus too, no coredumpctl needed. A logout shows up as `org.kde.Shutdown` right before a bunch of dumps:
+
+```bash
+journalctl --since "-7 days" -t systemd-coredump -t systemd -o short --no-pager | grep -E 'dumped core|org\.kde\.Shutdown@'
+```
+
+**Your disks without the network ones**, what the disk card looks at:
+
+```bash
+df -h -x tmpfs -x devtmpfs -x squashfs -x overlay -x efivarfs -x fuse.sshfs -x autofs
+```
 
 **Watch sudo log a "no".** This is what used to show up as an error after my release window ran:
 
@@ -484,6 +500,8 @@ echo "you clicked: $choice"
 | [console_codes](https://man7.org/linux/man-pages/man4/console_codes.4.html) | What `\r`, `ESC[1A` and `ESC[0J` mean, so the window can redraw dnf's bars in place |
 | [Python urllib](https://docs.python.org/3/library/urllib.request.html) | Downloading the new RPM from my repo or GitHub |
 | [GitHub REST API: contents](https://docs.github.com/en/rest/repos/contents) | Finding the newest RPM in my GitHub folder |
+| [QDialog](https://doc.qt.io/qt-5/qdialog.html) and [Qt::WindowFlags](https://doc.qt.io/qt-5/qt.html#WindowType-enum) | The new version popup since 8.2.35, my own window on top with what's new on it, not Plasma's bubble that was gone in 3 seconds |
+| [QLayout::SetFixedSize](https://doc.qt.io/qt-5/qlayout.html#SizeConstraint-enum) | So that popup is exactly as tall as what's in it |
 
 The tray doesn't ask for anything, it watches the state folder and redraws when a check is done:
 
