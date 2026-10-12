@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.34
+Version:        8.2.35
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,12 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.35-1
+- New version popup is my own window now, LinuxTweaks look with the
+  cards, not Plasma's grey bubble that was gone in 3 seconds
+- It shows what's new right on it and stays till you pick Later or
+  See what's new
+
 * Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.34-1
 - Health: logging out no longer shows up as a pile of crashes, the
   dumps right after a logout are skipped
