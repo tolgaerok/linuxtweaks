@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.33
+Version:        8.2.34
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,15 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.34-1
+- Health: logging out no longer shows up as a pile of crashes, the
+  dumps right after a logout are skipped
+- Health: crashes come from the journal now, Solus never had
+  coredumpctl so it always said none
+- Health: disk check leaves network shares alone, my sshfs mount was
+  showing the server's disk as mine
+- Health report: crash and disk sections match the cards now
+
 * Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.33-1
 - GPU tab: PAT only works on the older closed driver, newer cards
   just ignore it. so it greys out now instead of pretending
