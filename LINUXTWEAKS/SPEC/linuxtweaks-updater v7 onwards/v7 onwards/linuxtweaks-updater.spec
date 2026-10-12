@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.35
+Version:        8.2.36
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.36-1
+- Panel, About and the new version popup have a little Fedora tag next
+  to the name now, so you can tell which LinuxTweaks it is from a
+  screenshot
+
 * Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.35-1
 - New version popup is my own window now, LinuxTweaks look with the
   cards, not Plasma's grey bubble that was gone in 3 seconds
