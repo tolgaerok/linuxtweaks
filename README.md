@@ -6,16 +6,17 @@
 
 # 🫟 LinuxTweaks 2026
 
-**My one app for keeping Fedora up to date and running well.**
+**My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Version](https://img.shields.io/badge/Version-8.2.33-1e81ac)](https://github.com/tolgaerok/linuxtweaks)
-[![Fedora](https://img.shields.io/badge/Fedora-44%2B-51A2DA?logo=fedora&logoColor=white)](https://fedoraproject.org)
+[![Fedora](https://img.shields.io/badge/Version-8.2.33-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Solus](https://img.shields.io/badge/Solus-8.2.34-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
 [![Bash](https://img.shields.io/badge/Bash-scripts-4EAA25?logo=gnubash&logoColor=white)](https://www.gnu.org/software/bash)
 
-[![RPM](https://img.shields.io/badge/RPM-GPG_signed-2e3440?logo=gnuprivacyguard&logoColor=white)](#installation)
+[![RPM](https://img.shields.io/badge/RPM-GPG_signed-2e3440?logo=gnuprivacyguard&logoColor=white)](#-fedora)
+[![eopkg](https://img.shields.io/badge/eopkg-GPG_signed-2e3440?logo=gnuprivacyguard&logoColor=white)](#-solus)
 [![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue)](https://github.com/tolgaerok/linuxtweaks/blob/main/LICENSE)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen)](https://github.com/tolgaerok/linuxtweaks)
 [![Last commit](https://img.shields.io/github/last-commit/tolgaerok/linuxtweaks)](https://github.com/tolgaerok/linuxtweaks/commits/main)
@@ -28,6 +29,8 @@
 ---
 
 It started as my update manager, because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. Then my tweak scripts moved in, one tab each. Now it's one place for all of it, and it just works.
+
+It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Underneath, Fedora gets dnf and an RPM, Solus gets eopkg and a proper Solus package built with solbuild. Where the two distros do things differently, the app does it their way.
 
 <div align="center">
 
@@ -57,25 +60,26 @@ It started as my update manager, because I was sick of hunting through different
 
 | Tab | In short |
 |---|---|
-| 🫟 **Updates** | DNF and Flatpak in one place, security fixes marked, installs when you say so |
+| 🫟 **Updates** | DNF (Fedora) or eopkg (Solus) and Flatpak in one place, security fixes marked, installs when you say so |
 | 💽 **Drives** | I/O scheduler and read-ahead per drive, kept after a reboot |
 | 🧠 **Memory** | zram, swappiness and a few desktop tweaks, explained in plain words |
 | 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6 |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
-| 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one |
+| 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
+| 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one, and a report you can send |
 
 ### 🫟 Updates
 
-- **Checks in the background.** DNF and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up. New Fedora updates show up within the hour
-- **Security fixes stand out.** Grouped by how bad they are, the worst first: Critical, Important, Moderate, then Low, each a card filled in its colour. It reads Fedora's own advisories that dnf already downloads, nothing extra goes online
-- **What changed in a package.** Everything waiting is in one window, a card per update, A to Z. The versions read old in yellow, a blue arrow, new in green. Click a DNF one for its advisory and its changelog since your version
+- **Checks in the background.** DNF or eopkg and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up. New updates show up within the hour
+- **Security fixes stand out.** Grouped by how bad they are, the worst first: Critical, Important, Moderate, then Low, each a card filled in its colour. On Fedora it reads the advisories dnf already downloads, on Solus the security releases in the eopkg index. Nothing extra goes online
+- **What changed in a package.** Everything waiting is in one window, a card per update, A to Z. The versions read old in yellow, a blue arrow, new in green. Click a DNF or eopkg one for its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date, yellow while it checks
-- **Popups with buttons.** *Install all*, *DNF only*, *Flatpak only* or *Later…*, which opens a small window to pick when I remind you, 1 hour to 2 days with − and +. It remembers your pick
-- **Installs when you say so.** In its own window: the steps, a progress bar and dnf's own live output, its download bars moving like in a terminal. One password box that says what it's for
+- **Popups that show you first.** *📦 Show updates* opens the list of what's waiting, and you install from there. *Later…* opens a small window to pick when I remind you, 1 hour to 2 days with − and +. It remembers your pick
+- **Installs when you say so.** In its own window: the steps, a progress bar and dnf's or eopkg's own live output, its download bars moving like in a terminal. One password box that says what it's for. Afterwards it checks what really went in, so anything the package manager held back shows up with its reason instead of a fake "all done"
 - **Spinning dots** whenever it's busy: checking, a password job, Apply, installing
-- **Cleans up after.** A card for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew`)
-- **Weekly maintenance, if you want it.** Cleans the DNF cache, trims the journal, runs SSD TRIM if Fedora isn't already doing it
-- **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, Fedora lets it grow to 4 GB
+- **Cleans up after.** A card for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew` on Fedora, `.newconfig` on Solus)
+- **Weekly maintenance, if you want it.** Cleans the package cache, trims the journal, runs SSD TRIM if your distro isn't already doing it
+- **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, out of the box it can grow to 4 GB
 
 ### 💽 Drives
 
@@ -91,24 +95,36 @@ What your connection uses right now, and switches for faster TCP (BBR), bigger b
 
 ### 🐧 Kernels
 
-Every installed kernel, which one you're running and which one boots by default. Make another one the default, remove old ones safely, and pick which new kernels take over when they install, so a Fedora kernel update doesn't push out your CachyOS one.
+Every installed kernel, which one you're running and which one boots by default. Make another one the default and remove old ones safely. On Fedora that's grubby, and you can pick which new kernels take over when they install, so a Fedora kernel update doesn't push out your CachyOS one. On Solus it's clr-boot-manager with its `current` and `lts` kernels.
+
+### 🎮 GPU (Fedora only)
+
+NVIDIA on Fedora comes from a third party repo: Negativo17 or RPM Fusion. Never both, they ship the same things under different names, and the tab warns you with a red box if both are on and moves you over to one cleanly. It picks the right driver branch for your card (the 580 branch for GTX 900 and 10 series, the newest for everything after), switches Negativo17's multimedia repo on or off, and has the tweaks Solus ships in its own NVIDIA package, with **Apply all tweaks** to turn them on with one password. Each one says *Needs reboot* or *Needs log out*, and greys out when your driver doesn't have it.
+
+Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it from the Software Center the way the [Solus NVIDIA guide](https://help.getsol.us/docs/user/hardware/nvidia-gpu-drivers) says, and it already has those tweaks.
 
 ### 🩺 Health
 
-A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it.
+A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out.
+
+**📋 Report…** puts it all in plain text, worst first, with the real error lines behind the red and orange cards. Copy it into a message or save it, nothing leaves the PC unless you send it. Brian's idea, thanks Brian.
 
 ### What it doesn't do
 
 - **No sudo rules, no passwordless root.** Checks run as you. Every change that needs root asks for your password first, through a small helper that only does that one job and checks everything it's handed
 - **Nothing changes by itself.** Every tab shows your PC as it is. A tweak only happens when you flip it
-- **Signed.** Everything in my repo is signed with my LinuxTweaks key
+- **Signed.** Every RPM and every eopkg is signed with my LinuxTweaks key, and the app checks that before it installs a new version of itself
 
 ## Installation
+
+Pick yours: [🎩 Fedora](#-fedora) · [🌀 Solus](#-solus)
+
+### 🎩 Fedora
 
 > [!NOTE]
 > My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing. No access to my server? [Install the RPM file](#-no-tailscale-install-the-rpm-file) instead.
 
-### 🔐 First time? Set up Tailscale
+#### 🔐 First time? Set up Tailscale
 
 Tailscale is a private network between your PCs. It's free for personal use and takes about 5 minutes.
 
@@ -149,7 +165,7 @@ tailscale ping 100.83.30.114
 
 </details>
 
-### 👍 Quick install
+#### 👍 Quick install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
@@ -194,7 +210,7 @@ bash install-linuxtweaks.sh --check
 
 </details>
 
-### 🖖 Or by hand
+#### 🖖 Or by hand
 
 Add my repo:
 
@@ -211,7 +227,7 @@ linuxtweaks-updater
 
 From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`. The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
 
-### 📦 No Tailscale? Install the RPM file
+#### 📦 No Tailscale? Install the RPM file
 
 The same signed RPM is here on GitHub. This finds the newest one in my folder, downloads the real file, shows you it's an RPM and installs it:
 
@@ -234,7 +250,7 @@ sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.rep
 
 Without my repo, LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It looks in my repo first and on GitHub when it can't reach that, downloads the new version, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
 
-### Coming from an older name?
+#### Coming from an older name?
 
 dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all this app under old names. A normal update swaps you over, or run the quick install.
 
@@ -256,13 +272,31 @@ If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run t
 
 </details>
 
+### 🌀 Solus
+
+LinuxTweaks for Solus isn't in the Solus repo, it's a signed eopkg in my GitHub folder. It's built the Solus way, with `package.yml` and solbuild, to the [Solus packaging practices](https://help.getsol.us/docs/packaging/packaging-practices). This finds the newest one, downloads it with its signature, checks the signature against my key and only then installs it:
+
+```bash
+cd /tmp && url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS/EOPKG/SOLUS" | grep -o '"download_url": *"[^"]*\.eopkg"' | cut -d'"' -f4 | sort -V | tail -1) && curl -fLO "$url" && curl -fLO "$url.asc" && curl -fsSLo linuxtweaks-key.gpg https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/KEYS/linuxtweaks-key.gpg && gpgv --keyring ./linuxtweaks-key.gpg linuxtweaks-updater-*.eopkg.asc linuxtweaks-updater-*.eopkg && sudo eopkg it ./linuxtweaks-updater-*.eopkg
+```
+
+`Good signature from "Tolga Erok (LinuxTweaks RPM Signing)"` means it's mine and nobody changed it. Anything else and it stops before installing. Then start it:
+
+```bash
+linuxtweaks-updater
+```
+
+From then on it starts by itself when you log in. New versions come from **About → Check for LinuxTweaks updates**: it finds the newest eopkg in my GitHub folder, checks its signature against the key that comes with the app, and installs it with one password box. One that isn't signed by me never gets installed.
+
+The NVIDIA driver, codecs and the rest of your system stay the Solus way: from the Solus repo, and apps from outside through Flatpak, as [Solus recommends](https://help.getsol.us/docs/user/software/third-party/).
+
 ### 📋 Installed? Uninstall? What's new?
 
-| | |
-|---|---|
-| **Is it installed?** | `dnf info linuxtweaks-updater`, or the quick install with `--check` |
-| **Uninstall** | In the window: **About → Uninstall…**, or `sudo dnf remove linuxtweaks-updater` |
-| **Changelog** | In the window: **What's new**, or `rpm -q --changelog linuxtweaks-updater` |
+| | Fedora | Solus |
+|---|---|---|
+| **Is it installed?** | `dnf info linuxtweaks-updater`, or the quick install with `--check` | `eopkg info linuxtweaks-updater` |
+| **Uninstall** | **About → Uninstall…**, or `sudo dnf remove linuxtweaks-updater` | **About → Uninstall…**, it clears your settings first |
+| **Changelog** | **What's new**, or `rpm -q --changelog linuxtweaks-updater` | **What's new**, or `less /usr/share/doc/linuxtweaks-updater/CHANGELOG` |
 
 Uninstalling takes the app, its timers, the menu launcher and its settings. Your installed packages stay as they are, and so do the tweaks you made. They're your system settings, not part of the app. To undo one by hand, see [Undo a tweak](#undo-a-tweak).
 
@@ -276,8 +310,9 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
-| **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and which new kernels take over |
-| **🩺 Health** | Ten checks on cards, Check again, and a fix button where there is one |
+| **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over |
+| **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
+| **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
 **Right click** the tray icon for the short menu:
 
@@ -285,7 +320,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 |---|---|
 | **Status line** | Updates waiting or up to date, and the security fixes |
 | **Reboot now** | Only there when an update needs a reboot |
-| **Install updates…** | Opens Available updates, pick Install all, DNF only or Flatpak only |
+| **Install updates…** | Opens Available updates, pick Install all, DNF (or eopkg) only or Flatpak only |
 | **Check for updates** | Checks right now with a fresh list, you always get a popup with the answer |
 | **Open LinuxTweaks** | The window |
 | **Exit** | Closes the tray until you log in again |
@@ -297,7 +332,8 @@ linuxtweaks-updater                     # start the tray, you can close the term
 linuxtweaks-updater --foreground        # start it and keep its output in the terminal
 linuxtweaks-updater-check               # check and list what's waiting
 linuxtweaks-updater-upgrade             # install everything
-linuxtweaks-updater-upgrade --dnf       # DNF only
+linuxtweaks-updater-upgrade --dnf       # DNF only (Fedora)
+linuxtweaks-updater-upgrade --eopkg     # eopkg only (Solus)
 linuxtweaks-updater-upgrade --flatpak   # Flatpak only
 ```
 
@@ -326,22 +362,25 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
+| GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
+
+The same files on Fedora and Solus.
 
 Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one in `[brackets]` is in use.
 
 ## How it works
 
 1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
-2. **Check.** `dnf check-update` and `flatpak remote-ls --updates`, then `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
+2. **Check.** Fedora: `dnf check-update`, `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. Solus: the eopkg repo index and install database, read as you. Then `flatpak remote-ls --updates`. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up and checks again as soon as the network is back
-5. **Upgrade.** The install window. dnf runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, the popup still opens the terminal upgrade
-6. **Updating itself.** About checks my repo, then GitHub. The RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it
+5. **Upgrade.** The popup opens Available updates, and you start the install window from there. dnf or eopkg runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, clicking the popup starts it first
+6. **Updating itself.** Fedora: About checks my repo, then GitHub, and the RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it. Solus: About checks my GitHub folder and the eopkg's `.asc` signature is checked with `gpgv` against my key only, before eopkg installs it
 7. **A clean start.** Every install or upgrade clears a snooze, popup clicks nobody picked up and Health's Count from now. Your settings stay
-8. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
+8. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` (`/usr/lib64/` on Solus) and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
 9. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 
-Everything I read and leaned on to build it is on its own page: **[Sources and references](SOURCES.md)**.
+Everything I read and leaned on to build it is on its own pages: **[Sources and references](SOURCES.md)**, split into [Fedora](SOURCES-FEDORA.md) and [Solus](SOURCES-SOLUS.md).
 
 ## 🛠️ Troubleshooting
 
@@ -415,7 +454,8 @@ What's in swap wouldn't fit in your free RAM. Close a few big apps, or change it
 
 | | |
 |---|---|
-| **OS** | Fedora 44+ |
+| **OS** | Fedora 44+ and Solus 4.9 |
+| **Packages** | RPM (dnf) and eopkg (built with solbuild) |
 | **Desktop** | KDE Plasma 6 |
 | **Language** | Python (PyQt5) and Bash |
 | **Init** | systemd |
@@ -460,7 +500,7 @@ Hamilton Hill, Perth, Western Australia
 
 <div align="center">
 
-**Made for my own system. Works great on yours too.**
+**Made for my own systems, Fedora and Solus. Works great on yours too.**
 
 [⬆ Back to top](#top)
 
