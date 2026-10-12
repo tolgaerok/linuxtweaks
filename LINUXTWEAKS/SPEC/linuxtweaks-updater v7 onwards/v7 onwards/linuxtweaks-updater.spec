@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.31
+Version:        8.2.32
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,14 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.32-1
+- The updates popup has one button now, Show updates. It opens Available
+  updates so you see what's waiting and what changed before anything
+  installs, then Install all, DNF only or Flatpak only along the bottom.
+  Installing straight from a popup you hadn't read was too easy
+- Tray not running when you click it? It starts the tray and opens the
+  window, no more surprise install in a terminal
+
 * Sun Oct 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.31-1
 - Fixed: updates that dnf skipped kept showing as waiting and the
   update window still said they were installed. it now checks what
