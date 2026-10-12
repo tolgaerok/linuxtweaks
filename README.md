@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.35-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.36-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.37-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -56,7 +56,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 
 ## What it does
 
-**LinuxTweaks** sits in your system tray. Left click it for the window, every part is its own tab.
+**LinuxTweaks** sits in your system tray. Left click it for the window, every part is its own tab. The little **Fedora** or **Solus** tag next to the name tells you which build you've got, it's in About and the new version popup too.
 
 | Tab | In short |
 |---|---|
@@ -297,6 +297,7 @@ The NVIDIA driver, codecs and the rest of your system stay the Solus way: from t
 | | Fedora | Solus |
 |---|---|---|
 | **Is it installed?** | `dnf info linuxtweaks-updater`, or the quick install with `--check` | `eopkg info linuxtweaks-updater` |
+| **Which build?** | A blue **Fedora** tag next to the name | A blue **Solus** tag next to the name |
 | **Uninstall** | **About → Uninstall…**, or `sudo dnf remove linuxtweaks-updater` | **About → Uninstall…**, it clears your settings first |
 | **Changelog** | **What's new**, or `rpm -q --changelog linuxtweaks-updater` | **What's new**, or `less /usr/share/doc/linuxtweaks-updater/CHANGELOG` |
 

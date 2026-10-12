@@ -759,7 +759,8 @@ printf 'apple\npear\napple\napple\n' | sort | uniq -c | sort -rn
 | Source | What I used it for |
 |---|---|
 | [Nord](https://www.nordtheme.com/docs/colors-and-palettes) | Every colour in the window |
-| [Shields.io](https://shields.io/) | The badges at the top of the README |
+| [Shields.io](https://shields.io/) | The badges at the top of the README. Since 8.2.36 the Fedora and Solus tags next to the name in the window use the same two blues |
+| [Qt Style Sheets: border-radius](https://doc.qt.io/qt-5/stylesheet-reference.html#border-radius) | Rounding a plain QLabel into that tag, no picture needed |
 
 ## 🔗 My own repo, releases and Tailscale
 
