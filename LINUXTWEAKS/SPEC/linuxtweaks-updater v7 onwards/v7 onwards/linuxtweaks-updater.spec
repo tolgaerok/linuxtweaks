@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.32
+Version:        8.2.33
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,15 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.33-1
+- GPU tab: PAT only works on the older closed driver, newer cards
+  just ignore it. so it greys out now instead of pretending
+- GPU tab: skip memory wiping tells you the catch now, its a bit
+  less secure. Solus says the same in its own config
+- Needs reboot / Needs log out tags line up now, they were all over
+  the place
+- Same as Solus button is now Apply all tweaks
+
 * Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.32-1
 - The updates popup has one button now, Show updates. It opens Available
   updates so you see what's waiting and what changed before anything
