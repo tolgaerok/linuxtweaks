@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.38-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.38-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.39-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -67,7 +67,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
 | 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
 | 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox, and LumineCapture for screenshots with OCR |
-| ❄️ **Nix** | The Nix package manager next to yours: nix-shell to try programs, or keep them for good |
+| ❄️ **Nix** | The Nix package manager next to yours: install a program for good, or try it without installing |
 | 🧩 **Extras** | Fixes for one app or one problem, each with its own switch. First up: WPS Office's crashing cloud helper |
 | 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one, and a report you can send |
 
@@ -116,7 +116,15 @@ My lt-boxes window as a tab. Distrobox runs other Linux distros in a box that sh
 
 ### ❄️ Nix
 
-The Nix package manager, single user, next to eopkg or dnf. Thousands of extra programs, all in your home folder, nothing in /usr. **Install Nix** sets it up in a terminal so you can watch. **🐚 Open nix-shell** opens a terminal with everything in `~/default.nix` ready to try, close it and they're gone again. Add a package or click one to take it out. Want one for good? `nix-env -iA nixpkgs.btop`, the tab tells you how. **Update them** and **Free up space** are there too.
+The Nix package manager, single user, next to eopkg or dnf. Thousands of extra programs your distro doesn't have, all in your home folder, nothing in /usr. **Install Nix** sets it up in a terminal so you can watch.
+
+Then type a program's name, like `btop`:
+
+- **Install for good** runs `nix-env -iA nixpkgs.btop` in a terminal, and it's there in every new terminal after
+- **Try without installing** gets it for one terminal only, tells you when it's ready, and it's gone again when you close that terminal
+- **🔍 Look it up** opens the NixOS package search in a new browser window, for when you're not sure of the name
+
+**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**.
 
 ### 🧩 Extras
 
@@ -335,7 +343,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
 | **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
 | **📦 Boxes** | Distrobox: what's set up, My boxes with Open terminal, Update, Stop and Delete, New box, LumineCapture, and the Output |
-| **❄️ Nix** | Install Nix, Open nix-shell, the packages in ~/default.nix, what's installed for good, Update them, Free up space |
+| **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix |
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper for now |
 | **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
 

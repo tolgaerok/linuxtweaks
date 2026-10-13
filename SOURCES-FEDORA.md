@@ -766,11 +766,14 @@ type box-update                         # what box-update does, once Boxes set i
 
 The Nix package manager in single user mode, everything under `/nix` and `~/.nix-profile`, next to dnf or eopkg and never in their way. The Nix tab runs my install-nix-package-manager.sh in a terminal so you can watch it.
 
+Try without installing fetches first, then opens nix-shell's own shell. A fresh bash after it read `.bashrc` again, and Solus's resets PATH, so the program was gone. nix-shell puts it back after `.bashrc`. Look it up opens `--new-window` in Vivaldi, Chrome, Firefox and friends, a tab behind LinuxTweaks looked like nothing happened.
+
 | Source | What I used it for |
 |---|---|
 | [Nix: download](https://nixos.org/download/) | The `--no-daemon` single user install |
-| [nix-shell](https://nix.dev/manual/nix/latest/command-ref/nix-shell) | Trying programs from `~/default.nix` without installing them |
-| [nix-env](https://nix.dev/manual/nix/latest/command-ref/nix-env) | `-iA` to keep one, `-q` for what you kept, `-u` to update them |
+| [nix-shell](https://nix.dev/manual/nix/latest/command-ref/nix-shell) | `-p` to try one program, or your whole `~/default.nix`, without installing |
+| [nix-env](https://nix.dev/manual/nix/latest/command-ref/nix-env) | `-iA` to keep one, `-q` for what you kept, `-e` to remove, `-u` to update them |
+| [xdg-settings](https://portland.freedesktop.org/doc/xdg-settings.html) | Which browser is yours, so Look it up opens a new window of it |
 | [nix-collect-garbage](https://nix.dev/manual/nix/latest/command-ref/nix-collect-garbage) | Free up space |
 | [NixOS packages search](https://search.nixos.org/packages) | Finding the right name |
 | [glibcLocales](https://wiki.nixos.org/wiki/Locales) | Nix programs can't read the system's locales, `LOCALE_ARCHIVE` points them at Nix's own |
