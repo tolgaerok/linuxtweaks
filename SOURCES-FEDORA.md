@@ -721,7 +721,8 @@ Linux 6.12 and up can swap the CPU scheduler for a BPF one while the PC runs, an
 |---|---|
 | [Kernel: sched_ext](https://docs.kernel.org/scheduler/sched-ext.html) | What sched_ext is, and why a broken scheduler just falls back to the normal one |
 | [sched-ext/scx](https://github.com/sched-ext/scx) | The schedulers themselves, what each is for, and scx_loader with its `scxctl` |
-| [Fedora: scx-scheds](https://packages.fedoraproject.org/pkgs/scx-scheds/scx-scheds/) | The Fedora package, with `scx-tools` for `scxctl` |
+| [sched-ext/scx-loader](https://github.com/sched-ext/scx-loader) | scx_loader and `scxctl`, what the card talks to |
+| [CachyOS addons COPR](https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/) | Fedora hasn't packaged the schedulers, `scx-scheds` and `scx-tools` come from here |
 | [Steam Deck and lavd](https://github.com/sched-ext/scx/tree/main/scheds/rust/scx_lavd) | Why lavd is the one for games and laptops |
 
 What Apply runs, as root through my helper:
@@ -772,7 +773,7 @@ The Nix package manager in single user mode, everything under `/nix` and `~/.nix
 | [nix-env](https://nix.dev/manual/nix/latest/command-ref/nix-env) | `-iA` to keep one, `-q` for what you kept, `-u` to update them |
 | [nix-collect-garbage](https://nix.dev/manual/nix/latest/command-ref/nix-collect-garbage) | Free up space |
 | [NixOS packages search](https://search.nixos.org/packages) | Finding the right name |
-| [glibcLocales](https://nixos.wiki/wiki/Locales) | Nix programs can't read the system's locales, `LOCALE_ARCHIVE` points them at Nix's own |
+| [glibcLocales](https://wiki.nixos.org/wiki/Locales) | Nix programs can't read the system's locales, `LOCALE_ARCHIVE` points them at Nix's own |
 
 ### Try it yourself
 

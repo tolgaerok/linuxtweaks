@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.36
+Version:        8.2.38
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -97,7 +97,7 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty bin/%{name}-wps-mask
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 # my signing key, so Check for LinuxTweaks updates can check a download from GitHub
@@ -304,6 +304,23 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.38-1
+- CPU scheduler card: Fedora hasn't got scx itself, the hint now says
+  to turn on the CachyOS addons COPR first
+
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.37-1
+- New Boxes tab: my lt-boxes in LinuxTweaks. Fedora, Debian or Arch
+  boxes with distrobox, open, update, stop or delete them, and
+  LumineCapture on the real system so KWin lets it screenshot
+- New Nix tab: install Nix, open nix-shell with what's in
+  ~/default.nix, add or take out packages, update and free up space
+- Kernels has a CPU scheduler card now, pick a sched_ext scheduler and
+  mode like a drive's scheduler in Drives, keep it after a reboot or not
+- New Extras tab: one switch stops WPS Office's cloud helper crashing,
+  and keeps it stopped after WPS updates
+- Window opens a bit taller and the scrollbar always shows, so you can
+  tell when there's more below
+
 * Mon Oct 12 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.36-1
 - Panel, About and the new version popup have a little Fedora tag next
   to the name now, so you can tell which LinuxTweaks it is from a
