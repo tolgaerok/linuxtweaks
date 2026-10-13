@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.45
+Version:        8.2.46
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.46-1
+- Boxes: your box shows the 📦[you@box] prompt again even when your own
+  .bashrc sets a fancy one, your prompt stays outside boxes. Set up
+  distrobox shows up once to put it in
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.45-1
 - Boxes: the output box says Done when it's finished, and Update all
   ends with All boxes updated. it used to stop on Checking boxes and
