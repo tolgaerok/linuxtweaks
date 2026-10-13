@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.42
+Version:        8.2.43
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.43-1
+- Boxes: the output box doesn't show distrobox's colour codes any more,
+  [ OK ] turns into a tick on its line and spinners stay on one line
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.42-1
 - Boxes: Set up distrobox clears out layers podman can't read or delete
   any more, they made every podman command moan and boxes wouldn't open
