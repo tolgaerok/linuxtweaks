@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.40
+Version:        8.2.42
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,25 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.42-1
+- Boxes: Set up distrobox clears out layers podman can't read or delete
+  any more, they made every podman command moan and boxes wouldn't open
+- Boxes: if the router stops answering name lookups Set up adds
+  Cloudflare and Quad9 next to it, boxes couldn't download a thing
+- Boxes: a box whose first setup fails gets taken away again and says
+  why, half made boxes opened a terminal that quit straight away
+- Boxes: Start boxes fresh button for boxes and images from an old id
+  range, it asks first and your home folder stays. Create tells you
+  when that's what you need
+- Boxes: a chip says when podman can't read its boxes, instead of
+  showing none
+
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.41-1
+- Boxes: a uid or gid range shorter than 65536 gets made 65536 by Set up
+  distrobox. Alex's was 64536, gid 65534 wasn't in it and apt in every
+  Debian box died with setgroups Invalid argument. it won't stretch it
+  over another user's range
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.40-1
 - Boxes: Set up distrobox fixes rootless podman itself now. On Alex's
   Fedora newuidmap had setuid and capabilities both, the kernel says no
