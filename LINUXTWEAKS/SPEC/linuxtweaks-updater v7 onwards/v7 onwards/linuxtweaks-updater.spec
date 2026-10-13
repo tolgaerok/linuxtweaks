@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.39
+Version:        8.2.40
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,16 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.40-1
+- Boxes: Set up distrobox fixes rootless podman itself now. On Alex's
+  Fedora newuidmap had setuid and capabilities both, the kernel says no
+  to that and every box failed. it only touches them when podman really
+  can't start, Solus copes with it so that's left alone
+- Boxes: a new user gets a uid and gid range nobody else has, it used to
+  be 100000 every time
+- Boxes: the chip says podman ready or podman can't start from a real
+  test now, not just "there's a uid range"
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.39-1
 - Nix tab actually installs stuff now. Type a name, Install for good
   and it's in every new terminal, Remove takes it off again
