@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.44
+Version:        8.2.45
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,12 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.45-1
+- Boxes: the output box says Done when it's finished, and Update all
+  ends with All boxes updated. it used to stop on Checking boxes and
+  looked stuck
+- Boxes: Enter somewhere else in the tab can't press a box's button
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.44-1
 - Boxes: the window doesn't freeze any more after Update all or any job,
   podman gets asked in the background and My boxes says checking till
