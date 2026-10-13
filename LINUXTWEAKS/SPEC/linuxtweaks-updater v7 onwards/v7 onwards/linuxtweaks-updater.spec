@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.38
+Version:        8.2.39
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,16 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.39-1
+- Nix tab actually installs stuff now. Type a name, Install for good
+  and it's in every new terminal, Remove takes it off again
+- Try without installing gets a program for one terminal, it says when
+  it's ready and the program is really there this time
+- Look it up opens the NixOS package search in a new browser window,
+  a new tab behind LinuxTweaks looked like nothing happened
+- nix-shell card just shows what's in your default.nix, with Edit and
+  Open nix-shell. the fiddly chips are gone
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.38-1
 - CPU scheduler card: Fedora hasn't got scx itself, the hint now says
   to turn on the CachyOS addons COPR first
