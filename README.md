@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.36-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.37-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.38-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -66,6 +66,9 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 | 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6 |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
 | 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
+| 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox, and LumineCapture for screenshots with OCR |
+| ❄️ **Nix** | The Nix package manager next to yours: nix-shell to try programs, or keep them for good |
+| 🧩 **Extras** | Fixes for one app or one problem, each with its own switch. First up: WPS Office's crashing cloud helper |
 | 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one, and a report you can send |
 
 ### 🫟 Updates
@@ -97,11 +100,27 @@ What your connection uses right now, and switches for faster TCP (BBR), bigger b
 
 Every installed kernel, which one you're running and which one boots by default. Make another one the default and remove old ones safely. On Fedora that's grubby, and you can pick which new kernels take over when they install, so a Fedora kernel update doesn't push out your CachyOS one. On Solus it's clr-boot-manager with its `current` and `lts` kernels.
 
+Under them, **⚡ CPU scheduler (sched_ext)**: pick an scx scheduler and a mode from dropdowns, like a drive's scheduler in Drives. Each one says what it's good for, ★ says what suits this PC (lavd on a laptop, flash on a desktop), and **Keep it after a reboot** decides if it's just for now or saved. **flash** in auto is the Solus default. It needs `scx-scheds` and `scx-tools`, which come with Solus and are one `dnf install` on Fedora. From my scx-picker.sh.
+
 ### 🎮 GPU (Fedora only)
 
 NVIDIA on Fedora comes from a third party repo: Negativo17 or RPM Fusion. Never both, they ship the same things under different names, and the tab warns you with a red box if both are on and moves you over to one cleanly. It picks the right driver branch for your card (the 580 branch for GTX 900 and 10 series, the newest for everything after), switches Negativo17's multimedia repo on or off, and has the tweaks Solus ships in its own NVIDIA package, with **Apply all tweaks** to turn them on with one password. Each one says *Needs reboot* or *Needs log out*, and greys out when your driver doesn't have it.
 
 Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it from the Software Center the way the [Solus NVIDIA guide](https://help.getsol.us/docs/user/hardware/nvidia-gpu-drivers) says, and it already has those tweaks.
+
+### 📦 Boxes
+
+My lt-boxes window as a tab. Distrobox runs other Linux distros in a box that shares your home folder: make a Fedora 44, Debian 13 or Arch box, open a terminal in it, update it, stop it or delete it, or **Update all** of them. **Set up distrobox** installs distrobox and podman, gives you the uid range podman needs and adds `box-update` to `~/.bashrc.d`, all with one password. Debian and Arch boxes get your language built in first, Solus spells it differently and distrobox chokes on that.
+
+**LumineCapture** is screenshots with OCR. It installs straight on your system, not in a box, so KWin lets it capture. The tab shows what you have, what's newest on GitHub and if KWin allows it, with the shortcut command to copy into System Settings. This tab has an Output box, making a box takes a few minutes.
+
+### ❄️ Nix
+
+The Nix package manager, single user, next to eopkg or dnf. Thousands of extra programs, all in your home folder, nothing in /usr. **Install Nix** sets it up in a terminal so you can watch. **🐚 Open nix-shell** opens a terminal with everything in `~/default.nix` ready to try, close it and they're gone again. Add a package or click one to take it out. Want one for good? `nix-env -iA nixpkgs.btop`, the tab tells you how. **Update them** and **Free up space** are there too.
+
+### 🧩 Extras
+
+Fixes for one app or one problem, each with its own switch, and off always puts it back. First one: **Stop WPS Office's cloud helper crashing**. wpscloudsvr in the WPS flatpak keeps segfaulting, so /dev/null goes in its place and it never starts. WPS works fine, you only lose its cloud sync, and it's put back by itself after a reboot or a WPS update.
 
 ### 🩺 Health
 
@@ -305,7 +324,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 
 ## Using it
 
-**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit. Top right on every tab: **What's new**, **Logs** and **About**, which has **Check for LinuxTweaks updates** and the full guide under **Help**. Dots spin next to the name while anything is busy.
+**Left click** the tray icon for the LinuxTweaks window, click again to close it. Drag it to any size, the tabs scroll when they don't fit, and the scrollbar always shows so you know there's more. Top right on every tab: **What's new**, **Logs** and **About**, which has **Check for LinuxTweaks updates** and the full guide under **Help**. Dots spin next to the name while anything is busy.
 
 | Tab | What's in it |
 |---|---|
@@ -313,8 +332,11 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
-| **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over |
+| **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
 | **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
+| **📦 Boxes** | Distrobox: what's set up, My boxes with Open terminal, Update, Stop and Delete, New box, LumineCapture, and the Output |
+| **❄️ Nix** | Install Nix, Open nix-shell, the packages in ~/default.nix, what's installed for good, Update them, Free up space |
+| **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper for now |
 | **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
 **Right click** the tray icon for the short menu:
@@ -365,6 +387,8 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
+| CPU scheduler kept after a reboot | `/etc/scx_loader/config.toml` |
+| WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |
 | GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
 
 The same files on Fedora and Solus.

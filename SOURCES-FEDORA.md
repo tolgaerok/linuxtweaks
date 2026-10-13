@@ -33,6 +33,10 @@ If something here helped you too, the people who wrote it deserve the thanks.
 - [Memory: zram and sysctl](#-memory-zram-and-sysctl)
 - [Network: BBR, CAKE and NetworkManager](#-network-bbr-cake-and-networkmanager)
 - [Kernels](#-kernels)
+- [CPU scheduler: sched_ext](#-cpu-scheduler-sched_ext)
+- [Boxes: distrobox and LumineCapture](#-boxes-distrobox-and-luminecapture)
+- [Nix](#%EF%B8%8F-nix)
+- [Extras: WPS Office](#-extras-wps-office)
 - [Bash](#-bash)
 - [The look](#-the-look)
 - [My own repo, releases and Tailscale](#-my-own-repo-releases-and-tailscale)
@@ -707,6 +711,94 @@ rpm -qa 'kernel*core*'            # which package each one came from
 ```bash
 grep -E '^CONFIG_PREEMPT(_DYNAMIC)?=|^CONFIG_HZ=' /lib/modules/$(uname -r)/config
 tr ' ' '\n' < /proc/cmdline | grep -E 'preempt|transparent|blacklist'
+```
+
+## ⚡ CPU scheduler: sched_ext
+
+Linux 6.12 and up can swap the CPU scheduler for a BPF one while the PC runs, and back again if it misbehaves. The Kernels tab's CPU scheduler card is my scx-picker.sh with dropdowns: pick a scheduler and a mode, Apply, and **Keep it after a reboot** writes scx_loader's config. Solus runs **flash** in auto out of the box.
+
+| Source | What I used it for |
+|---|---|
+| [Kernel: sched_ext](https://docs.kernel.org/scheduler/sched-ext.html) | What sched_ext is, and why a broken scheduler just falls back to the normal one |
+| [sched-ext/scx](https://github.com/sched-ext/scx) | The schedulers themselves, what each is for, and scx_loader with its `scxctl` |
+| [Fedora: scx-scheds](https://packages.fedoraproject.org/pkgs/scx-scheds/scx-scheds/) | The Fedora package, with `scx-tools` for `scxctl` |
+| [Steam Deck and lavd](https://github.com/sched-ext/scx/tree/main/scheds/rust/scx_lavd) | Why lavd is the one for games and laptops |
+
+What Apply runs, as root through my helper:
+
+```bash
+scxctl switch --sched lavd --mode gaming || scxctl start --sched lavd --mode gaming
+```
+
+### Try it yourself
+
+```bash
+scxctl get                       # what's running now
+scxctl list                      # what you could pick
+cat /sys/kernel/sched_ext/state  # enabled means a sched_ext scheduler is in charge
+cat /etc/scx_loader/config.toml  # what starts at boot, if you kept one
+```
+
+## 📦 Boxes: distrobox and LumineCapture
+
+My lt-boxes and solus-distrobox.sh as a tab. Distrobox runs another distro in a podman container that shares your home folder, your screen and your sound, so a Debian app feels like it's on your PC. Rootless podman needs your own uid range in `/etc/subuid` and `/etc/subgid`, that's the one bit that asks for a password.
+
+| Source | What I used it for |
+|---|---|
+| [Distrobox](https://distrobox.it/) and [its GitHub](https://github.com/89luca89/distrobox) | create, enter, stop, rm, and `--pre-init-hooks` |
+| [Podman: rootless](https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md) | Why boxes need a subuid and subgid range |
+| [Toolbx images](https://github.com/toolbx-images/images) | The Debian and Arch images made for this, Fedora's comes from quay.io/fedora |
+| [locale-gen](https://manpages.debian.org/bookworm/locales/locale-gen.8.en.html) | Solus writes `en_AU.utf8`, Debian and Arch want `en_AU.UTF-8`, so the box builds yours first |
+| [LumineCapture](https://github.com/Netflate/LumineCapture) | Screenshots with OCR. Only a .deb, unpacked into /usr/local |
+| [KWin: restricted interfaces](https://invent.kde.org/plasma/kwin) | KWin only lets an app take screenshots when its real path matches a .desktop file that asks for `org.kde.KWin.ScreenShot2`, so LumineCapture can't live in a box |
+
+### Try it yourself
+
+```bash
+distrobox list                          # your boxes
+grep "^$USER:" /etc/subuid /etc/subgid  # the uid range podman needs
+distrobox enter fedora -- cat /etc/os-release | head -2   # run one thing in a box
+type box-update                         # what box-update does, once Boxes set it up
+```
+
+## ❄️ Nix
+
+The Nix package manager in single user mode, everything under `/nix` and `~/.nix-profile`, next to dnf or eopkg and never in their way. The Nix tab runs my install-nix-package-manager.sh in a terminal so you can watch it.
+
+| Source | What I used it for |
+|---|---|
+| [Nix: download](https://nixos.org/download/) | The `--no-daemon` single user install |
+| [nix-shell](https://nix.dev/manual/nix/latest/command-ref/nix-shell) | Trying programs from `~/default.nix` without installing them |
+| [nix-env](https://nix.dev/manual/nix/latest/command-ref/nix-env) | `-iA` to keep one, `-q` for what you kept, `-u` to update them |
+| [nix-collect-garbage](https://nix.dev/manual/nix/latest/command-ref/nix-collect-garbage) | Free up space |
+| [NixOS packages search](https://search.nixos.org/packages) | Finding the right name |
+| [glibcLocales](https://nixos.wiki/wiki/Locales) | Nix programs can't read the system's locales, `LOCALE_ARCHIVE` points them at Nix's own |
+
+### Try it yourself
+
+```bash
+nix --version
+nix-env -q                        # what you kept for good
+nix-env -qaP btop                 # find a package's name
+nix-shell -p cowsay --run "cowsay hi"   # try one, gone again after
+```
+
+## 🧩 Extras: WPS Office
+
+wpscloudsvr in the WPS Office flatpak keeps segfaulting (a null pointer in `libqingbangong.so`), and Health counted it every time. The Extras switch bind mounts `/dev/null` over it so it never starts. Flatpak updates move WPS to a new folder, so a `.path` unit watches for that and masks the new one, and a boot unit does it again after a restart. From my mask-wps-cloudsvr.sh.
+
+| Source | What I used it for |
+|---|---|
+| [mount: bind mounts](https://man7.org/linux/man-pages/man8/mount.8.html) | `/dev/null` over one file, gone again with umount or a reboot |
+| [systemd.path](https://www.freedesktop.org/software/systemd/man/latest/systemd.path.html) | `PathChanged=` on the WPS flatpak folder, to catch updates |
+| [flatpak info](https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-info) | `--show-location`, where this WPS lives right now |
+
+### Try it yourself
+
+```bash
+flatpak info --show-location com.wps.Office
+findmnt | grep wpscloudsvr                               # masked if it's listed
+systemctl status linuxtweaks-wps-mask.path --no-pager    # the update watcher
 ```
 
 ## 🐚 Bash

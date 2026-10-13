@@ -226,6 +226,9 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 - [Health and the report](SOURCES-FEDORA.md#-health-and-the-report)
 - [Drives](SOURCES-FEDORA.md#-drives-schedulers-and-read-ahead), [Memory](SOURCES-FEDORA.md#-memory-zram-and-sysctl) and [Network](SOURCES-FEDORA.md#-network-bbr-cake-and-networkmanager)
 - [Bash](SOURCES-FEDORA.md#-bash) and [the look](SOURCES-FEDORA.md#-the-look)
+- [CPU scheduler: sched_ext](SOURCES-FEDORA.md#-cpu-scheduler-sched_ext), flash in auto is what Solus starts
+- [Boxes: distrobox and LumineCapture](SOURCES-FEDORA.md#-boxes-distrobox-and-luminecapture), where the `.utf8` language fix comes from
+- [Nix](SOURCES-FEDORA.md#%EF%B8%8F-nix) and [Extras: WPS Office](SOURCES-FEDORA.md#-extras-wps-office)
 
 ---
 
