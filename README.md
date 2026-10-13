@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.40-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.41-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.42-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -110,7 +110,9 @@ Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it
 
 ### 📦 Boxes
 
-My lt-boxes window as a tab. Distrobox runs other Linux distros in a box that shares your home folder: make a Fedora 44, Debian 13 or Arch box, open a terminal in it, update it, stop it or delete it, or **Update all** of them. **Set up distrobox** installs distrobox and podman, gives you a uid and gid range nobody else on the PC has and adds `box-update` to `~/.bashrc.d`, all with one password. Then it tests podman for real. If podman can't start because `newuidmap` has setuid and capabilities both (Fedora's kernel says no to that, it broke every box on Alex's PC), it fixes that and tests again. It leaves a PC where podman already works alone. A uid or gid range shorter than 65536 gets made 65536, apt in Debian and Ubuntu boxes needs gid 65534 in it, but never over another user's range. The chip at the top says **podman ready** or **podman can't start**, and **Create** runs the setup first, so a broken PC fixes itself. Debian and Arch boxes get your language built in first, Solus spells it differently and distrobox chokes on that.
+My lt-boxes window as a tab. Distrobox runs other Linux distros in a box that shares your home folder: make a Fedora 44, Debian 13 or Arch box, open a terminal in it, update it, stop it or delete it, or **Update all** of them. **Set up distrobox** installs distrobox and podman, gives you a uid and gid range nobody else on the PC has and adds `box-update` to `~/.bashrc.d`, all with one password. Then it tests podman for real. If podman can't start because `newuidmap` has setuid and capabilities both (Fedora's kernel says no to that, it broke every box on Alex's PC), it fixes that and tests again. It leaves a PC where podman already works alone. A uid or gid range shorter than 65536 gets made 65536, apt in Debian and Ubuntu boxes needs gid 65534 in it, but never over another user's range. It also clears out layers podman can't read or delete any more, and if your router stops answering name lookups it adds Cloudflare and Quad9 next to it, so boxes can still download. A box whose first setup fails gets taken away again, with why.
+
+Boxes and images made under an old id range can't be opened, made or deleted any more. **Start boxes fresh…** clears podman out and starts again clean: every box and downloaded image goes, your home folder stays. It asks first, and Create tells you when that's what you need. A chip says when podman can't read its boxes. The chip at the top says **podman ready** or **podman can't start**, and **Create** runs the setup first, so a broken PC fixes itself. Debian and Arch boxes get your language built in first, Solus spells it differently and distrobox chokes on that.
 
 **LumineCapture** is screenshots with OCR. It installs straight on your system, not in a box, so KWin lets it capture. The tab shows what you have, what's newest on GitHub and if KWin allows it, with the shortcut command to copy into System Settings. This tab has an Output box, making a box takes a few minutes.
 
@@ -396,6 +398,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
 | CPU scheduler kept after a reboot | `/etc/scx_loader/config.toml` |
+| Extra DNS for boxes | `/etc/systemd/resolved.conf.d/90-linuxtweaks-dns.conf`, then `sudo systemctl restart systemd-resolved` |
 | WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |
 | GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
 

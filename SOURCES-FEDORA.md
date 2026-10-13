@@ -750,6 +750,8 @@ My lt-boxes and solus-distrobox.sh as a tab. Distrobox runs another distro in a 
 | [Podman: rootless](https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md) | Why boxes need a subuid and subgid range |
 | [newuidmap](https://man7.org/linux/man-pages/man1/newuidmap.1.html) and [capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html) | Fedora gives newuidmap a file capability, not setuid. Both at once and the kernel logs "has both setuid-root and effective capabilities" and podman dies with "open of uid_map failed". Set up distrobox takes the setuid off, only when podman really fails |
 | [Toolbx images](https://github.com/toolbx-images/images) | The Debian and Arch images made for this, Fedora's comes from quay.io/fedora |
+| [podman system reset](https://docs.podman.io/en/latest/markdown/podman-system-reset.1.html) | Start boxes fresh. Files from an old id range can't be deleted by you any more, so the folder goes as root after |
+| [resolved.conf](https://www.freedesktop.org/software/systemd/man/latest/resolved.conf.html) | `DNS=` and `Domains=~.`, extra DNS next to the router. resolved asks both and takes the first answer, home network names still work |
 | [locale-gen](https://manpages.debian.org/bookworm/locales/locale-gen.8.en.html) | Solus writes `en_AU.utf8`, Debian and Arch want `en_AU.UTF-8`, so the box builds yours first |
 | [LumineCapture](https://github.com/Netflate/LumineCapture) | Screenshots with OCR. Only a .deb, unpacked into /usr/local |
 | [KWin: restricted interfaces](https://invent.kde.org/plasma/kwin) | KWin only lets an app take screenshots when its real path matches a .desktop file that asks for `org.kde.KWin.ScreenShot2`, so LumineCapture can't live in a box |
