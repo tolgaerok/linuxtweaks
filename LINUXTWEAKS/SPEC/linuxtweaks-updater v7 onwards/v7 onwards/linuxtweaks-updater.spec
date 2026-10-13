@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.43
+Version:        8.2.44
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.44-1
+- Boxes: the window doesn't freeze any more after Update all or any job,
+  podman gets asked in the background and My boxes says checking till
+  it answers
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.43-1
 - Boxes: the output box doesn't show distrobox's colour codes any more,
   [ OK ] turns into a tick on its line and spinners stay on one line
