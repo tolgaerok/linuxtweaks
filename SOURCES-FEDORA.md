@@ -493,7 +493,9 @@ echo "you clicked: $choice"
 | [PyQt5 reference](https://www.riverbankcomputing.com/static/Docs/PyQt5/) | How the Qt classes look from Python |
 | [QSystemTrayIcon](https://doc.qt.io/qt-5/qsystemtrayicon.html) | The tray icon, its tooltip and its menu |
 | [QProcess](https://doc.qt.io/qt-5/qprocess.html) | Running dnf and the helpers without freezing the window |
-| [QFileSystemWatcher](https://doc.qt.io/qt-5/qfilesystemwatcher.html) | Redrawing the moment a check writes new results |
+| [QFileSystemWatcher](https://doc.qt.io/qt-5/qfilesystemwatcher.html) | Redrawing the moment a check writes new results. Since 8.2.47 it watches the rpm or eopkg database and Flatpak too, an update done anywhere gets a check a few seconds after, and the Nix tab watches its profile folder and ~/default.nix |
+| [QSvgRenderer](https://doc.qt.io/qt-5/qsvgrenderer.html) | The small Fedora, Debian, Arch and Ubuntu logos on the Boxes tab, drawn in the app so every desktop has them |
+| [proc(5): /proc/stat btime](https://man7.org/linux/man-pages/man5/proc_stat.5.html) | When this boot started. A Reboot required written before it is about the boot before, so it doesn't show |
 | [QDBusConnection](https://doc.qt.io/qt-5/qdbusconnection.html) | Listening to logind |
 | [QTimer](https://doc.qt.io/qt-5/qtimer.html) | The countdown to the next check |
 | [Qt Style Sheets](https://doc.qt.io/qt-5/stylesheet-reference.html) | The cards, buttons, tabs and the GPU tab's radio buttons |

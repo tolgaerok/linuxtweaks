@@ -8,8 +8,8 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.46-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.46-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Fedora](https://img.shields.io/badge/Version-8.2.47-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Solus](https://img.shields.io/badge/Solus-8.2.47-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -84,6 +84,8 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 - **Weekly maintenance, if you want it.** Cleans the package cache, trims the journal, runs SSD TRIM if your distro isn't already doing it
 - **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, out of the box it can grow to 4 GB
 
+Updated somewhere else, a terminal or Discover? The tray watches the package database and checks again a few seconds after, so the dot goes green straight away. **Reboot required** goes as soon as you've rebooted, it doesn't wait for the next check.
+
 ### 💽 Drives
 
 Every real drive on a card, with its I/O scheduler and read-ahead and a dropdown to change each one. A change works straight away and stays after a reboot, for that exact drive. This used to be my LinuxTweaks-IO app.
@@ -114,7 +116,9 @@ My lt-boxes window as a tab. Distrobox runs other Linux distros in a box that sh
 
 Boxes and images made under an old id range can't be opened, made or deleted any more. **Start boxes fresh…** clears podman out and starts again clean: every box and downloaded image goes, your home folder stays. It asks first, and Create tells you when that's what you need. A chip says when podman can't read its boxes. The chip at the top says **podman ready** or **podman can't start**, and **Create** runs the setup first, so a broken PC fixes itself. Debian and Arch boxes get your language built in first, Solus spells it differently and distrobox chokes on that.
 
-**LumineCapture** is screenshots with OCR. It installs straight on your system, not in a box, so KWin lets it capture. The tab shows what you have, what's newest on GitHub and if KWin allows it, with the shortcut command to copy into System Settings. This tab has an Output box, making a box takes a few minutes.
+Each box shows its distro's logo. Making and updating boxes, Update all, Set up and Start fresh run in a real terminal, so you see everything and type your password there. It says Done or what went wrong, and the tab refreshes when you close it.
+
+**🧰 Apps** is for apps that have to live on the real system, not in a box. First one: **LumineCapture**, screenshots with OCR, installed straight on your system so KWin lets it capture. One row with what you have, what's newest and if KWin allows it, **Copy shortcut** for System Settings, and Install, Update or Remove. More apps go here later.
 
 ### ❄️ Nix
 
@@ -126,7 +130,7 @@ Then type a program's name, like `btop`:
 - **Try without installing** gets it for one terminal only, tells you when it's ready, and it's gone again when you close that terminal
 - **🔍 Look it up** opens the NixOS package search in a new browser window, for when you're not sure of the name
 
-**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**.
+**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**. The tab refreshes by itself when Nix installs, or a program goes in or out. Save `~/default.nix` and it builds straight away, with a line saying it's ready or what's wrong. A **nixpkgs channel** chip, and **🔧 Fix Nix** shows up when part of Nix is missing. Installing Nix ends with a fresh shell in that terminal, Nix works there straight away.
 
 ### 🧩 Extras
 
@@ -344,8 +348,8 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
 | **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
 | **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
-| **📦 Boxes** | Distrobox: what's set up, My boxes with Open terminal, Update, Stop and Delete, New box, LumineCapture, and the Output |
-| **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix |
+| **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box, and Apps like LumineCapture |
+| **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix. Refreshes by itself, Fix Nix when part of it's missing |
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper for now |
 | **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
 

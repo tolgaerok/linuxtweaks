@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.46
+Version:        8.2.47
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,23 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 15 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.47-1
+- Reboot required doesn't hang around after you've rebooted any more,
+  it waited for the next check, up to half an hour
+- Updated in a terminal or Discover? the dot goes green a few seconds
+  after, it used to wait for the next check
+- Boxes: making and updating boxes runs in a real terminal you can
+  watch and type your password in, the output box is gone. the tab
+  refreshes when you close it
+- Boxes: each box has its distro's logo, the New box cards too
+- Boxes: LumineCapture is one row in a small Apps card now, room for
+  MEGAsync and more later
+- Nix: installing Nix doesn't look stuck any more, it says it's ready
+  and starts a fresh shell with Nix in it
+- Nix: the tab refreshes by itself when you install or remove a
+  program, saving default.nix builds it straight away, and Fix Nix
+  shows up when part of it is missing
+
 * Tue Oct 13 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.46-1
 - Boxes: your box shows the 📦[you@box] prompt again even when your own
   .bashrc sets a fancy one, your prompt stays outside boxes. Set up
