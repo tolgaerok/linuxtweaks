@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.47
+Version:        8.2.48
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 15 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.48-1
+- The LinuxTweaks window updates by itself after a check now, it kept
+  saying updates waiting when there were none till you reopened it
+
 * Thu Oct 15 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.47-1
 - Reboot required doesn't hang around after you've rebooted any more,
   it waited for the next check, up to half an hour
