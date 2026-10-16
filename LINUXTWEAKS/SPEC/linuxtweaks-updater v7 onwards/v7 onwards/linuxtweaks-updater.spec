@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.48
+Version:        8.2.49
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.49-1
+- Boxes look way better, each one has its own card and delete is a red bin
+- bottom buttons are together now, refresh actually says refresh
+
 * Thu Oct 15 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.48-1
 - The LinuxTweaks window updates by itself after a check now, it kept
   saying updates waiting when there were none till you reopened it
