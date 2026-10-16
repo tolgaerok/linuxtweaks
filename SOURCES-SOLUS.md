@@ -64,8 +64,8 @@ install    : |
 **An eopkg is just a zip.** Look inside one without installing it:
 
 ```bash
-unzip -l linuxtweaks-updater-8.2.33-18-1-x86_64.eopkg
-unzip -p linuxtweaks-updater-8.2.33-18-1-x86_64.eopkg metadata.xml | less
+unzip -l linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg
+unzip -p linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg metadata.xml | less
 ```
 
 `metadata.xml` is the package info, `files.xml` lists every file, `install.tar.xz` is the files themselves.
@@ -210,7 +210,7 @@ Check an eopkg the way the app does, against my key only:
 
 ```bash
 gpgv --keyring /usr/share/linuxtweaks-updater/linuxtweaks-key.gpg \
-     linuxtweaks-updater-8.2.33-18-1-x86_64.eopkg.asc linuxtweaks-updater-8.2.33-18-1-x86_64.eopkg
+     linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg.asc linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg
 ```
 
 `Good signature from "Tolga Erok (LinuxTweaks RPM Signing)"` means it's mine and nobody changed it.

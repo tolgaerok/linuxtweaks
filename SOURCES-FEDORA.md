@@ -79,10 +79,10 @@ Obsoletes:      linuxtweaks-io < 2.0
 What's in an RPM, before you install it:
 
 ```bash
-rpm -qip linuxtweaks-updater-8.2.31-1.fc44.noarch.rpm      # name, version, summary
-rpm -qlp linuxtweaks-updater-8.2.31-1.fc44.noarch.rpm      # every file it puts on your PC
-rpm -qp --scripts linuxtweaks-updater-8.2.31-1.fc44.noarch.rpm   # what it runs when it installs
-rpm -qp --changelog linuxtweaks-updater-8.2.31-1.fc44.noarch.rpm | head   # what's new in it
+rpm -qip linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm      # name, version, summary
+rpm -qlp linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm      # every file it puts on your PC
+rpm -qp --scripts linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm   # what it runs when it installs
+rpm -qp --changelog linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm | head   # what's new in it
 ```
 
 Is it really signed by me? A throwaway keyring, so nothing on your system changes:
@@ -90,7 +90,7 @@ Is it really signed by me? A throwaway keyring, so nothing on your system change
 ```bash
 mkdir -p /tmp/keys
 rpmkeys --dbpath /tmp/keys --import /usr/share/linuxtweaks-updater/RPM-GPG-KEY-linuxtweaks
-rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.31-1.fc44.noarch.rpm
+rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm
 ```
 
 `digests signatures OK` means it's mine and nobody changed it.
