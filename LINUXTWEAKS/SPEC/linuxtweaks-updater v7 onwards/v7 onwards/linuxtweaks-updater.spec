@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.51
+Version:        8.2.52
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.52-1
+- installing updates refreshes the package lists first now, stuff the tray showed was getting skipped
+
 * Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.51-1
 - boxes don't die when the tray restarts any more, that's what Alex's conmon crash was
 
