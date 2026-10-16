@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.52
+Version:        8.2.53
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.53-1
+- Flatpak updates show up again, one that needed a new runtime made it miss the lot
+- the RPM's way smaller, the emoji font only has the ones I actually use now
+
 * Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.52-1
 - installing updates refreshes the package lists first now, stuff the tray showed was getting skipped
 
