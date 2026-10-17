@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.56
+Version:        8.2.58
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,12 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.58-1
+- Memory tab: No freeze when RAM runs out. ram full used to lock my pc up for ages, now the kernel hangs on to what I used in the last second and closes the biggest app instead. stays on after a reboot
+
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.57-1
+- Memory tab: No freeze when RAM runs out. ram full used to lock my pc up for ages, now the kernel hangs on to what I used in the last second and closes the biggest app instead. stays on after a reboot
+
 * Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.56-1
 - the tray doesn't crash when it's started with no screen (ssh, sudo, a
   test install). it borrows your desktop's screen, or quits quietly. Health
