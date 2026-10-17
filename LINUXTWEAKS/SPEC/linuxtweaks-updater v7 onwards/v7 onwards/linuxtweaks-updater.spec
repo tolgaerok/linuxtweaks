@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.54
+Version:        8.2.55
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,14 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.55-1
+- Open LinuxTweaks brings the window back when it's minimized or under
+  another window. on Wayland it just sat there hidden (Alex)
+- Open LinuxTweaks in the menu always opens it, it was hiding the window
+  when it was already up front
+- starting LinuxTweaks from the app menu while it's running says it's
+  already running and brings up its window, no more hunting for it
+
 * Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.54-1
 - the tray menu can't get stuck on old updates any more. Plasma doesn't always
   say the menu closed, then it kept "2 updates available" for hours after they
