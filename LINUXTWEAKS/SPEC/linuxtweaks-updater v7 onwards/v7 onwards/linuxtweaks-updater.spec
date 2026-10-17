@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.55
+Version:        8.2.56
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,17 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.56-1
+- the tray doesn't crash when it's started with no screen (ssh, sudo, a
+  test install). it borrows your desktop's screen, or quits quietly. Health
+  counted 5 of those on my pc as crashes
+- Health: Fedora's input method starter isn't a failed service on KDE. it
+  fails at every login and update on purpose, Restart them couldn't fix it (Alex)
+- Health: a program that died for having no screen isn't a crash
+- Health: the kernel's boot notes about the hardware go in with the known
+  noise, [Firmware Bug], VMX/TDX/SGX not supported, the NVIDIA driver's
+  version line, bluetoothd and gkr-pam
+
 * Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.55-1
 - Open LinuxTweaks brings the window back when it's minimized or under
   another window. on Wayland it just sat there hidden (Alex)
