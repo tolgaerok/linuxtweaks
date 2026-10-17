@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.53
+Version:        8.2.54
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,14 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.54-1
+- the tray menu can't get stuck on old updates any more. Plasma doesn't always
+  say the menu closed, then it kept "2 updates available" for hours after they
+  were in, till you restarted the tray (Alex)
+- Health doesn't sit there for a minute when you've got network shares. Disk
+  space waited on every NFS and SMB share, a sleeping server is 10 to 45
+  seconds each. it only looks at your own drives now
+
 * Fri Oct 16 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.53-1
 - Flatpak updates show up again, one that needed a new runtime made it miss the lot
 - the RPM's way smaller, the emoji font only has the ones I actually use now
