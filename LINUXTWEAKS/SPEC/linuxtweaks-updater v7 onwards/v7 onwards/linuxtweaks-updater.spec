@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.58
+Version:        8.2.59
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.59-1
+- no internet doesn't say up to date any more, checks again when it's back
+
 * Sat Oct 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.58-1
 - Memory tab: No freeze when RAM runs out. ram full used to lock my pc up for ages, now the kernel hangs on to what I used in the last second and closes the biggest app instead. stays on after a reboot
 
