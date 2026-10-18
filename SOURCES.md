@@ -19,7 +19,7 @@ LinuxTweaks comes in two builds now, one for Fedora and one for Solus. They shar
 | | |
 |:---:|:---:|
 | [**🎩 Fedora sources**](SOURCES-FEDORA.md) | [**🌀 Solus sources**](SOURCES-SOLUS.md) |
-| RPM packaging, dnf5, Negativo17 and RPM Fusion, the GPU tab, SELinux, grubby, my own repo | eopkg, solbuild and `package.yml`, Solus's own NVIDIA packages, AppArmor, clr-boot-manager, signed eopkgs on GitHub |
+| RPM packaging, dnf5, Negativo17 and RPM Fusion, the GPU tab, SELinux, grubby, my own repo, and what's shared: the offline check, restarting services, usage sharing | eopkg, solbuild and `package.yml`, Solus's own NVIDIA packages, AppArmor, clr-boot-manager, offline the eopkg way, MEGAsync in a box, signed eopkgs on GitHub |
 
 </div>
 

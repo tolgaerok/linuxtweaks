@@ -66,14 +66,15 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 | 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6 |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
 | 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
-| 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox, and LumineCapture for screenshots with OCR |
+| 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox. On Fedora, LumineCapture for screenshots with OCR too |
 | ❄️ **Nix** | The Nix package manager next to yours: install a program for good, or try it without installing |
-| 🧩 **Extras** | Fixes for one app or one problem, each with its own switch. First up: WPS Office's crashing cloud helper |
+| 🧩 **Extras** | Fixes and apps for one job each. WPS Office's crashing cloud helper, and on Solus LumineCapture and MEGAsync |
 | 🩺 **Health** | A quick look over the whole PC, with a fix button where there is one, and a report you can send |
 
 ### 🫟 Updates
 
 - **Checks in the background.** DNF or eopkg and Flatpak, every 30 minutes unless you pick something else, and straight after the PC wakes up. New updates show up within the hour
+- **Honest when you're offline.** No internet and it says so, it never says "up to date" off an old list. Wifi back on and it checks straight away, no waiting for the next go
 - **Security fixes stand out.** Grouped by how bad they are, the worst first: Critical, Important, Moderate, then Low, each a card filled in its colour. On Fedora it reads the advisories dnf already downloads, on Solus the security releases in the eopkg index. Nothing extra goes online
 - **What changed in a package.** Everything waiting is in one window, a card per update, A to Z. The versions read old in yellow, a blue arrow, new in green. Click a DNF or eopkg one for its advisory and its changelog since your version
 - **The icon tells you.** Red with a number when updates are waiting, orange when a reboot is needed, green when you're up to date, yellow while it checks
@@ -81,6 +82,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 - **Installs when you say so.** In its own window: the steps, a progress bar and dnf's or eopkg's own live output, its download bars moving like in a terminal. One password box that says what it's for. Afterwards it checks what really went in, so anything the package manager held back shows up with its reason instead of a fake "all done"
 - **Spinning dots** whenever it's busy: checking, a password job, Apply, installing
 - **Cleans up after.** A card for each thing left: reboot for a new kernel, restart services still running old code, remove packages nothing needs, compare changed config files (`.rpmnew` on Fedora, `.newconfig` on Solus)
+- **You pick which services restart.** A tick box each. The safe ones are ticked, the ones that cut something off (your internet, bluetooth, VPN, shares, containers) start unticked and say why. Nothing restarts till you press the button
 - **Weekly maintenance, if you want it.** Cleans the package cache, trims the journal, runs SSD TRIM if your distro isn't already doing it
 - **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, out of the box it can grow to 4 GB
 
@@ -92,7 +94,7 @@ Every real drive on a card, with its I/O scheduler and read-ahead and a dropdown
 
 ### 🧠 Memory
 
-Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, and a safety net for kernel crashes.
+Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, a safety net for kernel crashes, and **No freeze when RAM runs out**, which keeps what you used in the last second in RAM so a full RAM closes the biggest app instead of locking up the PC.
 
 ### 🌐 Network
 
@@ -118,7 +120,7 @@ Boxes and images made under an old id range can't be opened, made or deleted any
 
 Each box shows its distro's logo. Making and updating boxes, Update all, Set up and Start fresh run in a real terminal, so you see everything and type your password there. It says Done or what went wrong, and the tab refreshes when you close it.
 
-**🧰 Apps** is for apps that have to live on the real system, not in a box. First one: **LumineCapture**, screenshots with OCR, installed straight on your system so KWin lets it capture. One row with what you have, what's newest and if KWin allows it, **Copy shortcut** for System Settings, and Install, Update or Remove. More apps go here later.
+**🧰 Apps** (Fedora) is for apps that have to live on the real system, not in a box. On Solus these moved to Extras. First one: **LumineCapture**, screenshots with OCR, installed straight on your system so KWin lets it capture. One row with what you have, what's newest and if KWin allows it, **Copy shortcut** for System Settings, and Install, Update or Remove. More apps go here later.
 
 ### ❄️ Nix
 
@@ -130,22 +132,43 @@ Then type a program's name, like `btop`:
 - **Try without installing** gets it for one terminal only, tells you when it's ready, and it's gone again when you close that terminal
 - **🔍 Look it up** opens the NixOS package search in a new browser window, for when you're not sure of the name
 
-**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**. The tab refreshes by itself when Nix installs, or a program goes in or out. Save `~/default.nix` and it builds straight away, with a line saying it's ready or what's wrong. A **nixpkgs channel** chip, and **🔧 Fix Nix** shows up when part of Nix is missing. Installing Nix ends with a fresh shell in that terminal, Nix works there straight away.
+**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**. The tab refreshes by itself when Nix installs, or a program goes in or out. Save `~/default.nix` and it builds straight away, with a line saying it's ready or what's wrong. A **nixpkgs channel** chip, and **🔧 Fix Nix** shows up when part of Nix is missing. Once Nix is in, that terminal closes and a new one opens straight in nix-shell, Nix works there straight away.
 
 ### 🧩 Extras
 
 Fixes for one app or one problem, each with its own switch, and off always puts it back. First one: **Stop WPS Office's cloud helper crashing**. wpscloudsvr in the WPS flatpak keeps segfaulting, so /dev/null goes in its place and it never starts. WPS works fine, you only lose its cloud sync, and it's put back by itself after a reboot or a WPS update.
 
+On Solus, Extras has two apps as well:
+
+- **LumineCapture**, screenshots with OCR, installed straight on your system so KWin lets it capture, with Install, Update and Remove
+- **MEGAsync**, in its own Debian 13 box with MEGA's own repo, so Solus stays clean and **Update all** in Boxes keeps it current. It shows up in your app menu like a normal app. Remove takes the box away, your MEGA folder and login stay
+
 ### 🩺 Health
 
-A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and a network share never counts as your disk.
+A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and the disk card only looks at your own drives, never a network share.
 
 **📋 Report…** puts it all in plain text, worst first, with the real error lines behind the red and orange cards. Copy it into a message or save it, nothing leaves the PC unless you send it. Brian's idea, thanks Brian.
+
+### 📊 Usage sharing, only if you say yes
+
+A day after you update, a popup asks if you'll send me a tiny anonymous hello once a week, so I can see which versions and distros people run and what to fix next. **No thanks** or closing it means it never asks again and nothing is ever sent.
+
+| Sent once a week | Never sent |
+|---|---|
+| LinuxTweaks version | Your name, hostname or machine id |
+| Distro and release | Your IP, the server doesn't keep it |
+| Desktop and graphics make | Package lists, files or logs |
+| Roughly how long it's been installed | Anything else |
+| How many update checks worked or failed | |
+| The country, worked out from the connection | |
+
+**Show me** in the popup has the exact line that goes out. The 📊 card under Settings shows what went out last, each bit on its own little card, and when the next one goes. Change your mind any time with **Share anonymous usage, once a week** in Settings. A thank you pops up for 10 seconds after each one. There's no id for your PC in it, the same idea as Fedora's own countme. How it works is on the [sources page](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes).
 
 ### What it doesn't do
 
 - **No sudo rules, no passwordless root.** Checks run as you. Every change that needs root asks for your password first, through a small helper that only does that one job and checks everything it's handed
 - **Nothing changes by itself.** Every tab shows your PC as it is. A tweak only happens when you flip it
+- **Nothing leaves your PC without asking.** The only thing that ever does is the usage hello above, and only after you said yes
 - **Signed.** Every RPM and every eopkg is signed with my LinuxTweaks key, and the app checks that before it installs a new version of itself
 
 ## Installation
@@ -283,7 +306,7 @@ sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.rep
 
 Without my repo, LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It looks in my repo first and on GitHub when it can't reach that, downloads the new version, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
 
-When a new one's out you get a popup in the LinuxTweaks look with what's new right on it, once per version. **See what's new** opens About with Install ready, **Later** leaves it till you go looking.
+When a new one's out you get a popup in the LinuxTweaks look with what's new right on it, once per version, within a few minutes of it going up. **See what's new** opens About with Install ready, **Later** leaves it till you go looking.
 
 #### Coming from an older name?
 
@@ -321,7 +344,7 @@ cd /tmp && url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/
 linuxtweaks-updater
 ```
 
-From then on it starts by itself when you log in. New versions come from **About → Check for LinuxTweaks updates**: it finds the newest eopkg in my GitHub folder, checks its signature against the key that comes with the app, and installs it with one password box. One that isn't signed by me never gets installed. A new one pops up once in the LinuxTweaks look with what's new on it.
+From then on it starts by itself when you log in. New versions come from **About → Check for LinuxTweaks updates**: it finds the newest eopkg in my GitHub folder, checks its signature against the key that comes with the app, and installs it with one password box. One that isn't signed by me never gets installed. A new one pops up once in the LinuxTweaks look with what's new on it, within a few minutes of it going up.
 
 The NVIDIA driver, codecs and the rest of your system stay the Solus way: from the Solus repo, and apps from outside through Flatpak, as [Solus recommends](https://help.getsol.us/docs/user/software/third-party/).
 
@@ -342,15 +365,15 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 
 | Tab | What's in it |
 |---|---|
-| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to. Closing Available updates brings you back here |
+| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to, share anonymous usage, and the 📊 card with what went out last. Closing Available updates brings you back here |
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
 | **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
 | **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
-| **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box, and Apps like LumineCapture |
+| **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box. On Fedora, Apps like LumineCapture |
 | **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix. Refreshes by itself, Fix Nix when part of it's missing |
-| **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper for now |
+| **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper, and on Solus LumineCapture and MEGAsync |
 | **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
 **Right click** the tray icon for the short menu:
@@ -398,6 +421,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | zram size and compression | `/etc/systemd/zram-generator.conf` (a `.bak` copy of your old one sits next to it) |
 | Swappiness and memory | `/etc/sysctl.d/99-zz-memtune.conf` |
 | Network and Desktop tweaks | `/etc/sysctl.d/99-zz-desktop-performance.conf` |
+| No freeze when RAM runs out | `/etc/tmpfiles.d/linuxtweaks-mglru.conf` |
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
@@ -415,12 +439,13 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
 2. **Check.** Fedora: `dnf check-update`, `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. Solus: the eopkg repo index and install database, read as you. Then `flatpak remote-ls --updates`. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
-4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up and checks again as soon as the network is back
+4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up, and from NetworkManager the second the internet's back after a failed check, and checks again straight away. Every 30 seconds it takes a tiny look for a new LinuxTweaks
 5. **Upgrade.** The popup opens Available updates, and you start the install window from there. dnf or eopkg runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, clicking the popup starts it first
 6. **Updating itself.** Fedora: About checks my repo, then GitHub, and the RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it. Solus: About checks my GitHub folder and the eopkg's `.asc` signature is checked with `gpgv` against my key only, before eopkg installs it
 7. **A clean start.** Every install or upgrade clears a snooze, popup clicks nobody picked up and Health's Count from now. Your settings stay
 8. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` (`/usr/lib64/` on Solus) and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
 9. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
+10. **Usage hello.** Only if you said yes: once a week, from the tray, one small POST to my Cloudflare Worker. What went out is saved in your state folder for the Settings card
 
 Everything I read and leaned on to build it is on its own pages: **[Sources and references](SOURCES.md)**, split into [Fedora](SOURCES-FEDORA.md) and [Solus](SOURCES-SOLUS.md).
 
@@ -478,6 +503,16 @@ sudo dnf install --refresh linuxtweaks-updater
 <summary><b>Install stops at "Can I reach my repo?"</b></summary>
 
 It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
+</details>
+
+<details>
+<summary><b>Says no internet, but I'm online?</b></summary>
+
+It goes by NetworkManager. Online for real is State 70, check yours:
+```bash
+nmcli networking connectivity
+```
+`full` is online. `limited` or `portal` means NetworkManager can't reach the internet from here, a hotel or cafe login page does that. Log in there and it checks by itself.
 </details>
 
 <details>
