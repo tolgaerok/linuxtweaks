@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.65
+Version:        8.2.66
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -174,17 +174,19 @@ getent passwd | while IFS=: read -r user _ uid _ _ user_home _; do
 	done
 	# made as the user, so it's never owned by root
 	runuser -u "$user" -- sh -c 'umask 077; mkdir -p "$1"' _ "$user_home/.local/state/%{name}" 2>/dev/null || true
-
-	# Thankyou Nixos!
-	# lingering keeps the user timers alive. write down who I switched it on
-	# for, so cleanup.sh only switches those back off
-	if [ ! -e "/var/lib/systemd/linger/$user" ]; then
-		if loginctl enable-linger "$user" 2>/dev/null; then
-			grep -qx "$user" %{_sharedstatedir}/%{name}/linger-users 2>/dev/null ||
-				echo "$user" >>%{_sharedstatedir}/%{name}/linger-users
-		fi
-	fi
 done
+
+# I used to switch lingering on for every user so the timers kept going.
+# maintenance has been a system timer since 7.4.0 and the check only matters
+# while you're logged in, so it kept a systemd running all day for every
+# account on the box, and ran the check for people who weren't there.
+# off again, only for the ones I switched on (linger-users), same as cleanup.sh
+if [ -f %{_sharedstatedir}/%{name}/linger-users ]; then
+	while IFS= read -r user; do
+		[ -n "$user" ] && loginctl disable-linger "$user" 2>/dev/null || :
+	done <%{_sharedstatedir}/%{name}/linger-users
+	rm -f %{_sharedstatedir}/%{name}/linger-users
+fi
 
 # maintenance is off on a fresh install, on if it was on before
 %systemd_post %{name}-maintenance.timer
@@ -304,9 +306,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.66-1
+- update check skips logged out users
+- no more lingering
+
 * Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.65-1
 - NEW: share anonymous usage once a week if you want, it asks first
-- & Settings shows exactly what got sent
+- Settings shows exactly what got sent
 
 * Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.64-1
 - Restarting services: tick which ones, the risky ones say why
