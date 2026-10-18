@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.61
+Version:        8.2.62
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.62-1
+- wifi back on checks straight away now
+- Install Nix opens a new terminal right in nix-shell
+
 * Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.61-1
 - wifi off stops the check, checks the second it's back, like Discover
 
