@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.64
+Version:        8.2.65
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -304,6 +304,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.65-1
+- NEW: share anonymous usage once a week if you want, it asks first
+- & Settings shows exactly what got sent
+
 * Sun Oct 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.64-1
 - Restarting services: tick which ones, the risky ones say why
 
