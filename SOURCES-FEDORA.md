@@ -83,10 +83,10 @@ Obsoletes:      linuxtweaks-io < 2.0
 What's in an RPM, before you install it:
 
 ```bash
-rpm -qip linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm      # name, version, summary
-rpm -qlp linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm      # every file it puts on your PC
-rpm -qp --scripts linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm   # what it runs when it installs
-rpm -qp --changelog linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm | head   # what's new in it
+rpm -qip linuxtweaks-updater-8.2.67-1.fc44.noarch.rpm      # name, version, summary
+rpm -qlp linuxtweaks-updater-8.2.67-1.fc44.noarch.rpm      # every file it puts on your PC
+rpm -qp --scripts linuxtweaks-updater-8.2.67-1.fc44.noarch.rpm   # what it runs when it installs
+rpm -qp --changelog linuxtweaks-updater-8.2.67-1.fc44.noarch.rpm | head   # what's new in it
 ```
 
 Is it really signed by me? A throwaway keyring, so nothing on your system changes:
@@ -94,7 +94,7 @@ Is it really signed by me? A throwaway keyring, so nothing on your system change
 ```bash
 mkdir -p /tmp/keys
 rpmkeys --dbpath /tmp/keys --import /usr/share/linuxtweaks-updater/RPM-GPG-KEY-linuxtweaks
-rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm
+rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.67-1.fc44.noarch.rpm
 ```
 
 `digests signatures OK` means it's mine and nobody changed it.
@@ -382,11 +382,13 @@ switcherooctl list
 
 ## 🩺 Health and the report
 
-The Health tab is a quick look over the whole PC, read only and no password: failed services, errors, disk, memory, crashes, SELinux, packages, the kernel, logs and autostart. Since 8.2.26 it has a **📋 Report…** button, Brian's idea: everything it found as plain text, worst first, with the real error lines behind the red and orange cards, to copy into a message or save. Nothing leaves the PC unless you send it.
+The Health tab is a quick look over the whole PC, read only and no password: failed services, errors, disk, memory, crashes, SELinux, packages, the kernel, logs, autostart and since 8.2.67 Background extras. Since 8.2.26 it has a **📋 Report…** button, Brian's idea: everything it found as plain text, worst first, with the real error lines behind the red and orange cards, to copy into a message or save. Nothing leaves the PC unless you send it.
 
 The hard part is noise. Every desktop logs errors that mean nothing, and a report full of them hides the one that matters. Brian's first report had the same plasmashell line 39 times and his real errors pushed off the end. So the card and the report share one list of known noise, repeats show once with ×N, and the report just says how many it left out.
 
 Started from ssh or sudo there's no screen, Qt gave up and Health counted every one as a crash, 5 in a week on my PC. Now the tray borrows your desktop session's screen from `systemctl --user show-environment`, and says so plainly when there's none.
+
+**Background extras** came from my G4 feeling slow. Nothing was wrong with it, it was just doing things twice: dnf-makecache refreshing every 3 hours while LinuxTweaks checks every 30 minutes, Discover's notifier checking at login, abrt and DrKonqi both catching every crash, and PCP I'd forgotten about. The card only lists what's really there. Switch off disables, never removes, and Undo puts it back. Discover's notifier goes the way KDE's own Autostart settings do it, a copy in `~/.config/autostart` with `Hidden=true`, no password. The rest goes through the tweaks helper, which only knows a fixed list of units for each one.
 
 Logging out was the other one. Plasma stops KWin, and everything still on the desktop (kwallet, the portal, tray apps) falls over with it and dumps core. Those aren't crashes, so since 8.2.34 any dump within 15 seconds of `org.kde.Shutdown` starting is left out.
 
@@ -403,6 +405,9 @@ Logging out was the other one. Plasma stops KWin, and everything still on the de
 | [Kernel: i2c-dev](https://docs.kernel.org/i2c/dev-interface.html) | What `/dev/i2c-*` are |
 | [Fedora: SELinux](https://docs.fedoraproject.org/en-US/quick-docs/selinux-getting-started/) | The SELinux card and what "denied" means |
 | [QClipboard](https://doc.qt.io/qt-5/qclipboard.html) and [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) | The report's Copy and Save buttons |
+| [freedesktop: Autostart spec](https://specifications.freedesktop.org/autostart-spec/latest/) | Background extras: a file in your own autostart folder wins over the system one, and `Hidden=true` there means it doesn't start |
+| [Fedora bug 1187111](https://bugzilla.redhat.com/show_bug.cgi?id=1187111) and [bug 1120368](https://bugzilla.redhat.com/show_bug.cgi?id=1120368) | dnf-makecache stays in Fedora on purpose, and switching it off is fine, dnf gets its lists when it needs them |
+| [Fedora Discussion: dnf metadata](https://discussion.fedoraproject.org/t/dnf-cant-be-prevented-from-trying-to-update-metadata/29841) | `systemctl disable --now dnf-makecache.timer`, and that `metadata_expire` decides the rest |
 
 The report reads the noise list straight out of `health.sh`, so the card and the report can never disagree:
 
@@ -475,7 +480,7 @@ ddcutil setvcp 10 60           # set it to 60
 | [systemd.service](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | Oneshot services for the check and the weekly maintenance |
 | [systemd-run](https://www.freedesktop.org/software/systemd/man/latest/systemd-run.html) | Starting the upgrade window and the tray in their own units, so closing one doesn't take the other with it |
 | [org.freedesktop.login1](https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.login1.html) | The `PrepareForSleep` signal, so the tray checks again after the PC wakes up |
-| [loginctl](https://www.freedesktop.org/software/systemd/man/latest/loginctl.html) | Linger, so a user timer keeps its schedule between logins |
+| [loginctl](https://www.freedesktop.org/software/systemd/man/latest/loginctl.html) | Linger. Up to 8.2.65 the RPM switched it on for every user, which keeps a user's systemd running from boot even with nobody logged in, so other accounts ran the update check every 30 minutes for no one. Since 8.2.66 it switches it back off for the users it turned on, and the check asks `loginctl show-session` for an x11 or wayland session first |
 | [journald.conf](https://www.freedesktop.org/software/systemd/man/latest/journald.conf.html) | `SystemMaxUse` for Keep logs up to |
 | [sysctl.d](https://www.freedesktop.org/software/systemd/man/latest/sysctl.d.html) | Where my sysctl files go and why they're named `99-zz-` |
 | [Arch Wiki: systemd/Timers](https://wiki.archlinux.org/title/Systemd/Timers) | The clearest explanation of timers I found |
