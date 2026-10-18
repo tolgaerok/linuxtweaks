@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.68
+Version:        8.2.69
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -306,6 +306,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.69-1
+- checks the second wifi’s back-spots updates done in a terminal or Discover-CPU scheduler card shows them all
+
 * Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.68-1
 - Health can take KMail out if you never set up mail
 
