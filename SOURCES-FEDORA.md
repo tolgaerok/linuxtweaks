@@ -190,7 +190,7 @@ rpm -q --qf '%{NAME} %{EPOCH}:%{VERSION}-%{RELEASE}\n' bash
 
 A check with no internet used to say "up to date". dnf couldn't reach a single repo, fell back on the old list, and the tray went green. Wrong, and the worst kind of wrong, because you stop looking. Now the check asks NetworkManager first, the way Discover does: State 70 is online for real, wifi off leaves it on 50 while Tailscale and `lo` still look up. Not 70 and it doesn't even try, it says no internet and the old lists stay.
 
-The other half is coming back. The tray listens to NetworkManager on D-Bus, and the moment State goes back to 70 after any failed check it checks straight away. No sitting out the 5 minute retry. Fedora's own connectivity check (`NetworkManager-config-connectivity-fedora`) is what makes "wifi up but no internet" drop to 60 too, so that comes back right as well.
+The other half is coming back. The tray listens to NetworkManager on D-Bus, and the moment State goes back to 70 it checks straight away, after a good check too. Only a check under 2 minutes ago counts as enough, NM's own internet test every 5 minutes can flick it off and on. No sitting out the 5 minute retry. Fedora's own connectivity check (`NetworkManager-config-connectivity-fedora`) is what makes "wifi up but no internet" drop to 60 too, so that comes back right as well.
 
 | Source | What I used it for |
 |---|---|
@@ -198,6 +198,7 @@ The other half is coming back. The tray listens to NetworkManager on D-Bus, and 
 | [NetworkManager.conf: connectivity](https://networkmanager.dev/docs/api/latest/NetworkManager.conf.html) | How NM checks it can really reach the internet, and how often |
 | [dnf5.conf](https://dnf5.readthedocs.io/en/latest/dnf5.conf.5.html) | `retries=2` and `timeout=15`, so a flaky line gets a second go but a dead one doesn't hang the check |
 | [QDBusConnection](https://doc.qt.io/qt-5/qdbusconnection.html) | The tray hearing NM's `StateChanged` |
+| [org.freedesktop.NetworkManager](https://networkmanager.dev/docs/api/latest/gdbus-org.freedesktop.NetworkManager.html) | `State` is the one to go by for "is the internet there", `StateChanged` isn't deprecated |
 
 The check, before dnf goes anywhere near the internet:
 
@@ -607,7 +608,9 @@ echo "you clicked: $choice"
 | [PyQt5 reference](https://www.riverbankcomputing.com/static/Docs/PyQt5/) | How the Qt classes look from Python |
 | [QSystemTrayIcon](https://doc.qt.io/qt-5/qsystemtrayicon.html) | The tray icon, its tooltip and its menu |
 | [QProcess](https://doc.qt.io/qt-5/qprocess.html) | Running dnf and the helpers without freezing the window |
-| [QFileSystemWatcher](https://doc.qt.io/qt-5/qfilesystemwatcher.html) | Redrawing the moment a check writes new results. Since 8.2.47 it watches the rpm or eopkg database and Flatpak too, an update done anywhere gets a check a few seconds after, and the Nix tab watches its profile folder and ~/default.nix |
+| [QFileSystemWatcher](https://doc.qt.io/qt-5/qfilesystemwatcher.html) | Redrawing the moment a check writes new results. Since 8.2.47 it watches the rpm or eopkg database and Flatpak too, an update done anywhere gets a check a few seconds after. The folders alone missed updates, Qt only says `directoryChanged` when a file is added or gone, so it watches `rpmdb.sqlite`, `rpmdb.sqlite-wal` and Flatpak's `.changed` as files too. The Nix tab watches its profile folder and ~/default.nix |
+| [rpm's sqlite backend](https://github.com/rpm-software-management/rpm/blob/master/lib/backend/sqlite.cc) | rpm keeps `rpmdb.sqlite-wal` on purpose (`SQLITE_FCNTL_PERSIST_WAL`), so an update writes into the files there and the folder never changes |
+| [flatpak-dir.c](https://github.com/flatpak/flatpak/blob/main/common/flatpak-dir.c) | `flatpak_dir_mark_changed` touches `.changed` after every install, update and remove. An update leaves `app/` alone |
 | [QSvgRenderer](https://doc.qt.io/qt-5/qsvgrenderer.html) | The small Fedora, Debian, Arch and Ubuntu logos on the Boxes tab, drawn in the app so every desktop has them |
 | [proc(5): /proc/stat btime](https://man7.org/linux/man-pages/man5/proc_stat.5.html) | When this boot started. A Reboot required written before it is about the boot before, so it doesn't show |
 | [QDBusConnection](https://doc.qt.io/qt-5/qdbusconnection.html) | Listening to logind |
@@ -842,7 +845,7 @@ Linux 6.12 and up can swap the CPU scheduler for a BPF one while the PC runs, an
 |---|---|
 | [Kernel: sched_ext](https://docs.kernel.org/scheduler/sched-ext.html) | What sched_ext is, and why a broken scheduler just falls back to the normal one |
 | [sched-ext/scx](https://github.com/sched-ext/scx) | The schedulers themselves, what each is for, and scx_loader with its `scxctl` |
-| [sched-ext/scx-loader](https://github.com/sched-ext/scx-loader) | scx_loader and `scxctl`, what the card talks to |
+| [sched-ext/scx-loader](https://github.com/sched-ext/scx-loader) | scx_loader and `scxctl`, what the card talks to. `scxctl get` says it three ways (`cmd_get` in crates/scxctl): in a mode, with its own defaults, or with arguments. The card reads all three |
 | [CachyOS addons COPR](https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/) | Fedora hasn't packaged the schedulers, `scx-scheds` and `scx-tools` come from here |
 | [Steam Deck and lavd](https://github.com/sched-ext/scx/tree/main/scheds/rust/scx_lavd) | Why lavd is the one for games and laptops |
 

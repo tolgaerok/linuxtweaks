@@ -114,7 +114,7 @@ Same idea as Fedora, done eopkg's way. The Solus journal showed it plain: `eopkg
 - **The refresh fails with a getsol.us network error while NM says online?** One more go after 5 seconds, then "the internet dropped out" and it tries again in a minute
 - **New lists only when everything answered.** They're written to `.check.new` first and only moved in when eopkg and Flatpak both gave a real answer
 - **polkit says no to the refresh** (not at the desktop, not an admin)? It still reads the index on disk, failing every check for that helps nobody
-- **Back online** checks straight away, the tray hears NetworkManager go back to 70
+- **Back online** checks straight away, the tray hears NetworkManager go back to 70. After a good check too, unless one finished under 2 minutes ago
 
 Solus has NetworkManager's own internet check on out of the box, it asks getsol.us every 5 minutes. So wifi still up but the internet gone drops State to 60 too, and coming back sets off the check.
 
