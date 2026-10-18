@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.68-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.60-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.61-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -444,7 +444,7 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you. It skips its turn when nobody's logged in to a desktop on that account, Check for updates always goes ahead
 2. **Check.** Fedora: `dnf check-update`, `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. Solus: the eopkg repo index and install database, read as you. Then `flatpak remote-ls --updates`. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
-4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up, and from NetworkManager the second the internet's back after a failed check, and checks again straight away. Every 30 seconds it takes a tiny look for a new LinuxTweaks
+4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up, and from NetworkManager the second the internet's back, and checks again straight away. Every 30 seconds it takes a tiny look for a new LinuxTweaks
 5. **Upgrade.** The popup opens Available updates, and you start the install window from there. dnf or eopkg runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, clicking the popup starts it first
 6. **Updating itself.** Fedora: About checks my repo, then GitHub, and the RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it. Solus: About checks my GitHub folder and the eopkg's `.asc` signature is checked with `gpgv` against my key only, before eopkg installs it
 7. **A clean start.** Every install or upgrade clears a snooze, popup clicks nobody picked up and Health's Count from now. Your settings stay
