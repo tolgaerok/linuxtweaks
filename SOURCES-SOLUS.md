@@ -21,9 +21,12 @@ The **Try it yourself** boxes are safe to paste. They only read unless they say 
 - [The Solus rules I follow](#-the-solus-rules-i-follow)
 - [Packaging: package.yml and solbuild](#-packaging-packageyml-and-solbuild)
 - [eopkg: updates and history](#%EF%B8%8F-eopkg-updates-and-history)
+- [Offline on Solus](#-offline-on-solus)
 - [NVIDIA on Solus](#-nvidia-on-solus)
 - [Kernels and boot](#-kernels-and-boot)
 - [Health: AppArmor and the report](#%EF%B8%8F-health-apparmor-and-the-report)
+- [Memory: no freeze when RAM runs out](#-memory-no-freeze-when-ram-runs-out)
+- [Boxes and Extras on Solus](#-boxes-and-extras-on-solus)
 - [Signed eopkgs on GitHub](#-signed-eopkgs-on-github)
 - [Shared with Fedora](#-shared-with-fedora)
 
@@ -64,8 +67,8 @@ install    : |
 **An eopkg is just a zip.** Look inside one without installing it:
 
 ```bash
-unzip -l linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg
-unzip -p linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg metadata.xml | less
+unzip -l linuxtweaks-updater-8.2.59-44-1-x86_64.eopkg
+unzip -p linuxtweaks-updater-8.2.59-44-1-x86_64.eopkg metadata.xml | less
 ```
 
 `metadata.xml` is the package info, `files.xml` lists every file, `install.tar.xz` is the files themselves.
@@ -83,7 +86,7 @@ curl -s https://raw.githubusercontent.com/getsolus/packages/main/packages/n/nano
 | [Package management basics](https://help.getsol.us/docs/user/package-management/basics) | `eopkg up`, `lu`, `it`, `rm`, `history` |
 | [Repository management](https://help.getsol.us/docs/user/package-management/repo-management) | The Solus repo and its index |
 | [eopkg](https://github.com/getsolus/eopkg) | How it works inside, and `/var/lib/eopkg/package`, its install database |
-| [systemd.service: Restart=](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html#Restart=) and [systemd.unit: StartLimitBurst=](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#StartLimitIntervalSec=interval) | The index refresh tries 3 times, 30 seconds apart, so a DNS blip (Tailscale renegotiating) doesn't fail it |
+| [systemd.unit: StartLimitBurst=](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#StartLimitIntervalSec=interval) | Why the index refresh lost its `Restart=` and start limit. Start limits count the starts you ask for too, so the 4th Check for updates in 5 minutes on flaky wifi got refused |
 
 The tray reads the repo index and the install database as you, no root and no eopkg on every click. Since 8.2.33 the update window checks that database after an install, and shows anything that didn't get its new version instead of saying it all went in.
 
@@ -101,6 +104,32 @@ eopkg info linuxtweaks-updater   # version and release you have
 ```bash
 ls /var/lib/eopkg/package | wc -l
 ls /var/lib/eopkg/package | grep -E '^(bash|linux-current)-'
+```
+
+## 📶 Offline on Solus
+
+Same idea as Fedora, done eopkg's way. The Solus journal showed it plain: `eopkg update-repo` with no internet exits 1 with `Failed to resolve 'cdn.getsol.us'`, and the old check said "using the one on disk" and worked out new lists from the old index. Now:
+
+- **NetworkManager not at State 70?** The check doesn't even start, says no internet, and the old lists stay
+- **The refresh fails with a getsol.us network error while NM says online?** One more go after 5 seconds, then "the internet dropped out" and it tries again in a minute
+- **New lists only when everything answered.** They're written to `.check.new` first and only moved in when eopkg and Flatpak both gave a real answer
+- **polkit says no to the refresh** (not at the desktop, not an admin)? It still reads the index on disk, failing every check for that helps nobody
+- **Back online** checks straight away, the tray hears NetworkManager go back to 70
+
+Solus has NetworkManager's own internet check on out of the box, it asks getsol.us every 5 minutes. So wifi still up but the internet gone drops State to 60 too, and coming back sets off the check.
+
+| Source | What I used it for |
+|---|---|
+| [NetworkManager D-Bus types: NMState](https://networkmanager.dev/docs/api/latest/nm-dbus-types.html) | 70 online, 60 site only, 50 local only |
+| [NetworkManager.conf: connectivity](https://networkmanager.dev/docs/api/latest/NetworkManager.conf.html) | `uri`, `response` and `interval`, what Solus sets in its own conf file |
+| [Flatpak command reference](https://docs.flatpak.org/en/latest/flatpak-command-reference.html) | `remote-ls --updates`, the honest answer offline. `flatpak update` said "Nothing to update" with no internet |
+
+### Try it yourself
+
+```bash
+cat /usr/lib/NetworkManager/conf.d/20-connectivity-solus.conf   # Solus's own internet check
+nmcli networking connectivity                                    # full, limited, portal or none
+busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager State
 ```
 
 ## 🎮 NVIDIA on Solus
@@ -195,6 +224,32 @@ getfacl -p /dev/i2c-1 | grep user:                              # you, not a gro
 ddcutil getvcp 10                                               # your monitor's brightness, 0 to 100
 ```
 
+## 🧠 Memory: no freeze when RAM runs out
+
+The Memory tab's **No freeze when RAM runs out** works on Solus too. Its kernel has the multi-gen LRU fully on (`0x0007`), and systemd-tmpfiles sets `min_ttl_ms` again every boot. The only change from Fedora: no `restorecon`, Solus has no SELinux. The sources are on the [Fedora page](SOURCES-FEDORA.md#-memory-zram-and-sysctl).
+
+```bash
+cat /sys/kernel/mm/lru_gen/enabled       # 0x0007 on Solus out of the box
+cat /sys/kernel/mm/lru_gen/min_ttl_ms    # 1000 with the switch on
+```
+
+## 📦 Boxes and Extras on Solus
+
+Boxes is just distrobox on Solus. The apps that live outside a box moved to **🧩 Extras**: WPS Office's cloud helper fix, **LumineCapture** installed straight on the system so KWin lets it take screenshots, and **MEGAsync** in its own Debian 13 box with MEGA's own repo. That last one keeps Solus clean, and **Update all** in Boxes keeps MEGAsync current with everything else. Removing it deletes the box, your MEGA folder and login stay.
+
+| Source | What I used it for |
+|---|---|
+| [MEGA desktop app](https://mega.io/desktop) | MEGA's own Debian package and repo, the one that goes in the box |
+| [Distrobox](https://distrobox.it/) | `distrobox-export --app` puts MEGAsync in your app menu like it's installed |
+| [Solus: third-party software](https://help.getsol.us/docs/user/software/third-party/) | Why apps from outside go in a box or a flatpak, not on Solus itself |
+
+### Try it yourself
+
+```bash
+distrobox list                                          # MEGAsync's box shows here once it's in
+ls ~/.local/share/applications | grep -i mega           # the menu entry distrobox made
+```
+
 ## 🔏 Signed eopkgs on GitHub
 
 LinuxTweaks for Solus isn't in the Solus repo, so it updates itself from my GitHub folder. eopkgs aren't signed like RPMs, so each one has a `.asc` signature next to it, made with the same key as my RPMs, and About only installs one that checks out against the key the app ships.
@@ -210,7 +265,7 @@ Check an eopkg the way the app does, against my key only:
 
 ```bash
 gpgv --keyring /usr/share/linuxtweaks-updater/linuxtweaks-key.gpg \
-     linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg.asc linuxtweaks-updater-8.2.49-34-1-x86_64.eopkg
+     linuxtweaks-updater-8.2.59-44-1-x86_64.eopkg.asc linuxtweaks-updater-8.2.59-44-1-x86_64.eopkg
 ```
 
 `Good signature from "Tolga Erok (LinuxTweaks RPM Signing)"` means it's mine and nobody changed it.
@@ -229,6 +284,9 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 - [CPU scheduler: sched_ext](SOURCES-FEDORA.md#-cpu-scheduler-sched_ext), flash in auto is what Solus starts
 - [Boxes: distrobox and LumineCapture](SOURCES-FEDORA.md#-boxes-distrobox-and-luminecapture), where the `.utf8` language fix comes from
 - [Nix](SOURCES-FEDORA.md#%EF%B8%8F-nix) and [Extras: WPS Office](SOURCES-FEDORA.md#-extras-wps-office)
+- [Restarting services after an update](SOURCES-FEDORA.md#-restarting-services-after-an-update), same window and same careful list
+- [A new LinuxTweaks within seconds](SOURCES-FEDORA.md#-a-new-linuxtweaks-within-seconds), on Solus it reads the `Solus` badge on raw GitHub
+- [Usage sharing, only if you say yes](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes), same popup and same Worker
 
 ---
 

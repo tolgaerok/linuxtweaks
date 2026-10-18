@@ -23,6 +23,10 @@ If something here helped you too, the people who wrote it deserve the thanks.
 - [Packaging the RPM](#-packaging-the-rpm)
 - [DNF and Flatpak](#-dnf-and-flatpak)
 - [Updates that don't go in](#-updates-that-dont-go-in)
+- [Offline, and checking the second it's back](#-offline-and-checking-the-second-its-back)
+- [Restarting services after an update](#-restarting-services-after-an-update)
+- [A new LinuxTweaks within seconds](#-a-new-linuxtweaks-within-seconds)
+- [Usage sharing, only if you say yes](#-usage-sharing-only-if-you-say-yes)
 - [The GPU tab: NVIDIA, Negativo17 and RPM Fusion](#-the-gpu-tab-nvidia-negativo17-and-rpm-fusion)
 - [Health and the report](#-health-and-the-report)
 - [systemd: timers, services and sleep](#%EF%B8%8F-systemd-timers-services-and-sleep)
@@ -79,10 +83,10 @@ Obsoletes:      linuxtweaks-io < 2.0
 What's in an RPM, before you install it:
 
 ```bash
-rpm -qip linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm      # name, version, summary
-rpm -qlp linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm      # every file it puts on your PC
-rpm -qp --scripts linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm   # what it runs when it installs
-rpm -qp --changelog linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm | head   # what's new in it
+rpm -qip linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm      # name, version, summary
+rpm -qlp linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm      # every file it puts on your PC
+rpm -qp --scripts linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm   # what it runs when it installs
+rpm -qp --changelog linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm | head   # what's new in it
 ```
 
 Is it really signed by me? A throwaway keyring, so nothing on your system changes:
@@ -90,7 +94,7 @@ Is it really signed by me? A throwaway keyring, so nothing on your system change
 ```bash
 mkdir -p /tmp/keys
 rpmkeys --dbpath /tmp/keys --import /usr/share/linuxtweaks-updater/RPM-GPG-KEY-linuxtweaks
-rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.49-1.fc44.noarch.rpm
+rpmkeys --dbpath /tmp/keys --checksig linuxtweaks-updater-8.2.65-1.fc44.noarch.rpm
 ```
 
 `digests signatures OK` means it's mine and nobody changed it.
@@ -181,6 +185,104 @@ rpm -q --qf '%{NAME} %{EPOCH}:%{VERSION}-%{RELEASE}\n' bash
 ```
 
 `(none):` means the package has no epoch. Most don't.
+
+## 📶 Offline, and checking the second it's back
+
+A check with no internet used to say "up to date". dnf couldn't reach a single repo, fell back on the old list, and the tray went green. Wrong, and the worst kind of wrong, because you stop looking. Now the check asks NetworkManager first, the way Discover does: State 70 is online for real, wifi off leaves it on 50 while Tailscale and `lo` still look up. Not 70 and it doesn't even try, it says no internet and the old lists stay.
+
+The other half is coming back. The tray listens to NetworkManager on D-Bus, and the moment State goes back to 70 after any failed check it checks straight away. No sitting out the 5 minute retry. Fedora's own connectivity check (`NetworkManager-config-connectivity-fedora`) is what makes "wifi up but no internet" drop to 60 too, so that comes back right as well.
+
+| Source | What I used it for |
+|---|---|
+| [NetworkManager D-Bus types: NMState](https://networkmanager.dev/docs/api/latest/nm-dbus-types.html) | 70 is `CONNECTED_GLOBAL`, 60 is `CONNECTED_SITE`, 50 is `CONNECTED_LOCAL` |
+| [NetworkManager.conf: connectivity](https://networkmanager.dev/docs/api/latest/NetworkManager.conf.html) | How NM checks it can really reach the internet, and how often |
+| [dnf5.conf](https://dnf5.readthedocs.io/en/latest/dnf5.conf.5.html) | `retries=2` and `timeout=15`, so a flaky line gets a second go but a dead one doesn't hang the check |
+| [QDBusConnection](https://doc.qt.io/qt-5/qdbusconnection.html) | The tray hearing NM's `StateChanged` |
+
+The check, before dnf goes anywhere near the internet:
+
+```bash
+st=$(busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager \
+	org.freedesktop.NetworkManager State 2>/dev/null) || return 0
+[ "$st" = "u 70" ]
+```
+
+### Try it yourself
+
+```bash
+busctl get-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager State
+nmcli networking connectivity        # full, limited, portal or none
+```
+
+Turn the wifi off and run the first one again, it drops from `u 70`. That's all the tray waits for.
+
+## 🔁 Restarting services after an update
+
+After an update some services still run the old code from before it. The upgrade window lists them under **Still running old code**, with a tick box each. The safe ones are ticked. The ones that cut something off start unticked with an orange line saying why: your internet, bluetooth, VPNs and Tailscale, network shares, docker, podman and VMs. Nothing restarts by itself, you press **Restart ticked** or **Restart all**. Your login screen, dbus, logind and polkit never show up at all, restarting those logs you out or worse.
+
+I looked at how the others do it first. Fedora's own `needs-restarting` only lists them. needrestart asks by default, and its `override_rc` list of "don't restart these" is where most of my careful list comes from. arch-update on CachyOS asks with numbers.
+
+| Source | What I used it for |
+|---|---|
+| [dnf5 needs-restarting](https://dnf5.readthedocs.io/en/latest/dnf5_plugins/needs_restarting.8.html) | `-s`, which services still run old code |
+| [needrestart](https://github.com/liske/needrestart) | Its `override_rc` list in `needrestart.conf`, the services it won't touch without asking |
+| [arch-update](https://github.com/Antiz96/arch-update) | How CachyOS asks, numbers, 0 for all, Enter for none |
+| [systemctl](https://www.freedesktop.org/software/systemd/man/latest/systemctl.html) | `restart` for each one you ticked, as root through my helper and one password box |
+
+### Try it yourself
+
+```bash
+dnf needs-restarting -s        # services still running old code
+dnf needs-restarting -r        # does the PC itself need a reboot
+```
+
+## 🆕 A new LinuxTweaks within seconds
+
+A new version used to show up at the next update check, and with checks once a week that could be days. Now the tray takes one tiny look every 30 seconds, whatever your check interval. On my tailnet it reads my repo's file list, 538 bytes. Off it, the version badge in this README on raw GitHub. Only when that says something newer does the real check run, with downloads and signatures.
+
+Why not the GitHub API every 30 seconds? It's 60 requests an hour without a login, and a "not modified" answer still counts. Raw GitHub has no limit like that but caches for 5 minutes (`max-age=300`), so worst case it's 5 minutes behind. It gives an ETag, so when nothing changed the answer is a 304 with no body at all.
+
+| Source | What I used it for |
+|---|---|
+| [GitHub REST API: rate limits](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) | 60 an hour unauthenticated, why the 30 second look stays off the API |
+| [MDN: conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Conditional_requests) | ETag, `If-None-Match` and the 304 |
+| [nginx autoindex](https://nginx.org/en/docs/http/ngx_http_autoindex_module.html) | My repo's plain file list, the cheapest thing to read |
+
+### Try it yourself
+
+The badge, then the same again with its ETag. The second one comes back `304` and empty:
+
+```bash
+url=https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/README.md
+etag=$(curl -sI "$url" | grep -i '^etag' | cut -d' ' -f2 | tr -d '\r')
+curl -s "$url" | grep -o 'badge/Version-[0-9.]*'
+curl -s -o /dev/null -w '%{http_code}\n' -H "If-None-Match: $etag" "$url"
+```
+
+## 📊 Usage sharing, only if you say yes
+
+A day after you get 8.2.65 or newer, a popup asks if you'll send me a tiny hello once a week. Say no, or close it, and it never asks again and nothing is ever sent. Say yes and once a week it sends the LinuxTweaks version, distro and release, desktop, graphics make, roughly how long it's been installed, and how many update checks worked or failed. No name, no machine id, no package lists, no files. **Show me** has the exact line, and the card under Settings shows what went out last, each bit on its own little card. One switch turns it off.
+
+There's no id for your PC at all. That's Fedora's countme idea: each PC says hello once a week, so counting the hellos in a week is counting the PCs. The age bucket is countme's too, 1 to 4. An upgrade shows because the hello after it says what it was before.
+
+The hellos go to a small Cloudflare Worker of mine with a D1 database behind it. Cloudflare tells the Worker the country, that gets stored and the IP doesn't, and the Worker's logs are switched off. The ask first, show everything style is how KDE does it with KUserFeedback.
+
+| Source | What I used it for |
+|---|---|
+| [Fedora: DNF better counting](https://fedoraproject.org/wiki/Changes/DNF_Better_Counting) | countme: a weekly hello, no id, age buckets |
+| [dnf5.conf: countme](https://dnf5.readthedocs.io/en/latest/dnf5.conf.5.html) | The option itself |
+| [KUserFeedback](https://invent.kde.org/frameworks/kuserfeedback) | KDE's way: off till you say yes, says what it collects, a switch in settings |
+| [Cloudflare Workers](https://developers.cloudflare.com/workers/) and [D1](https://developers.cloudflare.com/d1/) | The Worker that takes the hello and the database it goes in |
+| [Workers: Request, cf properties](https://developers.cloudflare.com/workers/runtime-apis/request/) | `request.cf.country`, the country without keeping the IP |
+| [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/) | Switched off, logs can keep request details |
+
+### Try it yourself
+
+What your PC would send, without sending anything:
+
+```bash
+cd /usr/lib/linuxtweaks-updater && python3 -m tray.usage
+```
 
 ## 🎮 The GPU tab: NVIDIA, Negativo17 and RPM Fusion
 
@@ -284,6 +386,8 @@ The Health tab is a quick look over the whole PC, read only and no password: fai
 
 The hard part is noise. Every desktop logs errors that mean nothing, and a report full of them hides the one that matters. Brian's first report had the same plasmashell line 39 times and his real errors pushed off the end. So the card and the report share one list of known noise, repeats show once with ×N, and the report just says how many it left out.
 
+Started from ssh or sudo there's no screen, Qt gave up and Health counted every one as a crash, 5 in a week on my PC. Now the tray borrows your desktop session's screen from `systemctl --user show-environment`, and says so plainly when there's none.
+
 Logging out was the other one. Plasma stops KWin, and everything still on the desktop (kwallet, the portal, tray apps) falls over with it and dumps core. Those aren't crashes, so since 8.2.34 any dump within 15 seconds of `org.kde.Shutdown` starting is left out.
 
 | Source | What I used it for |
@@ -291,7 +395,7 @@ Logging out was the other one. Plasma stops KWin, and everything still on the de
 | [journalctl](https://www.freedesktop.org/software/systemd/man/latest/journalctl.html) | `-b -p err` for this boot's errors, `--since` for Count from now |
 | [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Every crash lands in the journal as "dumped core". Since 8.2.34 the Crashes card and the report read those lines, Solus doesn't have coredumpctl |
 | [coredumpctl](https://www.freedesktop.org/software/systemd/man/latest/coredumpctl.html) | Looking at a crash yourself, where your distro has it |
-| [df](https://man7.org/linux/man-pages/man1/df.1.html) | The disk card. `-x fuse.sshfs -x autofs` so a network share isn't counted as your disk, my sshfs mount was showing the server's disk as mine |
+| [df](https://man7.org/linux/man-pages/man1/df.1.html) | The disk card. `-l` for your own drives only, and `timeout 10`: df used to wait on every NFS and SMB share behind it, and my sshfs mount showed the server's disk as mine |
 | [systemctl](https://www.freedesktop.org/software/systemd/man/latest/systemctl.html) | `--failed`, `status` for the report, and `reset-failed` behind the Forget them button |
 | [sudo](https://www.sudo.ws/docs/man/sudo.man/) | Why `sudo -n true` logs "a password is required" every time it says no, so it counts as noise |
 | [DrKonqi](https://invent.kde.org/plasma/drkonqi) | KDE's crash pickup, which times out after 30 minutes on every KDE desktop and isn't a real failed service |
@@ -339,7 +443,7 @@ journalctl --since "-7 days" -t systemd-coredump -t systemd -o short --no-pager 
 **Your disks without the network ones**, what the disk card looks at:
 
 ```bash
-df -h -x tmpfs -x devtmpfs -x squashfs -x overlay -x efivarfs -x fuse.sshfs -x autofs
+df -h -l -x tmpfs -x devtmpfs -x squashfs -x overlay -x efivarfs -x fuse.sshfs -x autofs
 ```
 
 **Watch sudo log a "no".** This is what used to show up as an error after my release window ran:
@@ -633,6 +737,9 @@ udevadm info --query=property --name=/dev/sda | grep ID_SERIAL=
 | [Kernel: fs sysctl](https://docs.kernel.org/admin-guide/sysctl/fs.html) | `inotify` file watchers |
 | [Kernel: kernel sysctl](https://docs.kernel.org/admin-guide/sysctl/kernel.html) | `panic` and `sysrq`, the safety net |
 | [Kernel: transparent hugepages](https://docs.kernel.org/admin-guide/mm/transhuge.html) | `always` vs `madvise`, for the GPU tab's hugepages switch |
+| [Kernel: multi-gen LRU](https://docs.kernel.org/admin-guide/mm/multigen_lru.html) | `min_ttl_ms`. 1000 keeps what you used in the last second in RAM, the kernel docs say it stops the freezes when RAM runs out. That's **No freeze when RAM runs out** |
+| [tmpfiles.d](https://www.freedesktop.org/software/systemd/man/latest/tmpfiles.d.html) | It's sysfs, gone at reboot, so a `w-` line sets it again every boot |
+| [AI-2](https://github.com/ProWoos-Devs/ai-2) | Where the multi-gen LRU idea came from, its boot-tuning.sh. MIT |
 | [Arch Wiki: zram](https://wiki.archlinux.org/title/Zram) | Why swappiness above 100 makes sense with zram |
 | [Arch Wiki: sysctl](https://wiki.archlinux.org/title/Sysctl) | Sensible values and what they cost |
 
@@ -653,6 +760,8 @@ sysctl vm.swappiness             # how keen Linux is to swap
 sudo sysctl vm.swappiness=150    # change it till the next boot
 free -h                          # memory and swap in use
 cat /sys/kernel/mm/transparent_hugepage/enabled   # hugepages: the one in brackets is on
+cat /sys/kernel/mm/lru_gen/enabled               # 0x0007 means the multi-gen LRU is fully on
+cat /sys/kernel/mm/lru_gen/min_ttl_ms            # 1000 with No freeze on, 0 without
 ```
 
 ## 🌐 Network: BBR, CAKE and NetworkManager
@@ -744,7 +853,7 @@ cat /etc/scx_loader/config.toml  # what starts at boot, if you kept one
 
 ## 📦 Boxes: distrobox and LumineCapture
 
-My lt-boxes and solus-distrobox.sh as a tab. Distrobox runs another distro in a podman container that shares your home folder, your screen and your sound, so a Debian app feels like it's on your PC. Rootless podman needs your own uid range in `/etc/subuid` and `/etc/subgid`, that's the one bit that asks for a password.
+My lt-boxes and solus-distrobox.sh as a tab. On Fedora LumineCapture sits under Boxes in **🧰 Apps**. On Solus it moved to Extras along with MEGAsync, see the [Solus page](SOURCES-SOLUS.md#-boxes-and-extras-on-solus). Distrobox runs another distro in a podman container that shares your home folder, your screen and your sound, so a Debian app feels like it's on your PC. Rootless podman needs your own uid range in `/etc/subuid` and `/etc/subgid`, that's the one bit that asks for a password.
 
 | Source | What I used it for |
 |---|---|
@@ -773,6 +882,8 @@ type box-update                         # what box-update does, once Boxes set i
 
 The Nix package manager in single user mode, everything under `/nix` and `~/.nix-profile`, next to dnf or eopkg and never in their way. The Nix tab runs my install-nix-package-manager.sh in a terminal so you can watch it.
 
+Install Nix finishes in its own terminal, then that one closes and a new one opens straight in `nix-shell ~/default.nix`, started with `setsid -f` so the old window closing doesn't take it along. A fresh `bash -i` in the old window didn't give a working nix on either distro.
+
 Try without installing fetches first, then opens nix-shell's own shell. A fresh bash after it read `.bashrc` again, and Solus's resets PATH, so the program was gone. nix-shell puts it back after `.bashrc`. Look it up opens `--new-window` in Vivaldi, Chrome, Firefox and friends, a tab behind LinuxTweaks looked like nothing happened.
 
 | Source | What I used it for |
@@ -783,6 +894,7 @@ Try without installing fetches first, then opens nix-shell's own shell. A fresh 
 | [xdg-settings](https://portland.freedesktop.org/doc/xdg-settings.html) | Which browser is yours, so Look it up opens a new window of it |
 | [nix-collect-garbage](https://nix.dev/manual/nix/latest/command-ref/nix-collect-garbage) | Free up space |
 | [NixOS packages search](https://search.nixos.org/packages) | Finding the right name |
+| [setsid](https://man7.org/linux/man-pages/man1/setsid.1.html) | The new nix-shell terminal in its own session, so it outlives the install one |
 | [glibcLocales](https://wiki.nixos.org/wiki/Locales) | Nix programs can't read the system's locales, `LOCALE_ARCHIVE` points them at Nix's own |
 
 ### Try it yourself
@@ -867,13 +979,14 @@ printf 'apple\npear\napple\napple\n' | sort | uniq -c | sort -rn
 
 ## 🔗 My own repo, releases and Tailscale
 
-Each release is built and signed on my Fedora laptop, uploaded to my repo server, and the signed RPM goes into this GitHub repo too, so About can find it.
+Each release is built and signed on my Fedora laptop, uploaded to my repo server, and the signed RPM goes into this GitHub repo too, so About can find it. When I release from the desktop on Solus, which has no rpmbuild, my release window tars the project over to the laptop and builds it there over `ssh -t`. gpg asks with `--pinentry-mode loopback`, a plain passphrase line my window can catch, not its full screen box.
 
 | Source | What I used it for |
 |---|---|
 | [createrepo_c](https://github.com/rpm-software-management/createrepo_c) | Turning a folder of RPMs into a repo dnf can read |
 | [RPM man pages](https://rpm-software-management.github.io/rpm/man/) | `rpmsign`, signing every package with my key |
 | [rpmbuild](https://rpm-software-management.github.io/rpm/man/rpmbuild.1) | Building it, with a throwaway `_topdir` for test builds |
+| [gpg: pinentry-mode](https://www.gnupg.org/documentation/manuals/gnupg/GPG-Esoteric-Options.html) | `loopback`, signing over ssh with the passphrase asked in my own window |
 | [Tailscale: sharing](https://tailscale.com/kb/1084/sharing) | Sharing only my repo server with friends, nothing else |
 
 ### Try it yourself
