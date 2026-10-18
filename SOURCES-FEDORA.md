@@ -390,6 +390,8 @@ Started from ssh or sudo there's no screen, Qt gave up and Health counted every 
 
 **Background extras** came from my G4 feeling slow. Nothing was wrong with it, it was just doing things twice: dnf-makecache refreshing every 3 hours while LinuxTweaks checks every 30 minutes, Discover's notifier checking at login, abrt and DrKonqi both catching every crash, and PCP I'd forgotten about. The card only lists what's really there. Switch off disables, never removes, and Undo puts it back. Discover's notifier goes the way KDE's own Autostart settings do it, a copy in `~/.config/autostart` with `Hidden=true`, no password. The rest goes through the tweaks helper, which only knows a fixed list of units for each one.
 
+Since 8.2.68 it also has a **KMail** row. Fedora's KDE install pulls in the whole KDE PIM group, KMail included, and KMail's 6 mail agents start with Akonadi at every login even with no mail account. On my G4 and Alex's PC two of them deadlocked Akonadi at login (two 25 second D-Bus timeouts), the panel froze and Plasma's tray crashed on the way out. The row only shows when there's no IMAP, POP3, EWS or Kolab account in Akonadi. Remove KMail… runs dnf's dry run as you first and lists what goes, and if that list has KOrganizer, kdepim-addons, kdepim-runtime or akonadi-server in it, it stops. The helper checks the same thing again as root. Afterwards the 6 agents get taken out of Akonadi over D-Bus, otherwise it keeps logging "unknown agent type" at every login.
+
 Logging out was the other one. Plasma stops KWin, and everything still on the desktop (kwallet, the portal, tray apps) falls over with it and dumps core. Those aren't crashes, so since 8.2.34 any dump within 15 seconds of `org.kde.Shutdown` starting is left out.
 
 | Source | What I used it for |
@@ -408,6 +410,9 @@ Logging out was the other one. Plasma stops KWin, and everything still on the de
 | [freedesktop: Autostart spec](https://specifications.freedesktop.org/autostart-spec/latest/) | Background extras: a file in your own autostart folder wins over the system one, and `Hidden=true` there means it doesn't start |
 | [Fedora bug 1187111](https://bugzilla.redhat.com/show_bug.cgi?id=1187111) and [bug 1120368](https://bugzilla.redhat.com/show_bug.cgi?id=1120368) | dnf-makecache stays in Fedora on purpose, and switching it off is fine, dnf gets its lists when it needs them |
 | [Fedora Discussion: dnf metadata](https://discussion.fedoraproject.org/t/dnf-cant-be-prevented-from-trying-to-update-metadata/29841) | `systemctl disable --now dnf-makecache.timer`, and that `metadata_expire` decides the rest |
+| [Fedora comps](https://pagure.io/fedora-comps) | Why everyone on Fedora KDE has KMail: `kde-pim` is a required group of the KDE install, `dnf group info kde-pim` lists it |
+| [Akonadi](https://invent.kde.org/pim/akonadi) | The AgentManager's `removeAgentInstance`, how the KMail row clears the 6 agents |
+| [KDE bug 526360](https://bugs.kde.org/show_bug.cgi?id=526360) | The tray crash that came after the Akonadi freeze on my G4. Fixed for Plasma 6.8 |
 
 The report reads the noise list straight out of `health.sh`, so the card and the report can never disagree:
 

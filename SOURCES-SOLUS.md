@@ -208,11 +208,15 @@ cat /sys/kernel/mm/transparent_hugepage/enabled
 
 Solus uses AppArmor where Fedora uses SELinux, and eopkg's pending list where Fedora runs `dnf check`. The rest of Health and the 📋 Report… button are the same file on both, with the same known noise list. That's written up on the [Fedora page](SOURCES-FEDORA.md#-health-and-the-report), with more to try.
 
+After 8.2.59 Solus gets the **Background extras** card too, with one row: KMail. Solus Plasma comes with KMail, and its 6 mail agents start with Akonadi at every login even if you never set up mail, the same thing that froze my Fedora G4 at login. `eopkg remove` takes everything that depends on KMail with it, which on Solus is just Kontact. eopkg's dry run wants root, so the card works out that list itself from eopkg's own installed list in `/var/lib/eopkg/package`, no password. The helper then runs `eopkg remove --dry-run` as root before it removes anything, and stops if KOrganizer or the calendar side would go too.
+
 | Source | What I used it for |
 |---|---|
 | [AppArmor](https://apparmor.net/) | The AppArmor card, and what a `DENIED` line means |
 | [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Solus has no coredumpctl, so the Crashes card always said none. Since 8.2.35 it reads the "dumped core" lines in the journal instead |
 | [ddcutil: i2c permissions](https://www.ddcutil.com/i2c_permissions/) | Solus gives the monitor's i2c devices to whoever's logged in (uaccess), there's no `i2c` group to join |
+| `man eopkg` | `remove` takes reverse dependencies with it, `--dry-run` only shows what would happen |
+| [eopkg: remove.py](https://github.com/getsolus/eopkg/blob/main/pisi/operations/remove.py) | What the dry run prints, the package list on the line after "to satisfy dependencies:" |
 
 ### Try it yourself
 
