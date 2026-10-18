@@ -147,6 +147,8 @@ On Solus, Extras has two apps as well:
 
 A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and the disk card only looks at your own drives, never a network share.
 
+**Background extras** (Fedora) lists stuff running all day that LinuxTweaks or KDE already does: dnf-makecache refreshing every 3 hours when LinuxTweaks checks every 30 minutes, Discover's update notifier checking at login too, abrt catching every crash DrKonqi already catches, and PCP if someone put it there. Only what's really on your PC shows up. Each one says why it's there and what you'd lose, with **Switch off**, **Keep it** and **Undo**. Switch off only stops it, nothing gets removed. Found on my own PC when it felt slow.
+
 **📋 Report…** puts it all in plain text, worst first, with the real error lines behind the red and orange cards. Copy it into a message or save it, nothing leaves the PC unless you send it. Brian's idea, thanks Brian.
 
 ### 📊 Usage sharing, only if you say yes
@@ -374,7 +376,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box. On Fedora, Apps like LumineCapture |
 | **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix. Refreshes by itself, Fix Nix when part of it's missing |
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper, and on Solus LumineCapture and MEGAsync |
-| **🩺 Health** | Ten checks on cards, Check again, Count from now, 📋 Report…, and a fix button where there is one |
+| **🩺 Health** | Ten checks on cards (eleven on Fedora, with Background extras), Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
 **Right click** the tray icon for the short menu:
 
@@ -428,6 +430,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | CPU scheduler kept after a reboot | `/etc/scx_loader/config.toml` |
 | Extra DNS for boxes | `/etc/systemd/resolved.conf.d/90-linuxtweaks-dns.conf`, then `sudo systemctl restart systemd-resolved` |
 | WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |
+| Background extras (Fedora) | Undo on the Health card. By hand: `sudo systemctl enable --now dnf-makecache.timer` (or `abrtd`, `pmcd`), and delete `~/.config/autostart/org.kde.discover.notifier.desktop` for Discover's notifier |
 | GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
 
 The same files on Fedora and Solus.
@@ -436,7 +439,7 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 
 ## How it works
 
-1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you
+1. **Timer.** `linuxtweaks-updater-check.timer` is a user timer, it runs the check as you. It skips its turn when nobody's logged in to a desktop on that account, Check for updates always goes ahead
 2. **Check.** Fedora: `dnf check-update`, `dnf advisory` for the security fixes and `dnf needs-restarting` for a reboot. Solus: the eopkg repo index and install database, read as you. Then `flatpak remote-ls --updates`. No root needed. A list older than an hour gets downloaded again, Check for updates always gets a fresh one
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up, and from NetworkManager the second the internet's back after a failed check, and checks again straight away. Every 30 seconds it takes a tiny look for a new LinuxTweaks
