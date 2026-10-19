@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.72
+Version:        8.2.73
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -306,6 +306,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.73-1
+- usage stats catch up straight after an update
+
 * Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.72-1
 - Clear on Crashes, they stay gone after a reboot
 - crash log keeps what you cleared for 90 days
