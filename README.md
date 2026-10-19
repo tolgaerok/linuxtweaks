@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.74-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.66-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.67-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -164,7 +164,7 @@ A day after you update, a popup asks if you'll send me a tiny anonymous hello on
 | Desktop and graphics make | Package lists, files or logs |
 | Roughly how long it's been installed | Anything else |
 | How many update checks worked or failed | |
-| The country, worked out from the connection | |
+| The country and state, worked out from the connection | Your city or internet provider |
 
 **Show me** in the popup has the exact line that goes out. The 📊 card under Settings shows what went out last, each bit on its own little card, and when the next one goes. Change your mind any time with **Share anonymous usage, once a week** in Settings. A thank you pops up for 10 seconds after each one. When LinuxTweaks or your distro updates, it tells my server the new version straight away and that week's hello gets changed, no new one, so the numbers match what's out. There's no id for your PC in it, the same idea as Fedora's own countme. How it works is on the [sources page](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes).
 

@@ -266,7 +266,7 @@ A day after you get 8.2.65 or newer, a popup asks if you'll send me a tiny hello
 
 There's no id for your PC at all. That's Fedora's countme idea: each PC says hello once a week, so counting the hellos in a week is counting the PCs. The age bucket is countme's too, 1 to 4. An upgrade shows because the hello after it says what it was before. With one hello a week the stats sat on the old version for up to 7 days, so since 8.2.73 the tray also says `/moved` straight after LinuxTweaks or the distro moves up. The Worker finds that week's hello by what it said (distro, release, version, desktop, graphics, country) and changes it, still no id and no extra row, so a PC still counts once a week. Two PCs that look the same are the same in the counts, it doesn't matter which row moves. My stats window takes the newest version from the README badges, what's really out, not from the hellos.
 
-The hellos go to a small Cloudflare Worker of mine with a D1 database behind it. Cloudflare tells the Worker the country, that gets stored and the IP doesn't, and the Worker's logs are switched off. The ask first, show everything style is how KDE does it with KUserFeedback.
+The hellos go to a small Cloudflare Worker of mine with a D1 database behind it. Cloudflare tells the Worker the country and the state, those get stored and the IP doesn't, and the Worker's logs are switched off. Cloudflare could also give it the city, the internet provider and a rough spot on the map, the Worker never asks for those. The ask first, show everything style is how KDE does it with KUserFeedback.
 
 | Source | What I used it for |
 |---|---|
@@ -275,7 +275,7 @@ The hellos go to a small Cloudflare Worker of mine with a D1 database behind it.
 | [Cloudflare D1: prepared statements](https://developers.cloudflare.com/d1/worker-api/prepared-statements/) | `/moved`: `first()` gives the one row or null, then an UPDATE on it |
 | [KUserFeedback](https://invent.kde.org/frameworks/kuserfeedback) | KDE's way: off till you say yes, says what it collects, a switch in settings |
 | [Cloudflare Workers](https://developers.cloudflare.com/workers/) and [D1](https://developers.cloudflare.com/d1/) | The Worker that takes the hello and the database it goes in |
-| [Workers: Request, cf properties](https://developers.cloudflare.com/workers/runtime-apis/request/) | `request.cf.country`, the country without keeping the IP |
+| [Workers: Request, cf properties](https://developers.cloudflare.com/workers/runtime-apis/request/) | `request.cf.country` and `request.cf.region`, the country and state without keeping the IP |
 | [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/) | Switched off, logs can keep request details |
 
 ### Try it yourself
