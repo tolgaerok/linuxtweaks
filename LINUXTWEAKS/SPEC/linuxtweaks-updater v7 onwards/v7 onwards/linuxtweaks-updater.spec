@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.74
+Version:        8.2.75
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -306,6 +306,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.75-1
+- usage hello keeps your state now, Settings shows it
+
 * Mon Oct 19 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.74-1
 - old LinuxTweaks downloads get cleaned up now
 
