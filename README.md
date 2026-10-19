@@ -8,7 +8,7 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.71-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Fedora](https://img.shields.io/badge/Version-8.2.72-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.63-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -145,7 +145,7 @@ On Solus, Extras has two apps as well:
 
 ### 🩺 Health
 
-A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and the disk card only looks at your own drives, never a network share. Crashes say when each one happened, and the ones from programs you've since uninstalled (rpm, Flatpak or Nix) go grey and don't turn the card orange, the crash log keeps them for 7 days either way. **Remove them** on the Autostart card moves dead login entries aside instead of deleting them, and **Put back** brings them back.
+A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and the disk card only looks at your own drives, never a network share. Crashes say when each one happened. Apps you've since uninstalled (rpm, Flatpak or Nix) don't go on the card at all. **✓ Clear** takes the crashes off the card and they stay off after a reboot, anything new shows up straight away, and **📖 Crash log** keeps everything you cleared for 90 days, for troubleshooting later. **Remove them** on the Autostart card moves dead login entries aside instead of deleting them, and **Put back** brings them back.
 
 **Background extras** (Fedora) lists stuff running all day that LinuxTweaks or KDE already does: dnf-makecache refreshing every 3 hours when LinuxTweaks checks every 30 minutes, Discover's update notifier checking at login too, abrt catching every crash DrKonqi already catches, and PCP if someone put it there. Only what's really on your PC shows up. Each one says why it's there and what you'd lose, with **Switch off**, **Keep it** and **Undo**. Switch off only stops it, nothing gets removed. Whatever LinuxTweaks switched off keeps its Undo row for as long as it's still off, and what you kept gets **Ask again**. Found on my own PC when it felt slow.
 

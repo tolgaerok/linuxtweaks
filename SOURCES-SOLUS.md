@@ -213,7 +213,7 @@ After 8.2.59 Solus gets the **Background extras** card too, with one row: KMail.
 | Source | What I used it for |
 |---|---|
 | [AppArmor](https://apparmor.net/) | The AppArmor card, and what a `DENIED` line means |
-| [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Solus has no coredumpctl, so the Crashes card always said none. Since 8.2.35 it reads the "dumped core" lines in the journal instead. Uninstalling doesn't clear a crash, so the card checks `COREDUMP_EXE` and greys out programs that are gone, same code as Fedora |
+| [systemd-coredump](https://www.freedesktop.org/software/systemd/man/latest/systemd-coredump.html) | Solus has no coredumpctl, so the Crashes card always said none. Since 8.2.35 it reads the "dumped core" lines in the journal instead. Uninstalling doesn't clear a crash, so the card checks `COREDUMP_EXE` and leaves out programs that are gone, same code as Fedora. Clear and the crash log are the same on both too |
 | [ddcutil: i2c permissions](https://www.ddcutil.com/i2c_permissions/) | Solus gives the monitor's i2c devices to whoever's logged in (uaccess), there's no `i2c` group to join |
 | `man eopkg` | `remove` takes reverse dependencies with it, `--dry-run` only shows what would happen |
 | [eopkg: remove.py](https://github.com/getsolus/eopkg/blob/main/pisi/operations/remove.py) | What the dry run prints, the package list on the line after "to satisfy dependencies:" |
