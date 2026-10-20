@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.78-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.70-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.71-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -382,15 +382,15 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper, and on Solus LumineCapture and MEGAsync |
 | **🩺 Health** | Fourteen checks on cards (the newest are Firmware, Wake from sleep and Clock), Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
-**Right click** the tray icon for the short menu:
+**Right click** the tray icon for the short menu, each line has its own little Nord icon:
 
 | Menu item | What it does |
 |---|---|
 | **Status line** | Updates waiting or up to date, and the security fixes |
 | **Reboot now** | Only there when an update needs a reboot |
-| **Install updates…** | Opens Available updates, pick Install all, DNF (or eopkg) only or Flatpak only |
+| **Install 7 updates…** | Only there when something's waiting, with the count. Opens Available updates, pick Install all, DNF (or eopkg) only or Flatpak only |
 | **Check for updates** | Checks right now with a fresh list, you always get a popup with the answer |
-| **Open LinuxTweaks** | The window |
+| **Settings…** | The LinuxTweaks window, same as a left click on the icon |
 | **Exit** | Closes the tray until you log in again |
 
 ### From the terminal
