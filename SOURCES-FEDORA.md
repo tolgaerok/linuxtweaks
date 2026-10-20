@@ -308,6 +308,9 @@ Then the settings Solus ships in its own nvidia package that Fedora doesn't: fas
 | [NVIDIA driver README (580)](https://download.nvidia.com/XFree86/Linux-x86_64/580.95.05/README/index.html) | The `NVreg_` options, [power management](https://download.nvidia.com/XFree86/Linux-x86_64/580.95.05/README/powermanagement.html) and the [open kernel modules](https://download.nvidia.com/XFree86/Linux-x86_64/580.95.05/README/kernel_open.html) |
 | [NVIDIA open GPU kernel modules](https://github.com/NVIDIA/open-gpu-kernel-modules) | Which cards the open modules support (Turing and newer) |
 | [egl-wayland](https://github.com/NVIDIA/egl-wayland) and [egl-wayland2](https://github.com/NVIDIA/egl-wayland2) | The two Wayland bridges, and how the JSON files pick one |
+| [eglexternalplatform](https://github.com/NVIDIA/eglexternalplatform) | How the driver finds the bridges. It loads every JSON it finds, so a file in `/etc` can't hide egl-wayland2. The egl-wayland 1 switch points `__EGL_EXTERNAL_PLATFORM_CONFIG_DIRS` at its own folder instead, tested on the G4 (GTX 1650, 615.78): only egl-wayland 1 loads, Wayland, X11 and GBM still work |
+| [environment.d(5)](https://www.man7.org/linux/man-pages/man5/environment.d.5.html) | Where that variable goes, `/etc/environment.d/90-linuxtweaks-egl-wayland1.conf`. Plasma's kwin and plasmashell are systemd user units, so they get it at the next login. Flatpak runtimes set their own value, so Flatpak apps aren't touched |
+| [rpm file triggers](https://rpm.org/docs/6.0.x/manual/file_triggers.html) | A driver update that adds or drops a bridge JSON redoes the switch's links by itself |
 | [Kernel: nova](https://docs.kernel.org/gpu/nova/index.html) | The new in-kernel NVIDIA driver the tab blocks |
 | [modprobe.d](https://man7.org/linux/man-pages/man5/modprobe.d.5.html) | Where the driver options and the blacklist go |
 | [Arch Wiki: NVIDIA](https://wiki.archlinux.org/title/NVIDIA) | Plain explanations of most of the above |
@@ -370,10 +373,11 @@ rpm -qa '*-freeworld'
 grep -E 'PageAttributeTable|InitializeSystemMemory|PreserveVideoMemory' /proc/driver/nvidia/params
 ```
 
-**Which Wayland bridge loads first?** The lowest number wins, a file in `/etc` with the same name beats the one in `/usr/share`:
+**Which Wayland bridges get loaded?** The driver loads every JSON in its folders, lowest number first. With the egl-wayland 1 switch on and a fresh login, only `libnvidia-egl-wayland.so` should show up:
 
 ```bash
-ls /usr/share/egl/egl_external_platform.d/ /etc/egl/egl_external_platform.d/ 2>/dev/null
+echo "$__EGL_EXTERNAL_PLATFORM_CONFIG_DIRS"
+grep -o 'libnvidia-egl-wayland[^ /]*' /proc/$(pgrep -nx plasmashell)/maps | sort -u
 ```
 
 **Laptop with two GPUs?** Which one draws the desktop (`Default: yes`) and the environment that sends an app to the other one:
