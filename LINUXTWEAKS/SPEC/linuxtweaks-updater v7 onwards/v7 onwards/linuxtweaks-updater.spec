@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.79
+Version:        8.2.80
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -310,6 +310,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.80-1
+- imsettings doesn't show as failed on KDE any more
+
 * Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.79-1
 - tray menu has its own icons now
 - Install updates only shows when there's something to install
