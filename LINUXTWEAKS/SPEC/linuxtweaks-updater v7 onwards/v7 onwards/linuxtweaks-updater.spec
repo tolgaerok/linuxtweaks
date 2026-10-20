@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.78
+Version:        8.2.79
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -19,6 +19,8 @@ Requires:       dnf5
 Requires:       bash
 # for the tray (PyQt5 > on my main deskop, G4, it was only pip-installed, so a fresh system had none)
 Requires:       python3dist(pyqt5)
+# the tray menu icons are SVGs, Qt needs its svg image plugin to load them
+Requires:       qt5-qtsvg
 # i use notify-send for the popups
 Requires:       /usr/bin/notify-send
 # "Run LinuxTweaks Updater" opens the upgrade in konsole, so make sure konsole is available
@@ -96,6 +98,8 @@ install -Dm755 -t %{buildroot}%{_bindir} usr/bin/%{name} usr/bin/%{name}-check u
 # --- app: shell libs, tray, cleanup -----------------------------------------
 install -Dm755 -t "$_app"/lib lib/*.sh
 install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
+# the tray menu's own Nord icons
+install -Dm644 -t "$_app"/tray/icons tray/icons/*.svg
 chmod 755 "$_app"/tray/tray.py
 install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty bin/%{name}-wps-mask
 # the install window's root part and the polkit rule that asks for it in plain words
@@ -306,6 +310,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.79-1
+- tray menu has its own icons now
+- Install updates only shows when there's something to install
+- Open LinuxTweaks is Settings now
+- menu icons keep their colours now
+- menu shows the DNF and Flatpak split
+
 * Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.78-1
 - Updates tab shows leftovers you can clear, pinned flatpaks too
 
