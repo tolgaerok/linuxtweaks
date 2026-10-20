@@ -1019,6 +1019,19 @@ Is the repo serving what I think it is? Fresh metadata, the way a client sees it
 dnf -q --refresh --repo linuxtweaks repoquery --qf '%{version}-%{release}\n' linuxtweaks-updater
 ```
 
+## 🔧 Firmware, wake from sleep, clock and pinned Flatpaks
+
+Four cards that came out of my own old scripts, same on Fedora and Solus. Health asks fwupd for firmware updates with `fwupdmgr get-updates --json`, as you and without going online, and **Update in a terminal** runs `fwupdmgr update`. **Wake from sleep** lists every USB thing whose `power/wakeup` is on, and its button writes `/etc/udev/rules.d/90-linuxtweaks-wake.rules` so only keyboards and mice (and the hubs they hang off) can wake the PC. What was on before gets kept so it can all go back. **Clock** reads `timedatectl show` and **Turn it on** is `timedatectl set-ntp true`, timedated asks for the password itself. In the upgrade window, pinned `.Platform` runtimes that no app runs on get unpinned with `flatpak pin --remove`, then `flatpak uninstall --unused` takes them.
+
+| Source | What I took from it |
+|---|---|
+| [fwupdmgr(1)](https://man.archlinux.org/man/fwupdmgr.1) | `get-updates` and `update`, and use `--json` in scripts because the normal output can change |
+| [sysfs-devices-power](https://kernel.org/doc/Documentation/ABI/testing/sysfs-devices-power) | `power/wakeup` takes `enabled` or `disabled`, and devices that can't wake the PC don't have it |
+| [udev(7)](https://www.freedesktop.org/software/systemd/man/latest/udev.html) | `RUN+=`, `$$` for a `$` and `%%` for a `%` in a rule, `%p` is the device path |
+| [timedatectl(1)](https://www.freedesktop.org/software/systemd/man/latest/timedatectl.html) | `show` gives CanNTP, NTP and NTPSynchronized, `set-ntp` switches sync on |
+| [flatpak-pin(1)](https://www.mankier.com/1/flatpak-pin) | runtimes you install by hand get pinned and pinned ones never go by themselves, `pin --remove` |
+| [flatpak-uninstall(1)](https://www.mankier.com/1/flatpak-uninstall) | `--unused` |
+
 ---
 
 <div align="center">

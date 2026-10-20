@@ -9,7 +9,7 @@
 **My one app for keeping Fedora and Solus up to date and running well.**
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.76-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.68-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Solus](https://img.shields.io/badge/Solus-8.2.69-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -148,6 +148,8 @@ On Solus, Extras has two apps as well:
 A quick look over the whole PC: failed services, errors, disk space, memory, crashes, SELinux on Fedora or AppArmor on Solus, packages, the kernel, the logs and autostart, each green, orange or red. Where there's a fix the card has a button for it. Known noise that every desktop logs is left out, so are the apps that fall over when you log out, and the disk card only looks at your own drives, never a network share. Crashes say when each one happened. Apps you've since uninstalled (rpm, Flatpak or Nix) don't go on the card at all. **✓ Clear** takes the crashes off the card and they stay off after a reboot, anything new shows up straight away, and **📖 Crash log** keeps everything you cleared for 90 days, for troubleshooting later. **Remove them** on the Autostart card moves dead login entries aside instead of deleting them, and **Put back** brings them back.
 
 **Background extras** (Fedora) lists stuff running all day that LinuxTweaks or KDE already does: dnf-makecache refreshing every 3 hours when LinuxTweaks checks every 30 minutes, Discover's update notifier checking at login too, abrt catching every crash DrKonqi already catches, and PCP if someone put it there. Only what's really on your PC shows up. Each one says why it's there and what you'd lose, with **Switch off**, **Keep it** and **Undo**. Switch off only stops it, nothing gets removed. Whatever LinuxTweaks switched off keeps its Undo row for as long as it's still off, and what you kept gets **Ask again**. Found on my own PC when it felt slow.
+
+**Firmware**, **Wake from sleep** and **Clock** (both builds). Firmware shows the updates fwupd has for your BIOS, drives and docks, with **Update in a terminal**. Wake from sleep lists every USB thing that can wake the PC, and one button makes it keyboard and mouse only, handy when a controller or a dongle keeps waking it up. **Let everything wake it again** puts it back. Clock goes orange when time sync is off, **Turn it on** fixes it.
 
 On both builds it also spots **KMail** when you've never set up mail. KMail comes with Fedora KDE and Solus Plasma, and its 6 mail agents start with Akonadi at every login anyway. On my PC and a mate's they locked Akonadi up at login and froze the panel. **Remove KMail…** is the one row that removes a package: it shows what dnf or eopkg would take out first, KOrganizer and your calendars stay, and it won't go ahead if they wouldn't. **Put it back** installs it again.
 
@@ -378,7 +380,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box. On Fedora, Apps like LumineCapture |
 | **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix. Refreshes by itself, Fix Nix when part of it's missing |
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper, and on Solus LumineCapture and MEGAsync |
-| **🩺 Health** | Eleven checks on cards (the last one is Background extras), Check again, Count from now, 📋 Report…, and a fix button where there is one |
+| **🩺 Health** | Fourteen checks on cards (the newest are Firmware, Wake from sleep and Clock), Check again, Count from now, 📋 Report…, and a fix button where there is one |
 
 **Right click** the tray icon for the short menu:
 
@@ -433,6 +435,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | Extra DNS for boxes | `/etc/systemd/resolved.conf.d/90-linuxtweaks-dns.conf`, then `sudo systemctl restart systemd-resolved` |
 | WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |
 | Background extras (Fedora) | Undo on the Health card. By hand: `sudo systemctl enable --now dnf-makecache.timer` (or `abrtd`, `pmcd`), and delete `~/.config/autostart/org.kde.discover.notifier.desktop` for Discover's notifier. KMail, on both: Put it back on the card, or `sudo dnf install kmail kontact` / `sudo eopkg it kmail kontact` |
+| Wake from sleep | **Let everything wake it again** on the Health card. By hand: `sudo rm /etc/udev/rules.d/90-linuxtweaks-wake.rules` and reboot |
 | GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
 
 The same files on Fedora and Solus.
