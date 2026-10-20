@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.80
+Version:        8.2.81
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -199,6 +199,10 @@ if [ -e %{_sharedstatedir}/%{name}/.maintenance-was-on ]; then
 	rm -f %{_sharedstatedir}/%{name}/.maintenance-was-on
 fi
 
+# the GPU tab's egl-wayland 1 switch had a file in /etc that never hid
+# wayland2, move anyone who had it on over to the way that works
+%{_prefix}/lib/%{name}/bin/linuxtweaks-updater-gpu egl refresh >/dev/null 2>&1 || :
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -242,6 +246,13 @@ for run in /run/user/[0-9]*; do
 done
 # restart running trays into the new version straight away
 %{_prefix}/lib/%{name}/bin/restart-tray.sh || :
+
+# a driver update adds or drops egl platform jsons, redo the egl-wayland 1
+# links if that switch is on (rpm-scriptlets(7), file triggers)
+%transfiletriggerin -- %{_datadir}/egl/egl_external_platform.d
+[ -x %{_prefix}/lib/%{name}/bin/linuxtweaks-updater-gpu ] && %{_prefix}/lib/%{name}/bin/linuxtweaks-updater-gpu egl refresh >/dev/null 2>&1 || :
+%transfiletriggerpostun -- %{_datadir}/egl/egl_external_platform.d
+[ -x %{_prefix}/lib/%{name}/bin/linuxtweaks-updater-gpu ] && %{_prefix}/lib/%{name}/bin/linuxtweaks-updater-gpu egl refresh >/dev/null 2>&1 || :
 
 # ---------------------------------------------------------------------------
 # files
@@ -310,6 +321,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.81-1
+- egl-wayland 1 switch really works now
+
 * Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.80-1
 - imsettings doesn't show as failed on KDE any more
 
