@@ -294,7 +294,7 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 
 ## 🔧 Firmware, wake from sleep, clock and pinned Flatpaks
 
-Four cards that came out of my own old scripts, same on Fedora and Solus. Health asks fwupd for firmware updates with `fwupdmgr get-updates --json`, as you and without going online, and **Update in a terminal** runs `fwupdmgr update`. **Wake from sleep** lists every USB thing whose `power/wakeup` is on, and its button writes `/etc/udev/rules.d/90-linuxtweaks-wake.rules` so only keyboards and mice (and the hubs they hang off) can wake the PC. What was on before gets kept so it can all go back. **Clock** reads `timedatectl show` and **Turn it on** is `timedatectl set-ntp true`, timedated asks for the password itself. In the upgrade window, pinned `.Platform` runtimes that no app runs on get unpinned with `flatpak pin --remove`, then `flatpak uninstall --unused` takes them.
+Four cards that came out of my own old scripts, same on Fedora and Solus. Health asks fwupd for firmware updates with `fwupdmgr get-updates --json`, as you and without going online, and **Update in a terminal** runs `fwupdmgr update`. **Wake from sleep** lists every USB thing whose `power/wakeup` is on, and its button writes `/etc/udev/rules.d/90-linuxtweaks-wake.rules` so only keyboards and mice (and the hubs they hang off) can wake the PC. What was on before gets kept so it can all go back. **Clock** reads `timedatectl show` and **Turn it on** is `timedatectl set-ntp true`, timedated asks for the password itself. On the Updates tab, the 🧹 Not needed any more card unpins `.Platform` runtimes that no app runs on with `flatpak pin --remove`, then `flatpak uninstall --unused` takes them.
 
 | Source | What I took from it |
 |---|---|
