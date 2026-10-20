@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.77
+Version:        8.2.78
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -306,6 +306,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.78-1
+- Updates tab shows leftovers you can clear, pinned flatpaks too
+
 * Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.77-1
 - Health shows firmware updates
 - Health can stop USB stuff waking the pc

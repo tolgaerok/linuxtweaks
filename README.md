@@ -8,7 +8,7 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.77-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Fedora](https://img.shields.io/badge/Version-8.2.78-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.69-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -371,7 +371,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 
 | Tab | What's in it |
 |---|---|
-| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. Settings: check every, popups, weekly maintenance, keep logs up to, share anonymous usage, and the 📊 card with what went out last. Closing Available updates brings you back here |
+| **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. 🧹 Not needed any more when there's something to tidy: packages nothing needs, Flatpak runtimes nothing uses and old pinned ones, with Remove them. Settings: check every, popups, weekly maintenance, keep logs up to, share anonymous usage, and the 📊 card with what went out last. Closing Available updates brings you back here |
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
