@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.81
+Version:        8.2.82
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -321,6 +321,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Oct 21 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.82-1
+- usage sharing can send rough PC details too, if you tick it
+- Settings usage card is smaller and easier to read
+
 * Tue Oct 20 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.81-1
 - egl-wayland 1 switch really works now
 

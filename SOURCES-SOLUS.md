@@ -290,7 +290,7 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 - [Nix](SOURCES-FEDORA.md#%EF%B8%8F-nix) and [Extras: WPS Office](SOURCES-FEDORA.md#-extras-wps-office)
 - [Restarting services after an update](SOURCES-FEDORA.md#-restarting-services-after-an-update), same window and same careful list
 - [A new LinuxTweaks within seconds](SOURCES-FEDORA.md#-a-new-linuxtweaks-within-seconds), on Solus it reads the `Solus` badge on raw GitHub
-- [Usage sharing, only if you say yes](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes), same popup and same Worker
+- [Usage sharing, only if you say yes](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes), same popup and same Worker, the About this PC and What LinuxTweaks does here tick boxes too
 
 ## 🔧 Firmware, wake from sleep, clock and pinned Flatpaks
 
