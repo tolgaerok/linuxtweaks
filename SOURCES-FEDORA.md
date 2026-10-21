@@ -268,6 +268,8 @@ There's no id for your PC at all. That's Fedora's countme idea: each PC says hel
 
 The hellos go to a small Cloudflare Worker of mine with a D1 database behind it. Cloudflare tells the Worker the country and the state, those get stored and the IP doesn't, and the Worker's logs are switched off. Cloudflare could also give it the city, the internet provider and a rough spot on the map, the Worker never asks for those. The ask first, show everything style is how KDE does it with KUserFeedback.
 
+Since 8.2.82 there are two more tick boxes, each its own yes, and people who said yes before get asked once. **About this PC** sends rough bits only: the graphics driver from `/sys/class/drm`, laptop or desktop from hostnamectl, Intel or AMD and the thread count rounded up, RAM rounded up to 4, 8, 16, 32 or 64 GB, NVMe/SSD/HDD and the file system of /, UEFI and Secure Boot, the kernel series, Wayland or X11, and the swap type. **What LinuxTweaks does here** sends the names of my switches that are on (the files LinuxTweaks writes, plus preempt and THP on the boot line) and which Health cards weren't green the last time the tab looked. All read as you, nothing needs root.
+
 | Source | What I used it for |
 |---|---|
 | [Fedora: DNF better counting](https://fedoraproject.org/wiki/Changes/DNF_Better_Counting) | countme: a weekly hello, no id, age buckets |
@@ -277,6 +279,11 @@ The hellos go to a small Cloudflare Worker of mine with a D1 database behind it.
 | [Cloudflare Workers](https://developers.cloudflare.com/workers/) and [D1](https://developers.cloudflare.com/d1/) | The Worker that takes the hello and the database it goes in |
 | [Workers: Request, cf properties](https://developers.cloudflare.com/workers/runtime-apis/request/) | `request.cf.country` and `request.cf.region`, the country and state without keeping the IP |
 | [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/) | Switched off, logs can keep request details |
+| [ubuntu-report](https://github.com/ubuntu/ubuntu-report) | What not to do: it sends the exact CPU name, PC model, BIOS, disk and screen sizes. Mine stays rough |
+| [KUserFeedback provider.h](https://invent.kde.org/frameworks/kuserfeedback/-/raw/master/src/provider/core/provider.h) | "About the system" and "how it's used" are separate levels, so two tick boxes |
+| [hostnamectl](https://www.freedesktop.org/software/systemd/man/latest/hostnamectl.html) | `hostnamectl chassis`: desktop, laptop, vm and so on |
+| [efivarfs](https://www.kernel.org/doc/html/latest/filesystems/efivarfs.html) and [mokutil.c](https://github.com/lcp/mokutil/blob/master/src/mokutil.c) | Secure Boot as you, no root: 4 bytes of attributes then the value, on = SecureBoot 1 and SetupMode 0 |
+| [lsblk](https://man7.org/linux/man-pages/man8/lsblk.8.html) | `-s` walks from / up through LUKS and LVM to the disk, ROTA and TRAN say HDD, SSD or NVMe |
 
 ### Try it yourself
 

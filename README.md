@@ -8,7 +8,7 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.81-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Fedora](https://img.shields.io/badge/Version-8.2.82-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.72-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -110,6 +110,8 @@ Under them, **⚡ CPU scheduler (sched_ext)**: pick an scx scheduler and a mode 
 
 NVIDIA on Fedora comes from a third party repo: Negativo17 or RPM Fusion. Never both, they ship the same things under different names, and the tab warns you with a red box if both are on and moves you over to one cleanly. It picks the right driver branch for your card (the 580 branch for GTX 900 and 10 series, the newest for everything after), switches Negativo17's multimedia repo on or off, and has the tweaks Solus ships in its own NVIDIA package, with **Apply all tweaks** to turn them on with one password. Each one says *Needs reboot* or *Needs log out*, and greys out when your driver doesn't have it.
 
+The **egl-wayland 1** switch keeps your desktop on the older Wayland bridge, the one Solus uses. Up to 8.2.80 it didn't really work: the driver loads every bridge it finds, so both got loaded and egl-wayland2 still came first. Since 8.2.81 it points the driver at a folder with every bridge except egl-wayland2, and updating to 8.2.81 moves you over by itself. A driver update that adds a new bridge gets picked up on its own. Log out and back in, then check: `grep -o 'libnvidia-egl-wayland[^ /]*' /proc/$(pgrep -nx plasmashell)/maps | sort -u` should only show `libnvidia-egl-wayland.so`. Flatpak apps keep their own bridges, the switch doesn't touch them. On the G4 (GTX 1650) the desktop felt quicker after the switch.
+
 Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it from the Software Center the way the [Solus NVIDIA guide](https://help.getsol.us/docs/user/hardware/nvidia-gpu-drivers) says, and it already has those tweaks.
 
 ### 📦 Boxes
@@ -167,6 +169,17 @@ A day after you update, a popup asks if you'll send me a tiny anonymous hello on
 | Roughly how long it's been installed | Anything else |
 | How many update checks worked or failed | |
 | The country and state, worked out from the connection | Your city or internet provider |
+
+Two more tick boxes, each its own yes. People who said yes before get asked about them once:
+
+| About this PC | What LinuxTweaks does here |
+|---|---|
+| Graphics driver (i915, amdgpu, nouveau, nvidia 615...) | The names of my switches you've got on |
+| Laptop or desktop, Intel or AMD and a thread count | Which Health cards aren't green |
+| RAM rounded up, NVMe, SSD or HDD, the file system | |
+| UEFI or BIOS, Secure Boot, kernel series, Wayland or X11, swap | |
+
+No exact CPU or card model, no PC make, model or serial, no exact RAM or disk sizes. It tells me who the GPU tab and the egl switch are really for, who's on 8 GB, what nobody uses and what goes wrong most.
 
 **Show me** in the popup has the exact line that goes out. The 📊 card under Settings shows what went out last, each bit on its own little card, and when the next one goes. Change your mind any time with **Share anonymous usage, once a week** in Settings. A thank you pops up for 10 seconds after each one. When LinuxTweaks or your distro updates, it tells my server the new version straight away and that week's hello gets changed, no new one, so the numbers match what's out. There's no id for your PC in it, the same idea as Fedora's own countme. How it works is on the [sources page](SOURCES-FEDORA.md#-usage-sharing-only-if-you-say-yes).
 
