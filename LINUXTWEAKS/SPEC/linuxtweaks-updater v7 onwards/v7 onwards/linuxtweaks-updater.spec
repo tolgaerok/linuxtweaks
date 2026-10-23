@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.84
+Version:        8.2.85
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -321,6 +321,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 23 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.85-1
+- reboot doesn't hang 40s on Plasma any more, switch in Settings
+
 * Wed Oct 21 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.84-1
 - the usage ask pops up straight after What's new now
 
