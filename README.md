@@ -85,6 +85,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 - **You pick which services restart.** A tick box each. The safe ones are ticked, the ones that cut something off (your internet, bluetooth, VPN, shares, containers) start unticked and say why. Nothing restarts till you press the button
 - **Weekly maintenance, if you want it.** Cleans the package cache, trims the journal, runs SSD TRIM if your distro isn't already doing it
 - **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, out of the box it can grow to 4 GB
+- **Quick reboot.** Plasma hangs on the way out sometimes and the reboot sits there 40s. On, it gets killed straight away
 
 Updated somewhere else, a terminal or Discover? The tray watches the package database and checks again a few seconds after, so the dot goes green straight away. **Reboot required** goes as soon as you've rebooted, it doesn't wait for the next check.
 
@@ -444,6 +445,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
+| Quick reboot | `~/.config/systemd/user/plasma-plasmashell.service.d/10-stop-timeout.conf`, delete it and run `systemctl --user daemon-reload` |
 | CPU scheduler kept after a reboot | `/etc/scx_loader/config.toml` |
 | Extra DNS for boxes | `/etc/systemd/resolved.conf.d/90-linuxtweaks-dns.conf`, then `sudo systemctl restart systemd-resolved` |
 | WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |

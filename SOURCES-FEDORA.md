@@ -1043,6 +1043,18 @@ Four cards that came out of my own old scripts, same on Fedora and Solus. Health
 | [flatpak-pin(1)](https://www.mankier.com/1/flatpak-pin) | runtimes you install by hand get pinned and pinned ones never go by themselves, `pin --remove` |
 | [flatpak-uninstall(1)](https://www.mankier.com/1/flatpak-uninstall) | `--unused` |
 
+## ⚡ Quick reboot
+
+Plasma hangs on the way out sometimes and its own unit gives it 40s before systemd kills it, so the reboot sat on "a stop job is running for user 1000". The **Quick reboot, don't wait on Plasma** switch in Settings writes `~/.config/systemd/user/plasma-plasmashell.service.d/10-stop-timeout.conf` with `KillSignal=SIGKILL`, so plasmashell gets killed straight off. Off takes the file out. Only your user, no password. Same on Fedora, Solus and AerynOS.
+
+| Source | What I took from it |
+|---|---|
+| [plasma-plasmashell.service.in](https://invent.kde.org/plasma/plasma-workspace/-/raw/master/shell/plasma-plasmashell.service.in) | Plasma's own unit sets `TimeoutSec=40sec`, that's the 40s |
+| [systemd.unit(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html) | `~/.config/systemd/user` drop-ins go on top of the unit in `/usr/lib`, updates don't touch them |
+| [systemd.kill(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.kill.html) | `KillSignal=` is the signal sent when the unit stops |
+| [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | `TimeoutStopSec=`, and `TimeoutSec=` sets both start and stop |
+| [Arch forum, 40s on reboot](https://bbs.archlinux.org/viewtopic.php?id=314567) | plasmashell stuck in the Wayland clipboard code till it got killed |
+
 ---
 
 <div align="center">
