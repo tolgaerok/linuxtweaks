@@ -208,9 +208,9 @@ sqlite3 -readonly "file:/.moss/db/install?immutable=1" \
 
 moss only installs by name from a repo, never a file. So LinuxTweaks has its own little repo on the pc, `/var/lib/linuxtweaks-updater/repo`, called `linuxtweaks-local` at priority 100. An update from the tray checks my signature first, then `lib/local_repo.sh` drops the stone in there, runs `moss index`, and moss takes the old one out and puts the new one in. If the new one won't go in, it goes back to the state from before.
 
-The old builds have to stay readable too, and here's the catch: one index only ever holds one build of a package. `moss index` keeps the newest release and quietly drops the rest. I found that the hard way, my first go put all the old ones in one `repo-old` and the oldest states broke again after the next release. So now every old build gets its own folder, `/var/lib/linuxtweaks-updater/repo-old/1.0.9-10/` and so on, and its own repo, `linuxtweaks-old-1.0.9-10` at priority 1. They're only there so old states still read, the newest at 100 always wins.
+The old builds have to stay readable too, and here's the catch: one index only ever holds one build of a package. `moss index` keeps the newest release and quietly drops the rest. I found that the hard way, my first go put all the old ones in one `repo-old` and the oldest states broke again after the next release. So now every old build gets its own folder, `/var/lib/linuxtweaks-updater/repo-old/1.0.9-10/` and so on, and its own repo, `linuxtweaks-old-1_0_9-10` at priority 1. moss turns anything in a repo name that isn't a letter, a number or `-` into `_` ([repository/mod.rs](https://raw.githubusercontent.com/AerynOS/os-tools/3d9f9fa58075e01270587296181dc96f7c3fb94a/moss/src/repository/mod.rs)), so the dots go. They're only there so old states still read, the newest at 100 always wins.
 
-An old build goes once no state uses it any more. `local_repo.sh` reads that out of moss's own dbs, so when you prune states their old LinuxTweaks builds and repos go with them on the next update.
+An old build goes once no state uses it any more. `local_repo.sh` reads that out of moss's own dbs, so when you prune states their old LinuxTweaks builds and repos go with them. The root refresh that runs before every check does `local_repo.sh --old-only` first, so it all comes right on the next check, whatever LinuxTweaks did the last install.
 
 A new pc gets its first LinuxTweaks straight from my GitHub repo, and that only keeps the newest. So on an update `local_repo.sh` also looks in moss's download cache for any of my stones a state still uses and copies them into repo-old. moss keeps them there named by their sha256, `/.moss/cache/downloads/v1/<first 5>/<last 5>/<sha256>`, and `moss cache prune` leaves alone anything a state still needs.
 
@@ -227,7 +227,7 @@ Two more guards: my build script puts the release up by itself if that version a
 ### Try it yourself
 
 ```bash
-moss repo list                             # linuxtweaks-local [100] and a linuxtweaks-old-<ver>-<rel> [1] for each old build
+moss repo list                             # linuxtweaks-local [100] and a linuxtweaks-old-1_0_9-10 style [1] for each old build
 ls /var/lib/linuxtweaks-updater/repo       # only the newest
 ls /var/lib/linuxtweaks-updater/repo-old   # a folder for every old build a state still uses
 ```
@@ -238,7 +238,7 @@ ls /var/lib/linuxtweaks-updater/repo-old   # a folder for every old build a stat
 sudo mkdir -p /var/lib/myapp/repo-old/1.0.8-9
 sudo mv /var/lib/myapp/repo/myapp-1.0.8-9-1-x86_64.stone /var/lib/myapp/repo-old/1.0.8-9/
 sudo moss index -i /var/lib/myapp/repo-old/1.0.8-9      # 0.26.8: sudo moss index <folder>
-sudo moss repo add myapp-old-1.0.8-9 file:///var/lib/myapp/repo-old/1.0.8-9/stone.index -p 1
+sudo moss repo add myapp-old-1_0_8-9 file:///var/lib/myapp/repo-old/1.0.8-9/stone.index -p 1
 ```
 
 ## 🐧 Kernels and the boot menu
