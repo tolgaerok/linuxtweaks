@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.85
+Version:        8.2.86
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -108,6 +108,8 @@ install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/ac
 install -Dm644 -t %{buildroot}%{_datadir}/%{name} usr/share/%{name}/RPM-GPG-KEY-linuxtweaks
 # colour emoji for the icons. Fedora's Noto Color Emoji is COLRv1, Qt5 draws it blank
 install -Dm644 -t %{buildroot}%{_datadir}/%{name}/fonts usr/share/%{name}/fonts/linuxtweaks-emoji.ttf usr/share/%{name}/fonts/OFL.txt
+# the chime when updates finish, stairs by Stefan Mertens, CC0 (Zulip)
+install -Dm644 -t %{buildroot}%{_datadir}/%{name}/sounds usr/share/%{name}/sounds/stairs.ogg
 
 # --- desktop entries --------------------------------------------------------
 install -Dm644 -t %{buildroot}%{_datadir}/applications etc/xdg/applications/%{name}.desktop
@@ -321,6 +323,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 24 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.86-1
+- little chime when updates finish, switch in Settings
+
 * Fri Oct 23 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.85-1
 - reboot doesn't hang 40s on Plasma any more, switch in Settings
 
