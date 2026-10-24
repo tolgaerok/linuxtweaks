@@ -1055,6 +1055,19 @@ Plasma hangs on the way out sometimes and its own unit gives it 40s before syste
 | [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | `TimeoutStopSec=`, and `TimeoutSec=` sets both start and stop |
 | [Arch forum, 40s on reboot](https://bbs.archlinux.org/viewtopic.php?id=314567) | plasmashell stuck in the Wayland clipboard code till it got killed |
 
+## 🔔 Sound when updates finish
+
+A little chime when the install window's done, so you can walk off and still know. On by default, a switch in Settings, switching it on plays it once so you hear what you'll get. Not when you cancel the password box.
+
+| Source | What I took from it |
+|---|---|
+| [Zulip THIRDPARTY](https://github.com/zulip/zulip/blob/main/docs/THIRDPARTY) | `stairs` is Stefan Mertens' from Zulip's notification sounds, CC0, so it can go in a GPL package |
+| [pw-cat(1)](https://docs.pipewire.org/page_man_pw-cat_1.html) | `pw-play` plays what libsndfile plays, `--media-role=Notification` so it goes with your other notification sounds |
+| [pipewire-utils, Fedora 44](https://packages.fedoraproject.org/pkgs/pipewire/pipewire-utils/fedora-44.html) | where `pw-play` comes from on Fedora |
+| [paplay(1)](https://man.archlinux.org/man/paplay.1) | the fallback when there's no `pw-play` |
+| [QSoundEffect](https://doc.qt.io/qt-6/qsoundeffect.html) | Qt's own player is for wav, so not that |
+| [freedesktop sound naming](http://specifications.freedesktop.org/sound-naming/latest/) | no plain "complete" sound in the theme, so I ship my own file |
+
 ---
 
 <div align="center">
