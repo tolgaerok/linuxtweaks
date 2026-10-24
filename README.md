@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.87-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.76-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.10-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.11-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -483,7 +483,7 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 9. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
 10. **Usage hello.** Only if you said yes: once a week, from the tray, one small POST to my Cloudflare Worker, and one more when LinuxTweaks or the distro moves up that changes the week's hello. What went out is saved in your state folder for the Settings card
 
-Everything I read and leaned on to build it is on its own pages: **[Sources and references](SOURCES.md)**, split into [Fedora](SOURCES-FEDORA.md) and [Solus](SOURCES-SOLUS.md).
+Everything I read and leaned on to build it is on its own pages: **[Sources and references](SOURCES.md)**, split into [Fedora](SOURCES-FEDORA.md), [Solus](SOURCES-SOLUS.md) and [AerynOS](SOURCES-AERYNOS.md).
 
 ## 🛠️ Troubleshooting
 

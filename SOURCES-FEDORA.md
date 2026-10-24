@@ -6,7 +6,7 @@
 
 **Everything I read, borrowed ideas from and kept open in a tab while building LinuxTweaks for Fedora.**
 
-[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md)
+[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md)
 
 </div>
 
@@ -1072,6 +1072,6 @@ A little chime when the install window's done, so you can walk off and still kno
 
 <div align="center">
 
-[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [⬆ Back to top](#top)
+[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)
 
 </div>
