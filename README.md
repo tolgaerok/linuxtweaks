@@ -10,6 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.87-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.76-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.10-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -369,6 +370,17 @@ From then on it starts by itself when you log in. New versions come from **About
 
 The NVIDIA driver, codecs and the rest of your system stay the Solus way: from the Solus repo, and apps from outside through Flatpak, as [Solus recommends](https://help.getsol.us/docs/user/software/third-party/).
 
+### 🪨 AerynOS
+
+LinuxTweaks for AerynOS is a signed `.stone` in my GitHub folder, built with boulder from a `stone.yaml` like the [AerynOS recipes](https://github.com/AerynOS/recipes). The folder's a moss repo too, so moss installs it and pulls in what it needs:
+
+```bash
+sudo moss repo add linuxtweaks https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/STONE/AERYNOS/stone.index -p 10
+sudo moss install linuxtweaks-updater    # moss 0.26.10 and up: sudo moss pkg add linuxtweaks-updater
+```
+
+Every `.stone` has a `.asc` next to it, signed with the same key as the RPMs. New versions come from **About → Check for LinuxTweaks updates**, same as Solus, and one that isn't signed by me never gets installed. Old LinuxTweaks builds stay on your pc in `/var/lib/linuxtweaks-updater/repo-old`, so moss can still read and go back to your older states after an update.
+
 ### 📋 Installed? Uninstall? What's new?
 
 | | Fedora | Solus |
@@ -555,8 +567,8 @@ What's in swap wouldn't fit in your free RAM. Close a few big apps, or change it
 
 | | |
 |---|---|
-| **OS** | Fedora 44+ and Solus 4.9 |
-| **Packages** | RPM (dnf) and eopkg (built with solbuild) |
+| **OS** | Fedora 44+, Solus 4.9 and AerynOS |
+| **Packages** | RPM (dnf), eopkg (built with solbuild) and stone (built with boulder) |
 | **Desktop** | KDE Plasma 6 |
 | **Language** | Python (PyQt5) and Bash |
 | **Init** | systemd |
