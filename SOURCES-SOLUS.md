@@ -6,7 +6,7 @@
 
 **What I read to bring LinuxTweaks to Solus, and the Solus rules it sticks to.**
 
-[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md)
+[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md)
 
 </div>
 
@@ -334,6 +334,6 @@ A little chime when the install window's done, so you can walk off and still kno
 
 <div align="center">
 
-[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [⬆ Back to top](#top)
+[⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)
 
 </div>
