@@ -86,6 +86,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 - **Weekly maintenance, if you want it.** Cleans the package cache, trims the journal, runs SSD TRIM if your distro isn't already doing it
 - **Keep logs up to.** How much disk the system journal may take. 500 MB holds weeks, out of the box it can grow to 4 GB
 - **Quick reboot.** Plasma hangs on the way out sometimes and the reboot sits there 40s. On, it gets killed straight away
+- **Sound when updates finish.** A little chime when the install window's done, so you can walk off. On out of the box
 
 Updated somewhere else, a terminal or Discover? The tray watches the package database and checks again a few seconds after, so the dot goes green straight away. **Reboot required** goes as soon as you've rebooted, it doesn't wait for the next check.
 
