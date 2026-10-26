@@ -97,7 +97,7 @@ cd "$(mktemp -d)" && moss extract /path/to/linuxtweaks-updater-1.0.9-10-1-x86_64
 
 The check is split in two. A root unit does `moss repo update`, and my polkit rule lets you start just that unit. Then the tray runs `moss list sync` as you to see what's waiting. Installing is `sudo moss sync -u -y`, which refreshes the index first and does the lot in one new state.
 
-moss has no orphan list like eopkg did. Every sync is a new state instead, so the Kernels tab has a **States** card: go back to an older one, or tidy away everything past the newest 10. **Reboot needed** compares the state you booted with the one that's active now, because moss doesn't keep an install date per package. After an update the clean step runs `moss cache prune`, which only drops downloads no state uses any more.
+moss has no orphan list like eopkg did. Every sync is a new state instead, so the Kernels tab has a **States** card: go back to an older one, or tidy away everything past the newest 5. **Reboot needed** compares the state you booted with the one that's active now, because moss doesn't keep an install date per package. After an update the clean step runs `moss cache prune`, which only drops downloads no state uses any more.
 
 ### Try it yourself
 
