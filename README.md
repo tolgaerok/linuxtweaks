@@ -31,7 +31,7 @@
 
 It started as my update manager, because I was sick of hunting through different tools to check for updates. DNF here, Flatpak there. Then my tweak scripts moved in, one tab each. Now it's one place for all of it, and it just works.
 
-It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Underneath, Fedora gets dnf and an RPM, Solus gets eopkg and a proper Solus package built with solbuild. Where the two distros do things differently, the app does it their way.
+It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Underneath, Fedora gets dnf and an RPM, Solus gets eopkg and a proper Solus package built with solbuild. Where the two distros do things differently, the app does it their way..
 
 <div align="center">
 
