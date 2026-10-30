@@ -30,6 +30,7 @@ The **Try it yourself** boxes are safe to paste. They only read unless they say 
 - [What AerynOS does its own way](#-what-aerynos-does-its-own-way)
 - [Signed stones on GitHub](#-signed-stones-on-github)
 - [Quick reboot and the chime](#-quick-reboot-and-the-chime)
+- [Scrambled printing and the blank test page](#%EF%B8%8F-scrambled-printing-and-the-blank-test-page)
 - [Shared with Fedora](#-shared-with-fedora)
 
 ---
@@ -318,6 +319,21 @@ The chime is a little sound when the install window's done, so you can walk off 
 | [Zulip THIRDPARTY](https://github.com/zulip/zulip/blob/main/docs/THIRDPARTY) | `stairs` is Stefan Mertens' from Zulip, CC0, so it can go in a GPL package |
 | [pw-cat(1)](https://docs.pipewire.org/page_man_pw-cat_1.html) | `pw-play --media-role=Notification` so it goes with your other notification sounds |
 | [paplay(1)](https://man.archlinux.org/man/paplay.1) | The fallback when there's no `pw-play` |
+
+## 🖨️ Scrambled printing and the blank test page
+
+Not a LinuxTweaks thing, found it on my own box. Printing from wps and firefox came out as junk on a urf only printer, cos aeryn's ghostscript bins its own CMaps and uses poppler-data's, which has no Identity-H. The cups test page also lost its pictures, that's a libcupsfilters bannertopdf bug. Both sent upstream as [aerynOS/recipes#3049](https://github.com/aerynOS/recipes/pull/3049) and [#3050](https://github.com/aerynOS/recipes/pull/3050).
+
+| Source | What I took from it |
+|---|---|
+| [aerynOS ghostscript stone.yaml](https://github.com/aerynOS/recipes/blob/main/g/ghostscript/stone.yaml) | `rm -rf Resource/CMap` then a symlink to poppler's cMap, the cause |
+| [poppler-data 0.4.12](https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz) | No Identity file anywhere, cMap only has the Adobe-* folders |
+| [poppler CMap.cc](https://gitlab.freedesktop.org/poppler/poppler/-/blob/master/poppler/CMap.cc) | Poppler does Identity-H/V in code, so it never needed the file |
+| [ghostpdl Resource/CMap/Identity-H](https://github.com/ArtifexSoftware/ghostpdl/blob/master/Resource/CMap/Identity-H) | gs ships its own, keep it and it works |
+| [Arch PKGBUILD](https://gitlab.archlinux.org/archlinux/packaging/packages/ghostscript/-/blob/main/PKGBUILD) | Same rm + symlink, masked cos most queues send pdf |
+| [Solus package.yml](https://github.com/getsolus/packages/blob/main/packages/g/ghostscript/package.yml) | Same again |
+| [Fedora ghostscript.spec](https://src.fedoraproject.org/rpms/ghostscript/blob/rawhide/f/ghostscript.spec) | Swaps gs's cmaps one by one for adobe-mappings-cmap links, so Identity-H stays |
+| [libcupsfilters ce65eb7](https://github.com/OpenPrinting/libcupsfilters/commit/ce65eb7455b5dedb08943a6d966f12bc4eaf3caa) | bannertopdf keeps indirect page Resources, not in 2.2.1 or 2.1.2 yet |
 
 ## 🔗 Shared with Fedora
 
