@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.87
+Version:        8.2.88
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -101,7 +101,7 @@ install -Dm644 -t "$_app"/tray tray/*.py tray/%{name}-icon.png
 # the tray menu's own Nord icons
 install -Dm644 -t "$_app"/tray/icons tray/icons/*.svg
 chmod 755 "$_app"/tray/tray.py
-install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty bin/%{name}-wps-mask
+install -Dm755 -t "$_app"/bin bin/cleanup.sh bin/restart-tray.sh bin/%{name}-upgrade-helper bin/%{name}-set-scheduler bin/%{name}-memtune bin/%{name}-kernels bin/%{name}-journal bin/%{name}-tweaks bin/%{name}-gpu bin/%{name}-pty bin/%{name}-wps-mask bin/%{name}-self-update bin/%{name}-autoremove
 # the install window's root part and the polkit rule that asks for it in plain words
 install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/actions usr/share/polkit-1/actions/org.linuxtweaks.updater.policy
 # my signing key, so Check for LinuxTweaks updates can check a download from GitHub
@@ -323,6 +323,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Sat Oct 31 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.88-1
+- password box says what it's for now
+
 * Sat Oct 24 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.87-1
 - updates popup goes away once you click it
 
