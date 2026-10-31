@@ -564,6 +564,11 @@ Older versions of my updater used sudo rules with no password. That's gone. Now 
 | [polkit](https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html) | How actions and the password box work |
 | [pkexec](https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html) | Running one helper as root, after the password box |
 | [Arch Wiki: Polkit](https://wiki.archlinux.org/title/Polkit) | Writing the `.policy` file, with examples |
+| [pkexec.c](https://github.com/polkit-org/polkit/blob/main/src/programs/pkexec.c) | How pkexec picks the action, it takes the first one with the right path |
+| [polkitbackendactionpool.c](https://github.com/polkit-org/polkit/blob/main/src/polkitbackend/polkitbackendactionpool.c) | Why two actions on one helper is luck: they come out of a hash table, no set order |
+| [polkitbackendinteractiveauthority.c](https://github.com/polkit-org/polkit/blob/main/src/polkitbackend/polkitbackendinteractiveauthority.c) | auth_admin_keep is remembered per action, so a new action means a new password box |
+
+The password box says what it's for. polkit picks the box by the helper's path, so updating LinuxTweaks itself, removing packages nothing needs and (AerynOS) tidying or going back a state each got their own little helper. They just hand the job to the upgrade helper. An update still runs on one action, so it only asks once.
 
 Each helper only does its one job and checks everything it's handed. The Drives helper won't write a rule unless it matches exactly what it expects:
 
