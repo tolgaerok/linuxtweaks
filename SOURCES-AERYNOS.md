@@ -335,6 +335,30 @@ Not a LinuxTweaks thing, found it on my own box. Printing from wps and firefox c
 | [Fedora ghostscript.spec](https://src.fedoraproject.org/rpms/ghostscript/blob/rawhide/f/ghostscript.spec) | Swaps gs's cmaps one by one for adobe-mappings-cmap links, so Identity-H stays |
 | [libcupsfilters ce65eb7](https://github.com/OpenPrinting/libcupsfilters/commit/ce65eb7455b5dedb08943a6d966f12bc4eaf3caa) | bannertopdf keeps indirect page Resources, not in 2.2.1 or 2.1.2 yet |
 
+## 📡 Samba share that shows up on the lan
+
+Not a LinuxTweaks thing either, my own box. aeryn's samba is a client only out of the box: no smb/nmb units, the built in smb.conf wants cups that isn't built, and avahi only put out kdeconnect, so nothing could see the pc. My script adds its own smb.conf in /etc/samba, its own units, an avahi advert and wsdd for windows.
+
+| Source | What I took from it |
+|---|---|
+| [aerynOS samba recipe](https://github.com/aerynOS/recipes/tree/main/s/samba) | Config path is /usr/share/defaults/samba, no cups, no units, so the units pass `--configfile` |
+| [aerynOS/recipes#640](https://github.com/aerynOS/recipes/pull/640) | Units dropped on purpose |
+| [aerynOS/recipes#634](https://github.com/aerynOS/recipes/issues/634) | Still open, stock smb.conf breaks testparm without cups |
+| [aerynOS avahi recipe](https://github.com/aerynOS/recipes/tree/main/a/avahi) | Stateless patch only falls back for the .conf, services only read from /etc/avahi/services |
+| [smb.conf(5)](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) | netbios name 15 chars max, map to guest never, printing options |
+| [smbd(8)](https://www.samba.org/samba/docs/current/man-html/smbd.8.html) | `--foreground --no-process-group` for systemd, `--configfile` |
+| [samba smb.service.in](https://raw.githubusercontent.com/samba-team/samba/master/packaging/systemd/smb.service.in) | Upstream unit, Type=notify, copied the shape |
+| [avahi.service(5)](https://linux.die.net/man/5/avahi.service) | Format of the _smb._tcp advert |
+| [wsdd v0.9](https://github.com/christgau/wsdd) | Windows 10/11 network view, pinned to v0.9 with a sha256 |
+| [wsdd.service](https://raw.githubusercontent.com/christgau/wsdd/master/etc/systemd/wsdd.service) | DynamicUser, chroot to /run/wsdd |
+| [resolved.conf(5)](https://www.freedesktop.org/software/systemd/man/latest/resolved.conf.html) | `MulticastDNS=resolve`, resolved still looks up .local but leaves answering to avahi |
+| [hostnamectl(1)](https://www.freedesktop.org/software/systemd/man/latest/hostnamectl.html) and [hostname(5)](https://www.freedesktop.org/software/systemd/man/latest/hostname.html) | Static name lower case, pretty name keeps the caps |
+| [net(8)](https://www.samba.org/samba/docs/current/man-html/net.8.html) | `net usershare add/delete`, what dolphin's right click share runs |
+| [Dolphin service menus](https://develop.kde.org/docs/apps/dolphin/service-menus/) | ~/.local/share/kio/servicemenus, executable, inode/directory |
+| [nm-settings-nmcli(5)](https://networkmanager.dev/docs/api/latest/nm-settings-nmcli.html) and [keyfile](https://networkmanager.dev/docs/api/latest/nm-settings-keyfile.html) | Empty permissions = every user, psk-flags 0 = NM keeps the password, so logging out doesn't drop the wifi |
+| [NetworkManager-dispatcher(8)](https://networkmanager.dev/docs/api/latest/NetworkManager-dispatcher.html) | NM waits for pre-down scripts, so the shares drop while the wifi's still up |
+| [sshfs](https://github.com/libfuse/sshfs/blob/master/sshfs.rst) and [ssh_config ConnectTimeout](https://man.openbsd.org/ssh_config#ConnectTimeout) | ssh options pass through -o, ConnectTimeout=5 so a reconnect with no network gives up quick |
+
 ## 🔗 Shared with Fedora
 
 These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
