@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.89-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.78-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.15-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.16-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -137,7 +137,7 @@ Then type a program's name, like `btop`:
 - **Try without installing** gets it for one terminal only, tells you when it's ready, and it's gone again when you close that terminal
 - **🔍 Look it up** opens the NixOS package search in a new browser window, for when you're not sure of the name
 
-**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**. The tab refreshes by itself when Nix installs, or a program goes in or out. Save `~/default.nix` and it builds straight away, with a line saying it's ready or what's wrong. A **nixpkgs channel** chip, and **🔧 Fix Nix** shows up when part of Nix is missing. Once Nix is in, that terminal closes and a new one opens straight in nix-shell, Nix works there straight away.
+**Installed for good** lists what you kept with its version and a **Remove** button, plus **Update them** and **Free up space**. Nix and glibc-locales have no Remove, Nix needs them. **🐚 nix-shell** shows what's in your `~/default.nix`, a set you use together, with **Edit default.nix** and **Open nix-shell**. The tab refreshes by itself when Nix installs, or a program goes in or out. Save `~/default.nix` and it builds straight away, with a line saying it's ready or what's wrong. A **nixpkgs channel** chip, and **🔧 Fix Nix** shows up when part of Nix is missing. Once Nix is in, that terminal closes and a new one opens straight in nix-shell, Nix works there straight away. On AerynOS it goes in `~/.bashrc.d` and Plasma's env instead of `.bashrc`, so ssh, a tty, KRunner and the app menu see Nix too, after you log in again.
 
 ### 🧩 Extras
 

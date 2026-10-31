@@ -359,6 +359,19 @@ Not a LinuxTweaks thing either, my own box. aeryn's samba is a client only out o
 | [NetworkManager-dispatcher(8)](https://networkmanager.dev/docs/api/latest/NetworkManager-dispatcher.html) | NM waits for pre-down scripts, so the shares drop while the wifi's still up |
 | [sshfs](https://github.com/libfuse/sshfs/blob/master/sshfs.rst) and [ssh_config ConnectTimeout](https://man.openbsd.org/ssh_config#ConnectTimeout) | ssh options pass through -o, ConnectTimeout=5 so a reconnect with no network gives up quick |
 
+## ❄️ Nix in login shells and KRunner (31 Oct)
+
+Nix only worked in konsole on aeryn. aeryn's bash never reads ~/.bashrc for a login (tty, ssh, `bash -l`) and plasma doesn't read it at all, so KRunner and the app menu never saw Nix. Install Nix and Fix Nix put the lines in `~/.bashrc.d/nix.sh` and `~/.config/plasma-workspace/env/nix.sh` now, and take the old ones out of ~/.bashrc.
+
+| Source | What I took from it |
+|---|---|
+| [aerynOS bash recipe](https://github.com/aerynOS/recipes/tree/main/b/bash) | stateless.patch points bash at /usr/share/defaults/profile and bashrc, both source aeryn-stateless-shell-conf.sh, that reads ~/.bashrc.d/*sh for every shell and never ~/.bashrc. No skel, no ~/.bash_profile |
+| [Bash Startup Files](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html) | A login shell only reads ~/.bashrc if ~/.bash_profile tells it to |
+| [install-nix-from-closure.sh](https://raw.githubusercontent.com/NixOS/nix/2.24-maintenance/scripts/install-nix-from-closure.sh) | Nix's own installer puts nix.sh in ~/.bash_profile, never .bashrc |
+| [nix-profile.sh.in](https://raw.githubusercontent.com/NixOS/nix/master/scripts/nix-profile.sh.in) | nix.sh sets PATH, NIX_PROFILES and adds ~/.nix-profile/share to XDG_DATA_DIRS, that's what the app menu needs |
+| [Session Environment Variables](https://userbase.kde.org/Session_Environment_Variables) and [startplasma.cpp](https://invent.kde.org/plasma/plasma-workspace/-/blob/master/startkde/startplasma.cpp) | Plasma runs ~/.config/plasma-workspace/env/*.sh through sh at login. aeryn's own ksshaskpass uses the same spot |
+| [environment.d(5)](https://www.freedesktop.org/software/systemd/man/latest/environment.d.html) | Not used, it doesn't say $HOME works there |
+
 ## 🔗 Shared with Fedora
 
 These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
