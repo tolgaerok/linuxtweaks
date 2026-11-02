@@ -397,3 +397,18 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [⬆ Back to top](#top)
 
 </div>
+
+## 📡 Drop network shares before the network goes (2 Nov)
+
+Network tab switch, same on Fedora and Solus. Checked on the AerynOS desktop (NetworkManager 1.58.1-20, systemd 261):
+
+- `NetworkManager-dispatcher.service` is on. 97-default.preset enables it, it sorts before 99-default-disable's `disable *`
+- NM reads `/etc/NetworkManager/dispatcher.d/pre-down.d/`, `/usr/lib/NetworkManager/dispatcher.d/pre-down.d/` ships empty. My hand made hook there survived a moss sync
+- recipes networkmanager/stone.yaml has no dispatcher option
+- plasma-plasmashell.service ships `TimeoutSec=40sec`, that's the 40s hang (Quick reboot already handles it)
+
+| Source | What it says |
+|---|---|
+| [NetworkManager-dispatcher(8)](https://man.archlinux.org/man/NetworkManager-dispatcher.8) | pre-down waits for the scripts, root owned, not group/world writable. Not sent on a forced drop |
+| [sshfs(1)](https://man.archlinux.org/man/sshfs.1) | No timeouts by default, lazy umount doesn't free stuck reads |
+| [plasma-plasmashell.service.in](https://invent.kde.org/plasma/plasma-workspace/-/raw/master/shell/plasma-plasmashell.service.in) | `TimeoutSec=40sec` |

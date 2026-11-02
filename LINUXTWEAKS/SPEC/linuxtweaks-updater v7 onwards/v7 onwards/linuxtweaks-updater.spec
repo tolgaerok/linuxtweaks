@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.89
+Version:        8.2.90
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -323,6 +323,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Nov 02 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.90-1
+- network tab can drop shares before the wifi goes, no more hung shutdown
+- sshfs gives up in 6s when the wifi drops
+- new stuff gets a purple "new" pill
+
 * Sat Oct 31 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.89-1
 - laptop BIOS errors at boot don't count as errors any more
 

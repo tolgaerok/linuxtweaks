@@ -807,6 +807,11 @@ cat /sys/kernel/mm/lru_gen/min_ttl_ms            # 1000 with No freeze on, 0 wit
 | [Arch Wiki: Advanced traffic control](https://wiki.archlinux.org/title/Advanced_traffic_control) | `tc` and qdiscs in plain words |
 | [NetworkManager dispatcher](https://networkmanager.dev/docs/api/latest/NetworkManager-dispatcher.html) | Running CAKE each time a connection comes up |
 | [nmcli settings](https://networkmanager.dev/docs/api/latest/nm-settings-nmcli.html) | `wifi.powersave` and its values |
+| [NetworkManager-dispatcher(8), pre-down](https://man.archlinux.org/man/NetworkManager-dispatcher.8) | NM waits for pre-down.d scripts before it takes the link down, so the shares go first. Not sent when the wifi just drops |
+| [systemd.automount(5)](https://man.archlinux.org/man/systemd.automount.5) | Stopping the automount with its mount so nothing remounts it |
+| [sshfs(1)](https://man.archlinux.org/man/sshfs.1) | No timeouts by default, ssh options go in with -o. A lazy umount doesn't free reads already stuck |
+| [ssh_config(5)](https://man.openbsd.org/ssh_config) | `ConnectTimeout`, `ServerAliveInterval`, `ServerAliveCountMax` |
+| [Arch forum: plasmashell stop job 40s](https://bbs.archlinux.org/viewtopic.php?id=305159) | The "stop job is running for user 1000" hang |
 
 The dispatcher script puts CAKE on a connection when it comes up. Unlimited, so it keeps flows fair and never caps your speed:
 
@@ -825,6 +830,13 @@ iw dev wlp3s0 get power_save               # Wi-Fi power saving on or off
 ```
 
 Swap your Wi-Fi card's name in for `wlp3s0`, `ip link` lists them.
+
+Drop network shares: a pre-down dispatcher script aborts sshfs, stops the automounts and their mounts, and lazy drops whatever's left while the network's still up. Up starts the same automounts again. It does nothing if another card is still connected. sshfs lines in fstab get `ConnectTimeout=3,ServerAliveInterval=3,ServerAliveCountMax=2`, so a wifi that just drops gives up in about 6s.
+
+```bash
+journalctl -t linuxtweaks-netmounts        # what it dropped and put back
+findmnt --fstab -t sshfs,fuse.sshfs,cifs,smb3,nfs,nfs4   # the shares it looks after
+```
 
 ## 🐧 Kernels
 

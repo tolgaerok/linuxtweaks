@@ -8,7 +8,7 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.89-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Fedora](https://img.shields.io/badge/Version-8.2.90-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.78-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![AerynOS](https://img.shields.io/badge/AerynOS-1.0.17-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
@@ -64,7 +64,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 | 🫟 **Updates** | DNF (Fedora) or eopkg (Solus) and Flatpak in one place, security fixes marked, installs when you say so |
 | 💽 **Drives** | I/O scheduler and read-ahead per drive, kept after a reboot |
 | 🧠 **Memory** | zram, swappiness and a few desktop tweaks, explained in plain words |
-| 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6 |
+| 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6, network shares |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
 | 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
 | 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox. On Fedora, LumineCapture for screenshots with OCR too |
@@ -101,7 +101,7 @@ Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression a
 
 ### 🌐 Network
 
-What your connection uses right now, and switches for faster TCP (BBR), bigger buffers, CAKE on Wi-Fi and wired, Wi-Fi power saving off and IPv6 off. Every switch says what it does.
+What your connection uses right now, and switches for faster TCP (BBR), bigger buffers, CAKE on Wi-Fi and wired, Wi-Fi power saving off and IPv6 off. Drop network shares before the network goes, so logout and shutdown don't hang on an sshfs, samba or nfs share. Every switch says what it does.
 
 ### 🐧 Kernels
 
@@ -401,7 +401,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **🫟 Updates** | What's waiting with Install updates…, See them and Check now. Reboot needed or not. 🧹 Not needed any more when there's something to tidy: packages nothing needs, Flatpak runtimes nothing uses and old pinned ones, with Remove them. Settings: check every, popups, weekly maintenance, keep logs up to, share anonymous usage, and the 📊 card with what went out last. Closing Available updates brings you back here |
 | **💽 Drives** | A card per drive: scheduler and read-ahead dropdowns, 🔒 *kept at boot* when your pick is saved. Scheduler info explains each one |
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
-| **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving and IPv6 |
+| **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving, IPv6 and network shares |
 | **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
 | **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
 | **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box. On Fedora, Apps like LumineCapture |
@@ -456,6 +456,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | Network and Desktop tweaks | `/etc/sysctl.d/99-zz-desktop-performance.conf` |
 | No freeze when RAM runs out | `/etc/tmpfiles.d/linuxtweaks-mglru.conf` |
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
+| Drop network shares | `/etc/NetworkManager/dispatcher.d/50-linuxtweaks-netmounts` (and its link in `pre-down.d`), short timeouts on sshfs lines in `/etc/fstab`, your old one is `/etc/fstab.bak-linuxtweaks` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |
 | Keep logs up to | `/etc/systemd/journald.conf.d/10-size.conf` |
 | Quick reboot | `~/.config/systemd/user/plasma-plasmashell.service.d/10-stop-timeout.conf`, delete it and run `systemctl --user daemon-reload` |
