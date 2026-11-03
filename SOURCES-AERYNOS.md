@@ -24,6 +24,7 @@ The **Try it yourself** boxes are safe to paste. They only read unless they say 
 - [Packaging: stone.yaml and boulder](#-packaging-stoneyaml-and-boulder)
 - [moss: updates and states](#%EF%B8%8F-moss-updates-and-states)
 - [The new moss commands (0.26.10)](#-the-new-moss-commands-02610)
+- [Quick install and the volatile repo](#-quick-install-and-the-volatile-repo)
 - [Old states that won't read](#-old-states-that-wont-read)
 - [My own moss repo on your pc](#-my-own-moss-repo-on-your-pc)
 - [Kernels and the boot menu](#-kernels-and-the-boot-menu)
@@ -41,7 +42,7 @@ The **Try it yourself** boxes are safe to paste. They only read unless they say 
 - **`/usr` is the OS, `/etc` is yours.** AerynOS is [stateless](https://aerynos.com/aerynos/philosophy/): the app lives under `/usr`, its defaults go in `/usr/share/defaults` like [AerynOS says](https://aerynos.com/users/system-management/configuration-locations/), and the background check gets switched on with a systemd preset, not by writing into `/etc`.
 - **Every change is a moss state.** Nothing I do gets around that. Updates, removes and kernel changes all go through moss so you can always go back.
 - **Every remove does a dry run first.** `moss remove kalk` wanted to take 281 packages with it because the Plasma pkgset needs kalk. So LinuxTweaks only goes ahead when the dry run takes just what you asked for.
-- **It stays my own package.** The AerynOS recipes repo doesn't take anything made with AI tools ([their policy](https://github.com/AerynOS/recipes/blob/main/PACKAGING_POLICY.md)), so this never goes to them as a PR. It lives in my GitHub folder as a signed stone.
+- **It stays my own package.** It never goes to the AerynOS recipes repo as a PR, it lives in my GitHub folder as a signed stone.
 
 ## 📦 Packaging: stone.yaml and boulder
 
@@ -147,6 +148,24 @@ Which moss have you got?
 ```bash
 moss version
 moss pkg --help >/dev/null 2>&1 && echo "new moss" || echo "old moss"
+```
+
+## 📥 Quick install and the volatile repo
+
+`LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh` asks if you want volatile, adds my repo and installs it, with `pkg add` or `install` depending on your moss. Volatile only gets asked on the new moss, the old one has no `--root-index`. Some 0.26.10 builds won't `repo add` without `-c`, so it always passes one.
+
+| Source | What I took from it |
+|---|---|
+| [cli/repo.rs](https://github.com/AerynOS/os-tools/blob/main/moss/src/cli/repo.rs) | `--root-index version=stream/volatile`, `-p` is 0 if you leave it out, higher wins |
+| [repository/manager.rs](https://github.com/AerynOS/os-tools/blob/main/moss/src/repository/manager.rs) | channel `main` is the default, the old `.../stream/volatile/x86_64/stone.index` url still maps to the same thing |
+| [cli/sync.rs](https://github.com/AerynOS/os-tools/blob/main/moss/src/cli/sync.rs) | sync takes the highest priority repo, so volatile at 10 beats unstable at 0, `-u` reads the new index first |
+| [March 2026 update](https://aerynos.com/blog/2026/03/31/march-2026-project-update/) | volatile moved onto the CDN |
+
+### Try it yourself
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh | bash
+moss repo list    # volatile [10] if you said y, linuxtweaks [10]
 ```
 
 ## 🧱 Old states that won't read

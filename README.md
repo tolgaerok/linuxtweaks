@@ -372,10 +372,18 @@ The NVIDIA driver, codecs and the rest of your system stay the Solus way: from t
 
 ### 🪨 AerynOS
 
-LinuxTweaks for AerynOS is a signed `.stone` in my GitHub folder, built with boulder from a `stone.yaml` like the [AerynOS recipes](https://github.com/AerynOS/recipes). The folder's a moss repo too, so moss installs it and pulls in what it needs:
+LinuxTweaks for AerynOS is a signed `.stone` in my GitHub folder, built with boulder from a `stone.yaml` like the [AerynOS recipes](https://github.com/AerynOS/recipes). The folder's a moss repo too, so moss installs it and pulls in what it needs.
+
+Quick install, one line. It asks if you want the volatile repo too, then adds mine and installs it:
 
 ```bash
-sudo moss repo add linuxtweaks https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/STONE/AERYNOS/stone.index -p 10
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh | bash
+```
+
+Or by hand:
+
+```bash
+sudo moss repo add linuxtweaks https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/STONE/AERYNOS/stone.index -p 10 -c linuxtweaks
 sudo moss install linuxtweaks-updater    # moss 0.26.10 and up: sudo moss pkg add linuxtweaks-updater
 ```
 
