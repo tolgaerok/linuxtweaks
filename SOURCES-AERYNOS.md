@@ -101,6 +101,8 @@ The check is split in two. A root unit does `moss repo update`, and my polkit ru
 
 moss has no orphan list like eopkg did. Every sync is a new state instead, so the Kernels tab has a **States** card: go back to an older one, or tidy away everything past the newest 5. **Reboot needed** compares the state you booted with the one that's active now, because moss doesn't keep an install date per package. After an update the clean step runs `moss cache prune`, which only drops downloads no state uses any more.
 
+Two things checked for the state names: moss never reuses a state number once it's gone, so a name can't land on a new state. The state table uses SQLite AUTOINCREMENT, source [moss/src/db/state/mod.rs](https://raw.githubusercontent.com/AerynOS/os-tools/main/moss/src/db/state/mod.rs) (checked on main, not the 0.26.10 tag). And `moss state list` doesn't always show every state in the database, so the tray only drops names for states it saw before a tidy and that are gone after.
+
 ### Try it yourself
 
 ```bash

@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.90-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.79-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.18-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.19-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -108,6 +108,8 @@ What your connection uses right now, and switches for faster TCP (BBR), bigger b
 Every installed kernel, which one you're running and which one boots by default. Make another one the default and remove old ones safely. On Fedora that's grubby, and you can pick which new kernels take over when they install, so a Fedora kernel update doesn't push out your CachyOS one. On Solus it's clr-boot-manager with its `current` and `lts` kernels.
 
 Under them, **⚡ CPU scheduler (sched_ext)**: pick an scx scheduler and a mode from dropdowns, like a drive's scheduler in Drives. Each one says what it's good for, ★ says what suits this PC (lavd on a laptop, flash on a desktop), and **Keep it after a reboot** decides if it's just for now or saved. **flash** in auto is the Solus default. It needs `scx-scheds` and `scx-tools`. Solus has them, on Fedora they come from the CachyOS addons COPR (`sudo dnf copr enable bieszczaders/kernel-cachyos-addons`). From my scx-picker.sh.
+
+On aerynOS, the **States** card lists your moss states. **Name it** gives a state a name you'll remember (for example "before the printing fix"), and the name shows on its row. Names are kept in `~/.config/aeryn-states/labels.txt`, moss never sees them. When **Tidy old states** removes states, their names go too.
 
 ### 🎮 GPU (Fedora only)
 
