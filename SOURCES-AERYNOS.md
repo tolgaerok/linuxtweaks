@@ -436,7 +436,7 @@ Network tab switch, same on Fedora and Solus. Checked on the AerynOS desktop (Ne
 
 ## 📊 Disk space and 📶 Traffic tabs (6 Nov)
 
-Two new tabs, AerynOS first. **Disk space** runs `duf -json` as you and shows each real disk with a bar, network shares behind a switch. duf 0.9.1's `-json` ignores the paths you give it and stats every mount, so it runs in the background and gets 10s in case a share is dead. **Traffic** runs `bandwhich --raw` for 10s and adds it up per app, per address and per connection. bandwhich sniffs packets so it needs root, `linuxtweaks-updater-traffic@<interface>.service` runs it and my polkit rule lets whoever sits at the desktop start that one unit with no password. Both come in as rundeps, moss has them.
+Two new tabs, AerynOS first. **Disk space** runs `duf -json` as you and shows each real disk with a bar, network shares behind a switch. duf 0.9.1's `-json` ignores the paths you give it and stats every mount, so it runs in the background and gets 10s in case a share is dead. **Traffic** is live: `linuxtweaks-updater-traffic@<interface>.service` runs `bandwhich --raw`, which writes a block every second, and the tab shows the last 3 seconds per app, per address and per connection. bandwhich sniffs packets so it needs root, my polkit rule lets whoever sits at the desktop start and stop that one unit with no password. Leaving the tab stops it, and it gives up by itself after 10 minutes. Both come in as rundeps, moss has them.
 
 | Source | What it says |
 |---|---|

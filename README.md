@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.90-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.79-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.20-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.21-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -111,7 +111,7 @@ Under them, **⚡ CPU scheduler (sched_ext)**: pick an scx scheduler and a mode 
 
 On aerynOS, the **States** card lists your moss states. **Name it** gives a state a name you'll remember (for example "before the printing fix"), and the name shows on its row. Names are kept in `~/.config/aeryn-states/labels.txt`, moss never sees them. When **Tidy old states** removes states, their names go too.
 
-On aerynOS there are two more tabs. **📊 Disk space** shows how full each disk is, from duf, with a bar that goes yellow past 75% and red past 90%. Network shares show too if you flick **Look at shares too** on. **📶 Traffic** watches the network for 10 seconds with bandwhich and shows which app sent and got what, who it was talking to, and every connection if you want them. No password, it runs as root through my helper.
+On aerynOS there are two more tabs. **📊 Disk space** shows how full each disk is, from duf, with a bar that goes yellow past 75% and red past 90%. Network shares show too if you flick **Look at shares too** on. **📶 Traffic** is live, from bandwhich: which app is sending and getting what right now, who it talks to, and every connection if you want them. It stops when you leave the tab. No password, it runs as root through my helper.
 
 ### 🎮 GPU (Fedora only)
 
