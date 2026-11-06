@@ -433,3 +433,17 @@ Network tab switch, same on Fedora and Solus. Checked on the AerynOS desktop (Ne
 | [NetworkManager-dispatcher(8)](https://man.archlinux.org/man/NetworkManager-dispatcher.8) | pre-down waits for the scripts, root owned, not group/world writable. Not sent on a forced drop |
 | [sshfs(1)](https://man.archlinux.org/man/sshfs.1) | No timeouts by default, lazy umount doesn't free stuck reads |
 | [plasma-plasmashell.service.in](https://invent.kde.org/plasma/plasma-workspace/-/raw/master/shell/plasma-plasmashell.service.in) | `TimeoutSec=40sec` |
+
+## 📊 Disk space and 📶 Traffic tabs (6 Nov)
+
+Two new tabs, AerynOS first. **Disk space** runs `duf -json` as you and shows each real disk with a bar, network shares behind a switch. duf 0.9.1's `-json` ignores the paths you give it and stats every mount, so it runs in the background and gets 10s in case a share is dead. **Traffic** runs `bandwhich --raw` for 10s and adds it up per app, per address and per connection. bandwhich sniffs packets so it needs root, `linuxtweaks-updater-traffic@<interface>.service` runs it and my polkit rule lets whoever sits at the desktop start that one unit with no password. Both come in as rundeps, moss has them.
+
+| Source | What it says |
+|---|---|
+| [duf](https://github.com/muesli/duf) | `-json` output |
+| [duf mounts.go](https://github.com/muesli/duf/blob/master/mounts.go) | the json fields: mount_point, fs_type, device, total, free, used, inodes |
+| [bandwhich](https://github.com/imsnif/bandwhich) | needs root or caps to sniff, `--raw` for machine friendly output |
+| [bandwhich raw mode tests, v0.23.1](https://github.com/imsnif/bandwhich/tree/v0.23.1/src/tests/cases/snapshots) | the `process:`, `connection:` and `remote_address:` lines, one `Refreshing:` block a second |
+| [systemd.exec(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html) | `RuntimeDirectory=` and `RuntimeDirectoryPreserve=` for the file in /run |
+| [polkit(8)](https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html) | `org.freedesktop.systemd1.manage-units` and `action.lookup("unit")` in a rule |
+| [findmnt(8)](https://man.archlinux.org/man/findmnt.8) | `--real` for real filesystems, `-t` for the share types |
