@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.91
+Version:        8.2.92
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -332,6 +332,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Nov 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.92-1
+- Traffic tab gets bandwhich for you, one click
+
 * Fri Nov 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.91-1
 - new Disk space and live Traffic tabs, from duf and bandwhich
 

@@ -1100,7 +1100,7 @@ Same two tabs as AerynOS. **Disk space** runs `duf -json` as you and shows each 
 | [polkit(8)](https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html) | `org.freedesktop.systemd1.manage-units` and `action.lookup("unit")` in a rule |
 | [duf in Fedora 44](https://mdapi.fedoraproject.org/f44/pkg/duf) | `duf` 0.9.1-3.fc44 is in Fedora, so it's a Requires |
 | [packages.fedoraproject.org bandwhich](https://packages.fedoraproject.org/pkgs/bandwhich/) | 404, bandwhich isn't in Fedora. It's a Recommends, so it comes along when a repo has it |
-| [Terra](https://github.com/terrapkg/packages/blob/frawhide/README.md) | Terra 44 has bandwhich 0.23.1-1.fc44, the tab shows their install line. Third party, LinuxTweaks never adds it for you |
+| [Terra](https://github.com/terrapkg/packages/blob/frawhide/README.md) | Terra 44 has bandwhich 0.23.1-1.fc44. **⬇ Get bandwhich** runs their own install line (`--nogpgcheck` only for terra-release, that brings their key), then `dnf install -y bandwhich`, through my tweaks helper and one password. Only when you press it |
 | [atim/bandwhich COPR](https://copr.fedorainfracloud.org/coprs/atim/bandwhich/) | no good, its last builds failed and nothing's built since Oct 2024 |
 
 ---
