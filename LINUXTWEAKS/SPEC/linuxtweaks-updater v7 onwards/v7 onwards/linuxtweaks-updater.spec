@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.90
+Version:        8.2.91
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -33,6 +33,10 @@ Requires:       procps-ng
 Requires:       polkit
 # the font for the live output and logs
 Requires:       fira-code-fonts
+# the Disk space tab
+Requires:       duf
+# the Traffic tab. not in fedora, only terra has it, so weak: there when you've got terra
+Recommends:     bandwhich
 # what my install/uninstall scripts need while they run
 Requires(post):  systemd
 Requires(post):  coreutils
@@ -120,6 +124,9 @@ install -Dm644 -t %{buildroot}%{_userunitdir} usr/lib/systemd/user/%{name}-*
 
 # --- weekly maintenance, a system timer (runs as root, no sudo) -------------
 install -Dm644 -t %{buildroot}%{_unitdir} usr/lib/systemd/system/%{name}-maintenance.*
+# the Traffic tab's live bandwhich, root, and the polkit rule that starts and stops it with no password
+install -Dm644 -t %{buildroot}%{_unitdir} "usr/lib/systemd/system/%{name}-traffic@.service"
+install -Dm644 -t %{buildroot}%{_datadir}/polkit-1/rules.d usr/share/polkit-1/rules.d/50-%{name}.rules
 
 # --- /var/lib: linger list + last maintenance result ----------------------
 install -dm755 %{buildroot}%{_sharedstatedir}/%{name}
@@ -270,6 +277,8 @@ done
 %{_userunitdir}/%{name}-*
 %{_unitdir}/%{name}-maintenance.service
 %{_unitdir}/%{name}-maintenance.timer
+%{_unitdir}/%{name}-traffic@.service
+%{_datadir}/polkit-1/rules.d/50-%{name}.rules
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/polkit-1/actions/org.linuxtweaks.updater.policy
 %{_datadir}/%{name}/
@@ -323,6 +332,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Nov 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.91-1
+- new Disk space and live Traffic tabs, from duf and bandwhich
+
 * Mon Nov 02 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.90-1
 - network tab can drop shares before the wifi goes, no more hung shutdown
 - sshfs gives up in 6s when the wifi drops

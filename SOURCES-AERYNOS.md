@@ -445,5 +445,6 @@ Two new tabs, AerynOS first. **Disk space** runs `duf -json` as you and shows ea
 | [bandwhich](https://github.com/imsnif/bandwhich) | needs root or caps to sniff, `--raw` for machine friendly output |
 | [bandwhich raw mode tests, v0.23.1](https://github.com/imsnif/bandwhich/tree/v0.23.1/src/tests/cases/snapshots) | the `process:`, `connection:` and `remote_address:` lines, one `Refreshing:` block a second |
 | [systemd.exec(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html) | `RuntimeDirectory=` and `RuntimeDirectoryPreserve=` for the file in /run |
+| [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | `SuccessExitStatus=`, bandwhich gives 130 on SIGINT and that's the normal stop |
 | [polkit(8)](https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html) | `org.freedesktop.systemd1.manage-units` and `action.lookup("unit")` in a rule |
 | [findmnt(8)](https://man.archlinux.org/man/findmnt.8) | `--real` for real filesystems, `-t` for the share types |

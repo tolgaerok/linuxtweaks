@@ -330,6 +330,21 @@ A little chime when the install window's done, so you can walk off and still kno
 | [QSoundEffect](https://doc.qt.io/qt-6/qsoundeffect.html) | Qt's own player is for wav, so not that |
 | [freedesktop sound naming](http://specifications.freedesktop.org/sound-naming/latest/) | no plain "complete" sound in the theme, so I ship my own file |
 
+
+## 📊 Disk space and 📶 Traffic tabs (6 Nov)
+
+Same two tabs as AerynOS. **Disk space** runs `duf -json` as you and shows each real disk with a bar, network shares behind a switch. duf 0.9.1's `-json` stats every mount whatever paths you give it, so it runs in the background with 10s in case a share is dead. **Traffic** is live: `linuxtweaks-updater-traffic@<interface>.service` runs `bandwhich --raw` as root, the tab shows the last 3 seconds per app, per address and per connection, and my polkit rule lets whoever sits at the desktop start and stop that one unit with no password. Leaving the tab stops it, 10 minutes is the most it runs.
+
+| Source | What I took from it |
+|---|---|
+| [duf](https://github.com/muesli/duf) | `-json` output, the fields are in [mounts.go](https://github.com/muesli/duf/blob/master/mounts.go) |
+| [bandwhich](https://github.com/imsnif/bandwhich) | needs root to sniff, `--raw` for machine friendly output |
+| [bandwhich raw mode tests, v0.23.1](https://github.com/imsnif/bandwhich/tree/v0.23.1/src/tests/cases/snapshots) | the `process:`, `connection:` and `remote_address:` lines, a `Refreshing:` block a second |
+| [systemd.exec(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html) | `RuntimeDirectory=` and `RuntimeDirectoryPreserve=` for the file in /run |
+| [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | `SuccessExitStatus=`, bandwhich gives 130 on SIGINT and that's the normal stop |
+| [polkit(8)](https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html) | `org.freedesktop.systemd1.manage-units` and `action.lookup("unit")` in a rule |
+| [getsolus/packages](https://github.com/getsolus/packages/tree/main/packages) | `duf` 0.9.1 and `bandwhich` 0.23.1 are in the Solus repo, both are rundeps |
+
 ---
 
 <div align="center">
