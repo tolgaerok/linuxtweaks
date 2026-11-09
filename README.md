@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.92-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.81-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.22-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.23-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -63,7 +63,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 |---|---|
 | 🫟 **Updates** | DNF (Fedora) or eopkg (Solus) and Flatpak in one place, security fixes marked, installs when you say so |
 | 💽 **Drives** | I/O scheduler and read-ahead per drive, kept after a reboot |
-| 🧠 **Memory** | zram, swappiness and a few desktop tweaks, explained in plain words |
+| 🧠 **Memory** | zram, swappiness, a few desktop tweaks and Browser in RAM, explained in plain words |
 | 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6, network shares |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
 | 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
@@ -97,7 +97,7 @@ Every real drive on a card, with its I/O scheduler and read-ahead and a dropdown
 
 ### 🧠 Memory
 
-Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, a safety net for kernel crashes, and **No freeze when RAM runs out**, which keeps what you used in the last second in RAM so a full RAM closes the biggest app instead of locking up the PC.
+Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, a safety net for kernel crashes, and **No freeze when RAM runs out**, which keeps what you used in the last second in RAM so a full RAM closes the biggest app instead of locking up the PC. At the bottom, **Browser in RAM**: one switch moves your Firefox or LibreWolf profile into RAM, so cookies, history and tabs stop hitting the disk. It's saved back every 5 minutes and when you log out, no password, and turning it off puts the profile back where it was.
 
 ### 🌐 Network
 
@@ -467,6 +467,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | Swappiness and memory | `/etc/sysctl.d/99-zz-memtune.conf` |
 | Network and Desktop tweaks | `/etc/sysctl.d/99-zz-desktop-performance.conf` |
 | No freeze when RAM runs out | `/etc/tmpfiles.d/linuxtweaks-mglru.conf` |
+| Browser in RAM | no file, the profile is `<profile>` (a link) and `<profile>.disk`. Flick it off, or with the browser closed: `rm <profile> && mv <profile>.disk <profile>`, then `systemctl --user disable --now linuxtweaks-updater-browser-ram@firefox.service linuxtweaks-updater-browser-ram-save@firefox.timer` |
 | CAKE | `/etc/NetworkManager/dispatcher.d/90-cake` |
 | Drop network shares | `/etc/NetworkManager/dispatcher.d/50-linuxtweaks-netmounts` (and its link in `pre-down.d`), short timeouts on sshfs lines in `/etc/fstab`, your old one is `/etc/fstab.bak-linuxtweaks` |
 | Keep Wi-Fi awake | `/etc/NetworkManager/conf.d/wifi-powersave-off.conf` |

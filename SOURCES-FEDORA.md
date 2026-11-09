@@ -1105,6 +1105,24 @@ Same two tabs as AerynOS. **Disk space** runs `duf -json` as you and shows each 
 
 ---
 
+## 🦊 Browser in RAM (9 Nov)
+
+New card at the bottom of the Memory tab, one switch for Firefox and one for LibreWolf. It moves the profile into `/dev/shm`, leaves a link where it was and renames the real one to `<profile>.disk`. `linuxtweaks-updater-browser-ram@<browser>.service` (a user unit, oneshot that stays up) brings it in at login and saves one last time at logout, `linuxtweaks-updater-browser-ram-save@<browser>.timer` saves every 5 minutes. All as you, no password. The databases go through `sqlite3 .backup` with a minute's limit, the rest is rsync. It won't switch on under 4 GB of RAM or without twice the profile free in /dev/shm, never touches an open profile, and after a reboot only fills /dev/shm when it's empty. Flatpak browsers are left alone, they get their own /dev/shm. Idea from Odyssey Linux's [odyssey-browser-ram](https://code.odysseylinux.org/nobody/odyssey-browser-ram) (GPL-3.0), theirs is runit and Zen only.
+
+| Source | What I took from it |
+|---|---|
+| [odyssey-browser-ram](https://code.odysseylinux.org/nobody/odyssey-browser-ram) | the idea, link + disk copy, `sqlite3 .backup` for the databases, the low RAM check |
+| [profile-sync-daemon](https://github.com/graysky2/profile-sync-daemon) | the same thing done with a link and rsync, Firefox 147+ uses the XDG folder, back up before first use |
+| [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html) | `Type=oneshot` with `RemainAfterExit=yes` stays active, `ExecStop=` only runs if it started fine |
+| [systemd.timer(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html) | `OnActiveSec=` and `OnUnitActiveSec=`, a timer starts the service with its own name |
+| [systemd.special(7)](https://www.freedesktop.org/software/systemd/man/latest/systemd.special.html) | `default.target` is what the user manager starts at login |
+| [logind.conf(5)](https://www.freedesktop.org/software/systemd/man/latest/logind.conf.html) | `RuntimeDirectorySize` is 10% of RAM, too small for a profile, so /dev/shm. `UserStopDelaySec` is when the logout save runs |
+| [tmpfs](https://www.kernel.org/doc/html/latest/filesystems/tmpfs.html) | a tmpfs is half the RAM unless told otherwise |
+| [SQLite backup API](https://www.sqlite.org/backup.html) | safe on a database that's in use, starts again if it's written to mid copy, so it gets a time limit |
+| [sqlite3 CLI](https://www.sqlite.org/cli.html) | `.backup` and `.timeout` |
+| [Mozilla bug 259356](https://bugzilla.mozilla.org/show_bug.cgi?id=259356) | Firefox 147 puts new profiles in `~/.config/mozilla/firefox`, old ones stay in `~/.mozilla` |
+| [flatpak-metadata(5)](https://man7.org/linux/man-pages/man5/flatpak-metadata.5.html) | `shm` is what gives an app the host's /dev/shm, so a flatpak doesn't see it |
+
 <div align="center">
 
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)
