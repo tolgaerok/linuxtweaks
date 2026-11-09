@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.92
+Version:        8.2.93
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -35,6 +35,9 @@ Requires:       polkit
 Requires:       fira-code-fonts
 # the Disk space tab
 Requires:       duf
+# Browser in RAM (Memory tab): rsync copies the profile, sqlite3 .backup saves its databases safely
+Requires:       /usr/bin/rsync
+Requires:       /usr/bin/sqlite3
 # the Traffic tab. not in fedora, only terra has it, so weak: there when you've got terra
 Recommends:     bandwhich
 # what my install/uninstall scripts need while they run
@@ -332,6 +335,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Mon Nov 09 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.93-1
+- Firefox can live in RAM now, Memory tab
+
 * Fri Nov 06 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.92-1
 - Traffic tab gets bandwhich for you, one click
 
