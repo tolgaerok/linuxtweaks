@@ -5,10 +5,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # the window for install-linuxtweaks.sh, Nord like my release windows. it
-# does nothing itself, it runs the script and shows its "step:", "ok:",
-# "log:", "done:" and "fail:" lines. install-linuxtweaks.sh opens me when
-# there's a desktop and PyQt, you never run me by hand.
-#   python3 install-linuxtweaks-gui.py /path/to/install-linuxtweaks.sh
+# does nothing itself, it runs the script and shows what it says.
+# install-linuxtweaks.sh opens me, you never run me by hand.
 
 import sys
 from pathlib import Path
@@ -129,7 +127,7 @@ class Window(QWidget):
     # ---- bits ----
 
     def clear(self):
-        """empties the cards and buttons. hidden first, deleteLater takes a moment"""
+        """empties the cards and buttons"""
         for box in (self.body, self.buttons):
             while box.count():
                 item = box.takeAt(0)
@@ -173,7 +171,7 @@ class Window(QWidget):
         return b
 
     def run(self, args, then, lines=None):
-        """runs the script with --plain, lines(kind, text) as they come, then(code, out) at the end"""
+        """runs the script and passes on what it says"""
         self.proc = QProcess(self)
         self.proc.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels
                                         if hasattr(QProcess, "ProcessChannelMode") else QProcess.MergedChannels)

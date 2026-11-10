@@ -30,7 +30,7 @@ FPR=B7574AE0016A7493E9AB64E4F75286EAE1540626
 PKG=linuxtweaks-updater
 UA="LinuxTweaks-installer"
 
-# "kind: text" lines for my window, colours for a terminal
+# plain lines for my window, colours for a terminal
 PLAIN=0
 say() {
     local kind=$1
@@ -89,8 +89,7 @@ folder_and_pattern() {
     esac
 }
 
-# sets NEW_NAME, NEW_URL, NEW_SIZE, NEW_VER. the api answers a folder as
-# json on one line, split on , { } every "key":value gets its own line
+# finds the newest package in my GitHub folder, its name, link, size and version
 newest() {
     local list line
     folder_and_pattern
@@ -138,8 +137,7 @@ verify() {
     say step "checking it's signed with my key"
     get_key
     if [ "$DISTRO" = fedora ]; then
-        # rpm 6 only takes an armored key and GitHub has the binary one. both
-        # in throwaway folders, your own keys never change
+        # checks it with my key in a throwaway spot, your own keys never change
         command -v gpg >/dev/null 2>&1 || die "gpg isn't installed, sudo dnf install gnupg2"
         g=$(mktemp -d "$WORK/gpg.XXXX")
         d=$(mktemp -d "$WORK/rpmdb.XXXX")
@@ -158,7 +156,7 @@ verify() {
 
 # ---- the root bit, one password ---------------------------------------
 
-# runs this same script as root with --root. pkexec from my window, sudo here
+# the password bit. my window asks with a password box, the terminal with sudo
 as_root() {
     local mode=color rc
     [ "$PLAIN" = 1 ] && mode=plain
@@ -168,13 +166,12 @@ as_root() {
         sudo /usr/bin/bash "$SELF" --root "$mode" "$@"
     fi
     rc=$?
-    # pkexec: 126 you closed the password box, 127 wrong password
+    # you closed the password box or got it wrong
     [ "$GUI" = 1 ] && [ $rc = 126 -o $rc = 127 ] && die "no password given, nothing changed"
     [ $rc = 0 ] || exit 1
 }
 
-# --root <plain|color> <action> <distro> <file or -> [extras]. only my own
-# package names, only from the installer's temp folder or LinuxTweaks' cache
+# the bit that runs as root. it only takes my own packages
 root_part() {
     local action=$2 distro=$3 file=${4:--} extras=${5:-} helper
     [ "$1" = plain ] && PLAIN=1
@@ -402,7 +399,7 @@ else
         die "couldn't get the installer from GitHub"
 fi
 
-# my window adds --plain: "kind: text" lines and pkexec for the password
+# my window asks for plain lines and the password box
 GUI=0
 if [ "${1:-}" = --plain ]; then
     PLAIN=1
