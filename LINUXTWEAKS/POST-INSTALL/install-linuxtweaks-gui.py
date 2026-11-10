@@ -11,19 +11,24 @@
 #   python3 install-linuxtweaks-gui.py /path/to/install-linuxtweaks.sh
 
 import sys
+from pathlib import Path
 
 try:
     from PyQt6.QtCore import QProcess, Qt
+    from PyQt6.QtGui import QIcon, QPixmap
     from PyQt6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout, QLabel, QMessageBox,
                                  QPlainTextEdit, QPushButton, QVBoxLayout, QWidget)
     YES, NO = QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No
 except ImportError:
     from PyQt5.QtCore import QProcess, Qt
+    from PyQt5.QtGui import QIcon, QPixmap
     from PyQt5.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout, QLabel, QMessageBox,
                                  QPlainTextEdit, QPushButton, QVBoxLayout, QWidget)
     YES, NO = QMessageBox.Yes, QMessageBox.No
 
 SCRIPT = sys.argv[1] if len(sys.argv) > 1 else "install-linuxtweaks.sh"
+# my LinuxTweaks icon, the script puts it next to me
+ICON = Path(__file__).resolve().parent / "install-linuxtweaks-icon.png"
 TAGS = {"fedora": ("Fedora", "#51a2da"), "solus": ("Solus", "#5294e2"), "aerynos": ("AerynOS", "#b48ead")}
 HOW = {"fedora": ("RPM", "my key, checked with rpmkeys before anything installs", "dnf"),
        "solus": ("eopkg", "its .asc and my key, gpgv says good or it stops", "eopkg"),
@@ -32,7 +37,7 @@ STYLE = """
 QWidget { background: #2e3440; color: #eceff4; font-size: 14px; }
 #head { font-size: 20px; font-weight: bold; }
 #sub { color: #88c0d0; font-size: 13px; }
-#logo { background: #88c0d0; color: #2e3440; border-radius: 22px; font-size: 18px; font-weight: bold; }
+#logo { background: #b5e61d; color: #2e3440; border-radius: 24px; font-size: 18px; font-weight: bold; }
 #card { background: #3b4252; border: 1px solid #4c566a; border-radius: 10px; }
 #card QLabel, #card QCheckBox { background: transparent; }
 #cardTitle { color: #88c0d0; font-size: 15px; font-weight: bold; }
@@ -78,10 +83,20 @@ class Window(QWidget):
         lay.setContentsMargins(18, 18, 18, 18)
         lay.setSpacing(12)
         top = QHBoxLayout()
-        logo = QLabel("LT")
-        logo.setObjectName("logo")
-        logo.setFixedSize(44, 44)
-        logo.setAlignment(Qt.AlignmentFlag.AlignCenter if hasattr(Qt, "AlignmentFlag") else Qt.AlignCenter)
+        logo = QLabel()
+        logo.setFixedSize(48, 48)
+        pix = QPixmap(str(ICON))
+        if pix.isNull():
+            # no icon, GitHub didn't hand it over: my green circle with LT
+            logo.setText("LT")
+            logo.setObjectName("logo")
+            logo.setAlignment(Qt.AlignmentFlag.AlignCenter if hasattr(Qt, "AlignmentFlag") else Qt.AlignCenter)
+        else:
+            logo.setPixmap(pix.scaled(48, 48, Qt.AspectRatioMode.KeepAspectRatio if hasattr(Qt, "AspectRatioMode")
+                                      else Qt.KeepAspectRatio,
+                                      Qt.TransformationMode.SmoothTransformation if hasattr(Qt, "TransformationMode")
+                                      else Qt.SmoothTransformation))
+            self.setWindowIcon(QIcon(str(ICON)))
         top.addWidget(logo)
         words = QVBoxLayout()
         words.setSpacing(0)

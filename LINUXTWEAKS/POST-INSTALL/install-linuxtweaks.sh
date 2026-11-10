@@ -437,6 +437,9 @@ case "${1:-}" in
             if [ -z "$HERE" ] || [ ! -f "$gui" ]; then
                 gui="$WORK/install-linuxtweaks-gui.py"
                 curl -fsSL -A "$UA" -o "$gui" "$RAW/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-gui.py" || gui=""
+                # my LinuxTweaks icon for the window, it looks next to itself
+                curl -fsSL -A "$UA" -o "$WORK/install-linuxtweaks-icon.png" \
+                    "$RAW/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-icon.png" 2>/dev/null || true
             fi
             if [ -n "$gui" ]; then
                 python3 "$gui" "$SELF"
