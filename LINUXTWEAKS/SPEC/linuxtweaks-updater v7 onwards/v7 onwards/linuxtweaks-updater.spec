@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.97
+Version:        8.2.98
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -254,6 +254,10 @@ for run in /run/user/[0-9]*; do
 	timeout 10 systemctl --user -M "$user@" stop %{name}-maintenance.timer >/dev/null 2>&1
 	timeout 10 systemctl --user -M "$user@" daemon-reload >/dev/null 2>&1
 	timeout 10 systemctl --user -M "$user@" reset-failed >/dev/null 2>&1
+	# Browser in RAM: the running watcher and timer onto the new code straight
+	# away. try-restart only touches the ones already running
+	timeout 10 systemctl --user -M "$user@" try-restart 'linuxtweaks-updater-browser-ram-watch@*.service' \
+		'linuxtweaks-updater-browser-ram-save@*.timer' >/dev/null 2>&1
 done
 # my old Tailscale dnf repo is done, updates only come from my GitHub now
 # (10 Nov). a stale one there hid new versions, a dead one makes dnf fail.
@@ -343,6 +347,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.98-1
+- Browser in RAM saves every minute and fixes itself after an update
+
 * Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.97-1
 - Browser in RAM saves straight away again, no more minute wait
 
