@@ -472,3 +472,5 @@ New card at the bottom of the Memory tab, one switch for Firefox and one for Lib
 | [rsync(1)](https://man.archlinux.org/man/rsync.1) | `--delay-updates` puts all the changed files in place at the end |
 | [Mozilla bug 259356](https://bugzilla.mozilla.org/show_bug.cgi?id=259356) | Firefox 147 puts new profiles in `~/.config/mozilla/firefox`, old ones stay in `~/.mozilla` |
 | [flatpak-metadata(5)](https://man7.org/linux/man-pages/man5/flatpak-metadata.5.html) | `shm` is what gives an app the host's /dev/shm, so a flatpak doesn't see it |
+| [systemd.special(7)](https://www.freedesktop.org/software/systemd/man/latest/systemd.special.html) | `graphical-session-pre.target` is for setting things up before the desktop session starts |
+| [plasma-core.target](https://lxr.kde.org/source/plasma/plasma-workspace/startkde/systemd/plasma-core.target) | Plasma waits for `graphical-session-pre.target` first, so the profile's in RAM before Firefox comes back with the session (10 Nov, Alex's never moved in) |
