@@ -10,7 +10,7 @@
 
 [![Fedora](https://img.shields.io/badge/Version-8.2.94-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.83-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
-[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.24-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
+[![AerynOS](https://img.shields.io/badge/AerynOS-1.0.25-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyQt5](https://img.shields.io/badge/PyQt5-GUI-41CD52?logo=qt&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt)
@@ -199,119 +199,30 @@ No exact CPU or card model, no PC make, model or serial, no exact RAM or disk si
 
 ## Installation
 
-Pick yours: [🎩 Fedora](#-fedora) · [🌀 Solus](#-solus)
+### 👍 One line, any distro
 
-### 🎩 Fedora
-
-> [!NOTE]
-> My repo runs on my own server over Tailscale (`100.83.30.114`). Your PC needs Tailscale and access to my server to reach it. If it can't, the install stops straight away, tells you what's missing and changes nothing. No access to my server? [Install the RPM file](#-no-tailscale-install-the-rpm-file) instead.
-
-#### 🔐 First time? Set up Tailscale
-
-Tailscale is a private network between your PCs. It's free for personal use and takes about 5 minutes.
-
-<details>
-<summary><b>The six steps</b></summary>
-<br>
-
-**1.** Make a free account at [tailscale.com](https://tailscale.com). Google, Microsoft or GitHub login all work.
-
-**2.** Add Tailscale's own repo and install it:
-
-```bash
-sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
-sudo dnf install tailscale
-```
-
-**3.** Start it, and have it start with the PC:
-
-```bash
-sudo systemctl enable --now tailscaled
-```
-
-**4.** Log in. It prints a link, open it in your browser and log in with the account from step 1:
-
-```bash
-sudo tailscale up
-```
-
-**5.** Send me the email you log in to Tailscale with. I share my repo server with you, you get an email from Tailscale, click accept. You only see my repo server, nothing else of mine, and I can't see your PCs.
-
-**6.** Check you can see it:
-
-```bash
-tailscale ping 100.83.30.114
-```
-
-`pong` means you're in. Now do the quick install below.
-
-</details>
-
-#### 👍 Quick install
+Fedora, Solus or AerynOS, it's the same line:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
 ```
 
-What it does, in order:
+It looks at `/etc/os-release` to see what you're on, grabs the newest LinuxTweaks for it from my GitHub, checks it's signed with my key (`F75286EAE1540626`) and installs it with one password. Not signed by me, it stops. Already got it? It updates it, or takes it off. Everything comes from GitHub, and it never updates the rest of your system.
 
-1. Checks it can reach my repo
-2. Writes `/etc/yum.repos.d/linuxtweaks.repo` with the signature check on
-3. Looks for anything my older apps left behind, shows you the list and asks before removing anything
-4. Installs LinuxTweaks, or updates it if you have it. Only my package, the rest of your system is left alone
-5. Starts the tray and shows you what's on and what's off
-
-dnf asks once to import my signing key. Its ID is `F75286EAE1540626`.
-
-<details>
-<summary><b>More things the same script does</b></summary>
-<br>
-
-Put the option after `bash -s --`, everything after the `--` goes to my script. Any questions and the sudo password still come from your keyboard, not the pipe.
+On a desktop that already has PyQt it opens a window in the LinuxTweaks look. A fresh Fedora or Solus might not have PyQt till LinuxTweaks brings it in, then it does the same steps in the terminal.
 
 | Option | What it does |
 |---|---|
-| `--check` | Only looks, changes nothing |
-| `--cleanup` | Only clears out what my older apps left behind. Shows you the list and asks first |
-| `--remove` | Uninstalls it. Asks first, then asks about the repo file |
-| `--fake 3 20` | Fake updates in the tray to see how it looks, here 3 dnf and 20 flatpak, one a pretend security fix |
-| `--restore` | Puts the real update list back after a fake test |
+| `--check` | Downloads the newest one and checks it's mine, installs nothing |
+| `--terminal` | The terminal steps, even on a desktop |
 
-For example:
+Put the option after `bash -s --`, for example `curl -fsSL …/install-linuxtweaks.sh | bash -s -- --check`.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --check
-```
+Rather do it by hand? Pick yours: [🎩 Fedora](#-fedora) · [🌀 Solus](#-solus) · [🪨 AerynOS](#-aerynos)
 
-Rather have a copy on your PC? Download it once and run it with any of the options:
+### 🎩 Fedora
 
-```bash
-curl -fsSLO https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh
-bash install-linuxtweaks.sh --check
-```
-
-</details>
-
-#### 🖖 Or by hand
-
-Add my repo:
-
-```bash
-echo -e "[linuxtweaks]\nname=LinuxTweaks Repository\nbaseurl=http://100.83.30.114:8080/linuxtweaks/\nenabled=1\ngpgcheck=1\ngpgkey=http://100.83.30.114:8080/linuxtweaks/RPM-GPG-KEY\nmetadata_expire=1h" | sudo tee /etc/yum.repos.d/linuxtweaks.repo > /dev/null
-```
-
-Install it. dnf asks once to import my key, answer **y**:
-
-```bash
-sudo dnf install --refresh linuxtweaks-updater
-linuxtweaks-updater
-```
-
-From then on it starts by itself when you log in, and new versions come with a normal `sudo dnf upgrade`. The package and the commands are still called `linuxtweaks-updater` for now, the app itself is LinuxTweaks.
-
-#### 📦 No Tailscale? Install the RPM file
-
-The same signed RPM is here on GitHub. This finds the newest one in my folder, downloads the real file, shows you it's an RPM and installs it:
+The [one line](#-one-line-any-distro) does it for you. By hand, this finds the newest signed RPM in my GitHub folder, downloads the real file, shows you it's an RPM and installs it:
 
 ```bash
 url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS/RPM/linuxtweaks-updater%20v7x" | grep -o '"download_url": *"[^"]*\.rpm"' | cut -d'"' -f4 | sort -V | tail -1) && curl -fLO "$url" && file linuxtweaks-updater-*.rpm && sudo dnf install ./linuxtweaks-updater-*.rpm
@@ -324,19 +235,19 @@ url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LI
 
 **Use a terminal, not Yum Extender.** Yumex crashes with `Transaction has to be resolved first` when something's wrong, and hides the real reason. `sudo dnf install` tells you.
 
-**Had my repo before?** If `/etc/yum.repos.d/linuxtweaks.repo` is there and you can't reach my server, dnf won't install anything at all. Take it out first:
+**Had my old repo before?** If `/etc/yum.repos.d/linuxtweaks.repo` is there and can't reach my server, dnf won't install anything at all. Take it out first:
 
 ```bash
 sudo rm -f /etc/yum.repos.d/linuxtweaks.repo /etc/yum.repos.d/linuxtweaks-io.repo
 ```
 
-Without my repo, LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It looks in my repo first and on GitHub when it can't reach that, downloads the new version, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
+LinuxTweaks updates itself from **About → Check for LinuxTweaks updates** (from 8.2.0 on). It finds the newest version on my GitHub, downloads it, checks it's signed with my key, the key comes with the app, and installs it with one password box. A download that isn't signed by me never gets installed. Your other updates work as normal.
 
 When a new one's out you get a popup in the LinuxTweaks look with what's new right on it, once per version, within a few minutes of it going up. **See what's new** opens About with Install ready, **Later** leaves it till you go looking.
 
 #### Coming from an older name?
 
-dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all this app under old names. A normal update swaps you over, or run the quick install.
+dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all this app under old names. A normal update swaps you over, or run the [one line](#-one-line-any-distro).
 
 <details>
 <summary><b>What the old versions left behind</b></summary>
@@ -344,21 +255,15 @@ dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x and LinuxTweaks-IO are all
 
 **LinuxTweaks-IO**, my I/O scheduler app, is the 💽 Drives tab now. The update removes the old app for you. Your scheduler picks stay, it's the same rules file, only the old window and its tray icon go.
 
-The older updater versions left stuff behind. Some of it keeps starting the old app next to the new one, and the old sudo rules in `/etc/sudoers.d` handed out root without a password. Uninstalling the old app doesn't always take them with it, a sudo rule you edited gets kept as a `.rpmsave` copy. The quick install looks for all of it. To do only that part:
+The older updater versions left stuff behind, like old sudo rules in `/etc/sudoers.d` that handed out root without a password. Everyone's long past those versions now, so the installer doesn't go looking any more. Still on one? Look in `/etc/sudoers.d` for a `dnf-updater` or `.rpmsave` file and delete it.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash -s -- --cleanup
-```
-
-It shows you the list and asks first. Looking in `/etc/sudoers.d` needs your password, only root can read it.
-
-If your `/etc/yum.repos.d/linuxtweaks.repo` is from before September 2026, run the quick install again. Older copies didn't check my signature.
+Still got my old `/etc/yum.repos.d/linuxtweaks.repo`? Take it out as above, the [one line](#-one-line-any-distro) and About keep you up to date from GitHub.
 
 </details>
 
 ### 🌀 Solus
 
-LinuxTweaks for Solus isn't in the Solus repo, it's a signed eopkg in my GitHub folder. It's built the Solus way, with `package.yml` and solbuild, to the [Solus packaging practices](https://help.getsol.us/docs/packaging/packaging-practices). This finds the newest one, downloads it with its signature, checks the signature against my key and only then installs it:
+LinuxTweaks for Solus isn't in the Solus repo, it's a signed eopkg in my GitHub folder. It's built the Solus way, with `package.yml` and solbuild, to the [Solus packaging practices](https://help.getsol.us/docs/packaging/packaging-practices). The [one line](#-one-line-any-distro) does it for you. By hand, this finds the newest one, downloads it with its signature, checks the signature against my key and only then installs it:
 
 ```bash
 cd /tmp && url=$(curl -fsSL "https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS/EOPKG/SOLUS" | grep -o '"download_url": *"[^"]*\.eopkg"' | cut -d'"' -f4 | sort -V | tail -1) && curl -fLO "$url" && curl -fLO "$url.asc" && curl -fsSLo linuxtweaks-key.gpg https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/KEYS/linuxtweaks-key.gpg && gpgv --keyring ./linuxtweaks-key.gpg linuxtweaks-updater-*.eopkg.asc linuxtweaks-updater-*.eopkg && sudo eopkg it ./linuxtweaks-updater-*.eopkg
@@ -378,13 +283,7 @@ The NVIDIA driver, codecs and the rest of your system stay the Solus way: from t
 
 LinuxTweaks for AerynOS is a signed `.stone` in my GitHub folder, built with boulder from a `stone.yaml` like the [AerynOS recipes](https://github.com/AerynOS/recipes). The folder's a moss repo too, so moss installs it and pulls in what it needs.
 
-Quick install, one line. It asks if you want the volatile repo too, then adds mine and installs it:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh | bash
-```
-
-Or by hand:
+The [one line](#-one-line-any-distro) asks if you want the volatile repo too, then adds mine and installs it. Or by hand:
 
 ```bash
 sudo moss repo add linuxtweaks https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/STONE/AERYNOS/stone.index -p 10 -c linuxtweaks
@@ -397,7 +296,7 @@ Every `.stone` has a `.asc` next to it, signed with the same key as the RPMs. Ne
 
 | | Fedora | Solus |
 |---|---|---|
-| **Is it installed?** | `dnf info linuxtweaks-updater`, or the quick install with `--check` | `eopkg info linuxtweaks-updater` |
+| **Is it installed?** | `dnf info linuxtweaks-updater`, or run the [one line](#-one-line-any-distro), it says what's on here | `eopkg info linuxtweaks-updater`, or the one line |
 | **Which build?** | A blue **Fedora** tag next to the name | A blue **Solus** tag next to the name |
 | **Uninstall** | **About → Uninstall…**, or `sudo dnf remove linuxtweaks-updater` | **About → Uninstall…**, it clears your settings first |
 | **Changelog** | **What's new**, or `rpm -q --changelog linuxtweaks-updater` | **What's new**, or `less /usr/share/doc/linuxtweaks-updater/CHANGELOG` |
@@ -491,7 +390,7 @@ Check what each drive uses with `grep "" /sys/block/*/queue/scheduler`, the one 
 3. **State.** The results go in `~/.local/state/linuxtweaks-updater/`
 4. **Tray.** Watches that folder and redraws the icon, tooltip and window. It hears from systemd when the PC wakes up, and from NetworkManager the second the internet's back, and checks again straight away. Every 30 seconds it takes a tiny look for a new LinuxTweaks
 5. **Upgrade.** The popup opens Available updates, and you start the install window from there. dnf or eopkg runs as root through a small helper and one polkit password box, Flatpak runs as you. Both run in a pretend terminal (`linuxtweaks-updater-pty`) so their progress bars move live, and the window redraws them in place. With the tray closed, clicking the popup starts it first
-6. **Updating itself.** Fedora: About checks my repo, then GitHub, and the RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it. Solus: About checks my GitHub folder and the eopkg's `.asc` signature is checked with `gpgv` against my key only, before eopkg installs it
+6. **Updating itself.** Fedora: About checks my GitHub folder, and the RPM is checked against my key twice, once by the app in a keyring of its own and once by the root helper, before dnf installs it. Solus: About checks my GitHub folder and the eopkg's `.asc` signature is checked with `gpgv` against my key only, before eopkg installs it
 7. **A clean start.** Every install or upgrade clears a snooze, popup clicks nobody picked up and Health's Count from now. Your settings stay
 8. **Tweaks.** Every tab that changes something has its own small root helper in `/usr/lib/linuxtweaks-updater/bin/` (`/usr/lib64/` on Solus) and its own polkit password box. Each helper does only its job and refuses anything it didn't expect
 9. **Maintenance.** `linuxtweaks-updater-maintenance.timer` is a system timer that runs as root once a week, only if you switched it on
@@ -538,21 +437,6 @@ systemctl --no-pager status linuxtweaks-updater-maintenance.timer
 ```bash
 linuxtweaks-updater-check
 ```
-</details>
-
-<details>
-<summary><b><code>No match for argument: linuxtweaks-updater</code>?</b></summary>
-
-dnf still has an old copy of my repo's list:
-```bash
-sudo dnf install --refresh linuxtweaks-updater
-```
-</details>
-
-<details>
-<summary><b>Install stops at "Can I reach my repo?"</b></summary>
-
-It tells you which bit is missing. Go through [Set up Tailscale](#-first-time-set-up-tailscale) and check with `tailscale ping 100.83.30.114`.
 </details>
 
 <details>

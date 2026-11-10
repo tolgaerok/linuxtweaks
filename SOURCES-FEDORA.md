@@ -1125,6 +1125,19 @@ New card at the bottom of the Memory tab, one switch for Firefox and one for Lib
 | [Mozilla bug 259356](https://bugzilla.mozilla.org/show_bug.cgi?id=259356) | Firefox 147 puts new profiles in `~/.config/mozilla/firefox`, old ones stay in `~/.mozilla` |
 | [flatpak-metadata(5)](https://man7.org/linux/man-pages/man5/flatpak-metadata.5.html) | `shm` is what gives an app the host's /dev/shm, so a flatpak doesn't see it |
 
+## 📥 One line installer (10 Nov)
+
+`LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh` is one installer for Fedora, Solus and AerynOS, it took over from the old Fedora one and the AerynOS one. It reads `/etc/os-release`, gets the newest RPM from my GitHub folder and checks it before dnf sees it. dnf doesn't check a local RPM's signature by itself, so the script does: GitHub has my key as a binary file, rpm 6 only takes an armored one, so it gets armored in a throwaway gpg home and checked with `rpmkeys --dbpath` in a throwaway rpm db. Your own keys never change. Then one password, `dnf install` of that file, and the tray starts. Off my tailnet, no Tailscale needed. The old cleanup of dnf-updater and 6.x is gone, nobody runs those now. On a desktop with PyQt it opens a window (`install-linuxtweaks-gui.py`) that runs the same script, without PyQt it's the same steps in the terminal.
+
+| Source | What I took from it |
+|---|---|
+| [rpmkeys(8)](https://rpm-software-management.github.io/rpm/man/rpmkeys.8) | `--import` wants an armored key, `--checksig` exits 0 only when every check passes |
+| [dnf5.conf(5)](https://dnf5.readthedocs.io/en/latest/dnf5.conf.5.html) | `localpkg_gpgcheck` is off by default, so `dnf install ./file.rpm` doesn't check the signature |
+| [Fedora: enforcing signature checking](https://fedoraproject.org/wiki/Changes/Enforcing_signature_checking_by_default) | rpm only starts refusing unsigned packages in Fedora 45, so till then it's on me |
+| [os-release(5)](https://www.freedesktop.org/software/systemd/man/latest/os-release.html) | `ID=` says which distro, read `/etc/os-release` and only fall back to `/usr/lib/os-release` |
+| [pkexec(1)](https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html) | the one password box from the window, full paths only, 126 is the box closed, 127 a wrong password |
+| [GitHub contents API](https://docs.github.com/en/rest/repos/contents) | a folder comes back as a list with name, size and download_url, 60 asks an hour without logging in |
+
 <div align="center">
 
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)

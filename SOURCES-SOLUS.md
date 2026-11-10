@@ -367,6 +367,18 @@ New card at the bottom of the Memory tab, one switch for Firefox and one for Lib
 | [Mozilla bug 259356](https://bugzilla.mozilla.org/show_bug.cgi?id=259356) | Firefox 147 puts new profiles in `~/.config/mozilla/firefox`, old ones stay in `~/.mozilla` |
 | [flatpak-metadata(5)](https://man7.org/linux/man-pages/man5/flatpak-metadata.5.html) | `shm` is what gives an app the host's /dev/shm, so a flatpak doesn't see it |
 
+## 📥 One line installer (10 Nov)
+
+`LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh` does Solus now too, same as the long one-liner in the README: newest eopkg and its `.asc` from my GitHub folder, `gpgv` against my key, then one password and `eopkg it`. It goes by `ID=solus` in os-release, and if that ever says something else, eopkg being there is enough. On a desktop with PyQt it opens a window, without it the same steps in the terminal.
+
+| Source | What I took from it |
+|---|---|
+| [gpgv(1)](https://gnupg.org/documentation/manuals/gnupg/gpgv.html) | `--keyring` with a full path, exit 0 only for a good signature |
+| [Solus package basics](https://help.getsol.us/docs/user/package-management/basics) | `eopkg install` and `eopkg remove` |
+| [os-release(5)](https://www.freedesktop.org/software/systemd/man/latest/os-release.html) | `ID=` says which distro, read `/etc/os-release` and only fall back to `/usr/lib/os-release` |
+| [pkexec(1)](https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html) | the one password box from the window, full paths only, 126 is the box closed, 127 a wrong password |
+| [GitHub contents API](https://docs.github.com/en/rest/repos/contents) | a folder comes back as a list with name, size and download_url, 60 asks an hour without logging in |
+
 <div align="center">
 
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)

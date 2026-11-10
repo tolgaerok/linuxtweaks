@@ -1,482 +1,453 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 # 👁️‍🗨️ Created by: Tolga Erok
 # 📧 Email:      kingtolga@gmail.com
 # 📡 GitHub:     https://github.com/tolgaerok/linuxtweaks
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-# one script for my LinuxTweaks Updater. it installs it, updates it, checks
-# it, clears out what my older apps left behind (dnf-updater, then
-# linuxtweaks-dnf-updater, then LinuxTweaks 6.x), removes it, and can fill
-# the tray with fake updates so you can see how it looks.
 #
-#   bash install-linuxtweaks.sh               install it, or update it
-#   bash install-linuxtweaks.sh --check       only look, changes nothing
-#   bash install-linuxtweaks.sh --cleanup     only clear out what my older apps left behind
-#   bash install-linuxtweaks.sh --remove      uninstall it
-#   bash install-linuxtweaks.sh --fake 3 20   3 dnf + 20 flatpak fake updates in the tray
-#   bash install-linuxtweaks.sh --restore     put the real update list back
+# one installer for LinuxTweaks on Fedora, Solus and AerynOS. it looks at
+# /etc/os-release, grabs the newest signed package from my GitHub, checks
+# it's signed with my key and installs it. already in? it updates it or
+# takes it off. everything comes from GitHub, no Tailscale needed.
 #
-# what it never does: update the rest of your system, add sudo rules, or
-# delete anything without showing you first and asking.
+#   curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
+#
+# on a desktop with PyQt6 or PyQt5 already there it opens my window
+# (install-linuxtweaks-gui.py), the window runs this same script for every
+# step. no PyQt yet (a fresh Fedora or Solus can have none) and it does the
+# same steps right here in the terminal. --terminal forces that, --check
+# only downloads it and checks the signature.
+#
+# it never updates the rest of your system and never runs as root itself,
+# it asks for your password once, for the install.
 
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
+set -u
 
-PACKAGE="linuxtweaks-updater"
-REPO_URL="http://100.83.30.114:8080/linuxtweaks"
-REPO_FILE="/etc/yum.repos.d/linuxtweaks.repo"
-IO_REPO_FILE="/etc/yum.repos.d/linuxtweaks-io.repo"
-KEY_ID="F75286EAE1540626"
-TRAY_PATTERN="^python3 /usr/lib/${PACKAGE}/tray/tray.py"
-STATE="${HOME}/.local/state/${PACKAGE}"
-BACKUP="${STATE}/fake-test-backup"
+RAW=https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main
+API=https://api.github.com/repos/tolgaerok/linuxtweaks/contents/LINUXTWEAKS
+KEY_URL=$RAW/LINUXTWEAKS/KEYS/linuxtweaks-key.gpg
+STONE_INDEX=$RAW/LINUXTWEAKS/STONE/AERYNOS/stone.index
+FPR=B7574AE0016A7493E9AB64E4F75286EAE1540626
+PKG=linuxtweaks-updater
+UA="LinuxTweaks-installer"
 
-header() {
-	echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-	echo -e "${CYAN}  $*${NC}"
-	echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+# "kind: text" lines for my window, colours for a terminal
+PLAIN=0
+say() {
+    local kind=$1
+    shift
+    if [ "$PLAIN" = 1 ]; then
+        echo "$kind: $*"
+        return
+    fi
+    case $kind in
+        step) printf '\033[0;36m●\033[0m %s\n' "$*" ;;
+        ok) printf '\033[0;32m✓\033[0m %s\n' "$*" ;;
+        done) printf '\033[1;32m✓ %s\033[0m\n' "$*" ;;
+        fail) printf '\033[0;31m✗ %s\033[0m\n' "$*" ;;
+        *) printf '  %s\n' "$*" ;;
+    esac
 }
-step() { echo -e "\n${CYAN}▶${NC} ${BLUE}$*${NC}"; }
-ok() { echo -e "  ${GREEN}✓${NC} $*"; }
-note() { echo -e "  ${YELLOW}•${NC} $*"; }
-bad() { echo -e "  ${RED}✗${NC} $*"; }
+die() { say fail "$*"; exit 1; }
+# what dnf, eopkg or moss print, as log lines
+show() { local l; while IFS= read -r l; do say log "$l"; done; }
 
-# ask a yes/no question. works with curl | bash too, the answer comes from
-# your keyboard, not the pipe. no keyboard at all? the answer is no
-has_tty() { { : </dev/tty; } 2>/dev/null; }
+# ---- what box is this -------------------------------------------------
+
+find_distro() {
+    local f=/etc/os-release
+    [ -f "$f" ] || f=/usr/lib/os-release
+    ID="" NAME="" PRETTY_NAME=""
+    # shellcheck disable=SC1090
+    [ -f "$f" ] && . "$f"
+    case "${ID:-}" in
+        fedora) DISTRO=fedora ;;
+        solus) DISTRO=solus ;;
+        aerynos) DISTRO=aerynos ;;
+        *)
+            if command -v eopkg >/dev/null 2>&1; then DISTRO=solus
+            else DISTRO=unknown
+            fi
+            ;;
+    esac
+    DNAME=${PRETTY_NAME:-${NAME:-unknown}}
+}
+
+installed_version() {
+    local f
+    for f in /usr/lib/$PKG/tray/version.py /usr/lib64/$PKG/tray/version.py; do
+        [ -f "$f" ] && { sed -n 's/^__version__ = "v\{0,1\}\([^"]*\)".*/\1/p' "$f"; return; }
+    done
+}
+
+# ---- the newest package on my GitHub ----------------------------------
+
+folder_and_pattern() {
+    case $DISTRO in
+        fedora) FOLDER="RPM/linuxtweaks-updater%20v7x"; PAT="^$PKG-[0-9.]+-[0-9]+\.fc[0-9]+\.noarch\.rpm[|]" ;;
+        solus) FOLDER="EOPKG/SOLUS"; PAT="^$PKG-[0-9.]+-[0-9]+-[0-9]+-x86_64\.eopkg[|]" ;;
+        aerynos) FOLDER="STONE/AERYNOS"; PAT="^$PKG-[0-9.]+-[0-9]+-[0-9]+-x86_64\.stone[|]" ;;
+    esac
+}
+
+# sets NEW_NAME, NEW_URL, NEW_SIZE, NEW_VER. the api answers a folder as
+# json on one line, split on , { } every "key":value gets its own line
+newest() {
+    local list line
+    folder_and_pattern
+    list=$(curl -fsSL -A "$UA" "$API/$FOLDER" | tr ',{}' '\n\n\n') || return 1
+    line=$(echo "$list" | awk -F'"' '
+        /"name":/ {n=$4}
+        /"size":/ {s=$0; gsub(/[^0-9]/, "", s)}
+        /"download_url":/ {print n "|" s "|" $4}' |
+        grep -E "$PAT" | sort -V | tail -1)
+    [ -n "$line" ] || return 1
+    NEW_NAME=${line%%|*}
+    line=${line#*|}
+    NEW_SIZE=${line%%|*}
+    NEW_URL=${line#*|}
+    # linuxtweaks-updater-8.2.94-1.fc44.noarch.rpm -> 8.2.94
+    NEW_VER=$(echo "$NEW_NAME" | sed -E "s/^$PKG-([0-9.]+)-.*/\1/")
+}
+
+# ---- download and check it's mine -------------------------------------
+
+get_key() {
+    curl -fsSL -A "$UA" -o "$WORK/key.gpg" "$KEY_URL" || die "couldn't get my key from GitHub"
+    # the key file has to be mine too. gpg isn't on every fresh box, gpgv is
+    if command -v gpg >/dev/null 2>&1; then
+        gpg --show-keys --with-colons "$WORK/key.gpg" 2>/dev/null | grep -q "^fpr:*$FPR:" ||
+            die "the key on GitHub isn't mine, stopped"
+    fi
+}
+
+# the package (and its .asc) into $1
+download() {
+    local dir=$1
+    mkdir -p "$dir"
+    FILE="$dir/$NEW_NAME"
+    say step "getting $NEW_NAME from GitHub"
+    curl -fsSL -A "$UA" -o "$FILE" "$NEW_URL" || die "download failed, try again in a bit"
+    if [ "$DISTRO" != fedora ]; then
+        curl -fsSL -A "$UA" -o "$FILE.asc" "$NEW_URL.asc" || die "couldn't get its signature (.asc)"
+    fi
+    say ok "got $NEW_NAME"
+}
+
+verify() {
+    local g d
+    say step "checking it's signed with my key"
+    get_key
+    if [ "$DISTRO" = fedora ]; then
+        # rpm 6 only takes an armored key and GitHub has the binary one. both
+        # in throwaway folders, your own keys never change
+        command -v gpg >/dev/null 2>&1 || die "gpg isn't installed, sudo dnf install gnupg2"
+        g=$(mktemp -d "$WORK/gpg.XXXX")
+        d=$(mktemp -d "$WORK/rpmdb.XXXX")
+        GNUPGHOME=$g gpg -q --import "$WORK/key.gpg" 2>/dev/null
+        GNUPGHOME=$g gpg -q --armor --export "$FPR" >"$WORK/key.asc" 2>/dev/null
+        gpgconf --homedir "$g" --kill all >/dev/null 2>&1
+        rpmkeys --dbpath "$d" --import "$WORK/key.asc" >/dev/null 2>&1 &&
+            rpmkeys --dbpath "$d" --checksig "$FILE" >/dev/null 2>&1 ||
+            die "it isn't signed with my key, not installing it"
+    else
+        gpgv --keyring "$WORK/key.gpg" "$FILE.asc" "$FILE" >/dev/null 2>&1 ||
+            die "it isn't signed with my key, not installing it"
+    fi
+    say ok "signed with my key (${FPR: -16})"
+}
+
+# ---- the root bit, one password ---------------------------------------
+
+# runs this same script as root with --root. pkexec from my window, sudo here
+as_root() {
+    local mode=color rc
+    [ "$PLAIN" = 1 ] && mode=plain
+    if [ "$GUI" = 1 ]; then
+        pkexec /usr/bin/bash "$SELF" --root "$mode" "$@"
+    else
+        sudo /usr/bin/bash "$SELF" --root "$mode" "$@"
+    fi
+    rc=$?
+    # pkexec: 126 you closed the password box, 127 wrong password
+    [ "$GUI" = 1 ] && [ $rc = 126 -o $rc = 127 ] && die "no password given, nothing changed"
+    [ $rc = 0 ] || exit 1
+}
+
+# --root <plain|color> <action> <distro> <file or -> [extras]. only my own
+# package names, only from the installer's temp folder or LinuxTweaks' cache
+root_part() {
+    local action=$2 distro=$3 file=${4:--} extras=${5:-} helper
+    [ "$1" = plain ] && PLAIN=1
+    [ "$(id -u)" = 0 ] || die "--root is for the password step only"
+    if [ "$file" != - ]; then
+        [[ $file =~ ^(/tmp/lt-install\.[A-Za-z0-9]+|/home/[A-Za-z0-9._-]+/\.cache/linuxtweaks-updater)/linuxtweaks-updater-[0-9.]+-[0-9]+[-.][A-Za-z0-9._-]+$ ]] ||
+            die "not my package: $file"
+        [ -f "$file" ] && [ ! -L "$file" ] || die "no such file: $file"
+    fi
+    case "$distro:$action" in
+        fedora:install | fedora:update)
+            say step "dnf installing it and what it needs"
+            dnf install -y "$file" 2>&1 | show
+            [ "${PIPESTATUS[0]}" = 0 ] || die "dnf couldn't install it"
+            if [[ $extras == *bandwhich* ]]; then
+                say step "getting bandwhich from Terra for the Traffic tab"
+                /usr/lib/$PKG/bin/linuxtweaks-updater-tweaks get-bandwhich >/dev/null 2>&1 ||
+                    say log "bandwhich didn't go in, the Traffic tab can get it later"
+            fi
+            ;;
+        solus:install | solus:update)
+            say step "eopkg installing it and what it needs"
+            eopkg it -y "$file" 2>&1 | show
+            [ "${PIPESTATUS[0]}" = 0 ] || die "eopkg couldn't install it"
+            ;;
+        aerynos:install)
+            if [[ $extras == *volatile* ]]; then
+                say step "adding the volatile repo"
+                moss repo add volatile https://cdn.aerynos.dev/ --root-index version=stream/volatile -p 10 -c volatile >/dev/null 2>&1 || true
+            fi
+            say step "adding my moss repo and installing it"
+            moss repo add linuxtweaks "$STONE_INDEX" -p 10 -c linuxtweaks >/dev/null 2>&1 || true
+            moss repo update linuxtweaks >/dev/null 2>&1 || true
+            if moss pkg --help >/dev/null 2>&1; then
+                moss pkg add -y "$PKG" 2>&1 | show
+            else
+                moss install -y "$PKG" 2>&1 | show
+            fi
+            [ "${PIPESTATUS[0]}" = 0 ] || die "moss couldn't install it"
+            ;;
+        aerynos:update)
+            # moss can't update one package on its own, a sync moves the whole
+            # system. LinuxTweaks' own About update does it right, same helper
+            helper=/usr/lib/$PKG/bin/linuxtweaks-updater-upgrade-helper
+            [ -x "$helper" ] || die "the LinuxTweaks on here is too old for this, use About → Check for LinuxTweaks updates"
+            say step "installing it the way About does"
+            "$helper" self-update "$file" >/dev/null 2>&1 || die "the update didn't go in"
+            ;;
+        fedora:remove)
+            say step "dnf removing LinuxTweaks"
+            dnf remove -y "$PKG" 2>&1 | show
+            [ "${PIPESTATUS[0]}" = 0 ] || die "dnf couldn't remove it"
+            ;;
+        solus:remove)
+            say step "eopkg removing LinuxTweaks"
+            eopkg rm -y "$PKG" 2>&1 | show
+            [ "${PIPESTATUS[0]}" = 0 ] || die "eopkg couldn't remove it"
+            ;;
+        aerynos:remove)
+            say step "moss removing LinuxTweaks"
+            if moss pkg --help >/dev/null 2>&1; then
+                moss pkg remove -y "$PKG" 2>&1 | show
+            else
+                moss remove -y "$PKG" 2>&1 | show
+            fi
+            [ "${PIPESTATUS[0]}" = 0 ] || die "moss couldn't remove it"
+            ;;
+        *) die "don't know how to $action on $distro" ;;
+    esac
+    exit 0
+}
+
+# ---- the jobs ---------------------------------------------------------
+
+restart_tray() {
+    pkill -u "$(id -u)" -f "$PKG/tray/tray.py" 2>/dev/null
+    sleep 1
+    command -v "$PKG" >/dev/null 2>&1 && setsid -f "$PKG" >/dev/null 2>&1
+}
+
+do_install() {
+    local extras=$1 dir=$WORK
+    newest || die "couldn't reach my GitHub, check your internet"
+    # aeryn's About update only takes a stone from LinuxTweaks' own cache
+    [ "$DISTRO" = aerynos ] && [ "$ACTION" = update ] && dir="$HOME/.cache/$PKG"
+    download "$dir"
+    verify
+    as_root "$ACTION" "$DISTRO" "$FILE" "$extras"
+    say step "starting LinuxTweaks"
+    restart_tray
+    say done "LinuxTweaks $NEW_VER is in, look for it in your tray"
+}
+
+# Browser in RAM keeps your browser profile in /dev/shm with a link to it.
+# take LinuxTweaks off with that on and the profile's gone after a reboot,
+# so it goes back on disk first
+browser_ram_off() {
+    local lib b out
+    for lib in /usr/lib/$PKG/lib /usr/lib64/$PKG/lib; do
+        [ -f "$lib/browser_ram.sh" ] || continue
+        for b in firefox librewolf; do
+            out=$(bash "$lib/browser_ram.sh" status "$b" 2>/dev/null)
+            echo "$out" | grep -qE '^state=(on|leaving|broken|waiting)$' || continue
+            echo "$out" | grep -q '^running=1$' &&
+                die "Browser in RAM is on for $b, close $b first so its profile goes back on disk"
+            say step "putting your $b profile back on disk"
+            bash "$lib/browser_ram.sh" off "$b" >/dev/null 2>&1 || die "couldn't put $b back on disk, nothing removed"
+        done
+    done
+}
+
+# what goes with it. moss takes python-pyqt6-svg along on aeryn
+remove_list() {
+    case $DISTRO in
+        aerynos)
+            if moss pkg --help >/dev/null 2>&1; then
+                moss pkg remove --dry-run "$PKG" 2>/dev/null
+            else
+                moss remove --dry-run "$PKG" 2>/dev/null
+            fi | grep -v ':' | awk '{for (i = 1; i < NF; i += 2) print $i " " $(i + 1)}' | sort -u
+            ;;
+        *) echo "$PKG" ;;
+    esac
+}
+
+do_remove() {
+    browser_ram_off
+    as_root remove "$DISTRO" -
+    pkill -u "$(id -u)" -f "$PKG/tray/tray.py" 2>/dev/null
+    say done "LinuxTweaks is off this pc"
+}
+
+wipe_settings() {
+    rm -rf "$HOME/.local/state/$PKG" "$HOME/.cache/$PKG" "$HOME/.config/$PKG"
+    say done "your LinuxTweaks settings are gone too"
+}
+
+info() {
+    newest >/dev/null 2>&1 || true
+    echo "distro=$DISTRO"
+    echo "name=$DNAME"
+    echo "installed=$(installed_version)"
+    echo "newest=${NEW_VER:-}"
+    echo "file=${NEW_NAME:-}"
+    echo "size=${NEW_SIZE:-}"
+}
+
 ask() {
-	local reply
-	has_tty || return 1
-	read -r -p "  $1 [y/N] " reply </dev/tty || return 1
-	[[ $reply =~ ^[Yy] ]]
+    local ans
+    printf '%s ' "$1" >/dev/tty
+    read -r ans </dev/tty || ans=""
+    echo "${ans:-$2}"
 }
 
-# ---- old leftovers ------------------------------------------------------------
-
-# everything my older apps left behind. it had three names over the years:
-# dnf-updater, then linuxtweaks-dnf-updater, then LinuxTweaks 6.x (linuxtweaks).
-# before those, some PCs got hand made bits from me: a tray and resume unit,
-# and timers to clear out flatpak runtimes and podman images.
-# exact names only. linuxtweaks* would also hit linuxtweaks-updater, so the 6.x
-# ones are spelled out
-
-OLD_PACKAGES="dnf-updater linuxtweaks-dnf-updater linuxtweaks"
-
-# in your home folder. the * patterns fill in right here, anything that
-# isn't there stays as text and gets skipped below
-OLD_HOME_GLOBS=(
-	"$HOME"/.config/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
-	"$HOME"/.config/systemd/user/*.wants/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service,app-linuxtweaks@autostart.service}
-	"$HOME"/.config/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
-	"$HOME"/.config/systemd/user/{linuxtweaks-tray.service,linuxtweaks-resume.service}
-	"$HOME"/.config/systemd/user/*.wants/{linuxtweaks-tray.service,linuxtweaks-resume.service}
-	"$HOME"/.config/systemd/user/*.wants/{dnf-updater-,linuxtweaks-dnf-updater-}*
-	"$HOME"/.config/autostart/{linuxtweaks,linuxtweaks-tray,linuxtweaks-autostart,dnf-updater-tray,linuxtweaks-dnf-updater-tray}.desktop
-	"$HOME"/.config/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
-	"$HOME"/.local/state/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
-	"$HOME"/.cache/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
-	"$HOME"/.local/lib/linuxtweaks
-	"$HOME"/.local/share/linuxtweaks
-	"$HOME"/.local/bin/{linuxtweaks,linuxtweaks-autostart,linuxtweaks-check,linuxtweaks-upgrade,linuxtweaks-tray}
-	"$HOME"/.local/bin/{dnf-updater,linuxtweaks-dnf-updater}*
-	"$HOME"/.local/share/applications/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}.desktop
-	"$HOME"/.local/share/systemd/timers/stamp-{linuxtweaks.timer,linuxtweaks-autostart.service}
-	"$HOME"/.local/share/systemd/timers/stamp-{dnf-updater-,linuxtweaks-dnf-updater-}*
-)
-
-# on the system, only taken when no installed package owns it
-OLD_SYSTEM_GLOBS=(
-	/usr/{lib,lib64}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
-	/usr/{lib,lib64}/systemd/user/{linuxtweaks.timer,linuxtweaks.service,linuxtweaks-autostart.service}
-	/usr/{lib,lib64}/systemd/user/{dnf-updater-,linuxtweaks-dnf-updater-}*
-	/usr/{lib,lib64}/systemd/user/{linuxtweaks-tray.service,linuxtweaks-resume.service}
-	/etc/systemd/system/{linuxtweaks-flatpak-cleanup,linuxtweaks-podman-prune}.{service,timer}
-	/etc/systemd/system/*.wants/{linuxtweaks-flatpak-cleanup,linuxtweaks-podman-prune}.timer
-	/usr/local/{share,lib}/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}
-	/usr/{,local/}bin/{linuxtweaks,linuxtweaks-autostart,linuxtweaks-check,linuxtweaks-upgrade}
-	/usr/{,local/}bin/{dnf-updater,linuxtweaks-dnf-updater}*
-	/usr/share/applications/{linuxtweaks,dnf-updater,linuxtweaks-dnf-updater}.desktop
-	/usr/share/icons/hicolor/*/apps/{dnf-updater,linuxtweaks-dnf-updater}.png
-	/etc/xdg/autostart/{linuxtweaks,dnf-updater-tray,linuxtweaks-dnf-updater-tray}.desktop
-	/etc/systemd/user-preset/50-linuxtweaks.preset
-	/etc/systemd/user/*.wants/{linuxtweaks.timer,linuxtweaks-autostart.service}
-	/etc/systemd/user/*.wants/{dnf-updater-,linuxtweaks-dnf-updater-}*
-)
-
-OLD_PKGS=()
-OLD_HOME=()
-OLD_SYSTEM=()
-OLD_SUDOERS=()
-OLD_PIDS=()
-SUDOERS_LOOKED=""
-
-# /etc/sudoers.d is the one place you can't look into without root.
-# the old rules gave passwordless dnf to everyone in wheel. .rpmsave and
-# .rpmnew copies don't count to sudo, but one rename switches them back on
-find_old_sudoers() {
-	local f
-	OLD_SUDOERS=()
-	SUDOERS_LOOKED=""
-	if ! sudo -n true 2>/dev/null; then
-		has_tty || return
-		echo "  Looking in /etc/sudoers.d needs your password, only root can read it."
-		sudo -v </dev/tty || return
-	fi
-	SUDOERS_LOOKED=1
-	while IFS= read -r f; do
-		rpm -qf "$f" >/dev/null 2>&1 || OLD_SUDOERS+=("$f")
-	done < <(sudo find /etc/sudoers.d -maxdepth 1 -type f \( -name 'linuxtweaks*' -o -name 'dnf-updater*' \) 2>/dev/null)
+terminal() {
+    local have extras="" a
+    printf '\n\033[1;36m  LinuxTweaks installer\033[0m  \033[0;34m%s\033[0m\n\n' "$DNAME"
+    [ "$DISTRO" = unknown ] && die "LinuxTweaks is for Fedora, Solus and AerynOS, this is $DNAME"
+    newest || die "couldn't reach my GitHub, check your internet"
+    have=$(installed_version)
+    if [ -z "$have" ]; then
+        say log "LinuxTweaks isn't on here yet, newest is $NEW_VER ($((NEW_SIZE / 1024)) KB)"
+        if [ "$DISTRO" = fedora ]; then
+            a=$(ask "  get bandwhich from Terra too, for the Traffic tab? [y/N]" n)
+            [[ $a =~ ^[Yy] ]] && extras=bandwhich
+        fi
+        if [ "$DISTRO" = aerynos ]; then
+            a=$(ask "  add the volatile repo too (newer packages sooner, can break now and then)? [y/N]" n)
+            [[ $a =~ ^[Yy] ]] && extras=volatile
+        fi
+        a=$(ask "  install it? [Y/n]" y)
+        [[ $a =~ ^[Yy] ]] || { say log "left it, nothing changed"; exit 0; }
+        ACTION=install
+        do_install "$extras"
+        return
+    fi
+    say log "LinuxTweaks $have is on here, newest is $NEW_VER"
+    if [ "$(printf '%s\n%s\n' "$have" "$NEW_VER" | sort -V | tail -1)" != "$have" ]; then
+        a=$(ask "  update to $NEW_VER? [Y/n]" y)
+        if [[ $a =~ ^[Yy] ]]; then
+            ACTION=update
+            do_install ""
+            return
+        fi
+    else
+        say ok "you're on the newest"
+    fi
+    a=$(ask "  take LinuxTweaks off this pc? [y/N]" n)
+    [[ $a =~ ^[Yy] ]] || exit 0
+    if [ "$DISTRO" = aerynos ]; then
+        say log "moss takes these with it:"
+        remove_list | show
+        a=$(ask "  still take it off? [y/N]" n)
+        [[ $a =~ ^[Yy] ]] || exit 0
+    fi
+    do_remove
+    a=$(ask "  delete your LinuxTweaks settings too? [y/N]" n)
+    [[ $a =~ ^[Yy] ]] && wipe_settings
 }
 
-find_old() {
-	local p name
-	OLD_PKGS=()
-	OLD_HOME=()
-	OLD_SYSTEM=()
-	OLD_PIDS=()
+# ---- start ------------------------------------------------------------
 
-	# the old packages themselves. by full name, so dnf can't mix them up
-	# with linuxtweaks-updater, which says it provides the old names
-	for name in $OLD_PACKAGES; do
-		[ "$(rpm -q --qf '%{NAME}' "$name" 2>/dev/null)" = "$name" ] && OLD_PKGS+=("$(rpm -q "$name")")
-	done
+if [ "${1:-}" = --root ]; then
+    shift
+    find_distro
+    root_part "$@"
+fi
 
-	for p in "${OLD_HOME_GLOBS[@]}"; do
-		[ -e "$p" ] || [ -L "$p" ] && OLD_HOME+=("$p")
-	done
-	for p in "${OLD_SYSTEM_GLOBS[@]}"; do
-		[ -e "$p" ] || [ -L "$p" ] || continue
-		rpm -qf "$p" >/dev/null 2>&1 || OLD_SYSTEM+=("$p")
-	done
+[ "$(id -u)" = 0 ] && die "run it as you, not root. it asks for your password when it needs it"
+command -v curl >/dev/null 2>&1 || die "curl isn't installed"
 
-	# an old tray still running. 6.x ran as "python3 -m tray" from its own
-	# folder, so I only count it when that folder is one of mine. only real
-	# tray and check paths: the GitHub link has /linuxtweaks/ in it too, and
-	# run through ssh or sh -c this used to find its own shell and kill it
-	local old_paths='/linuxtweaks/(tray|lib)/|/dnf-updater/(tray|lib)/|/linuxtweaks-dnf-updater/(tray|lib)/'
-	for p in $(pgrep -u "$(id -u)" -f "python3 -m tray|$old_paths" 2>/dev/null); do
-		[ "$p" = "$$" ] || [ "$p" = "$PPID" ] && continue
-		tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE "$PACKAGE|install-linuxtweaks|githubusercontent" && continue
-		if tr '\0' ' ' <"/proc/$p/cmdline" 2>/dev/null | grep -qE "$old_paths" ||
-			readlink "/proc/$p/cwd" 2>/dev/null | grep -qE '/linuxtweaks|dnf-updater'; then
-			OLD_PIDS+=("$p")
-		fi
-	done
+WORK=$(mktemp -d /tmp/lt-install.XXXXXXXX)
+chmod 755 "$WORK"
+trap 'rm -rf "$WORK"' EXIT
+find_distro
 
-	find_old_sudoers
-}
+# piped from curl there's no file to run as root, so grab my own copy
+HERE=""
+if [ -f "${BASH_SOURCE[0]:-}" ]; then
+    SELF=$(readlink -f "${BASH_SOURCE[0]}")
+    HERE=$(dirname "$SELF")
+else
+    SELF="$WORK/install-linuxtweaks.sh"
+    curl -fsSL -A "$UA" -o "$SELF" "$RAW/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh" ||
+        die "couldn't get the installer from GitHub"
+fi
 
-show_old() {
-	local p
-	for p in "${OLD_PKGS[@]}"; do note "old package still installed: $p"; done
-	for p in "${OLD_PIDS[@]}"; do note "old tray running, pid $p"; done
-	for p in "${OLD_SUDOERS[@]}"; do note "$p ${RED}(old sudo rules)${NC}"; done
-	for p in "${OLD_HOME[@]}"; do note "$p"; done
-	for p in "${OLD_SYSTEM[@]}"; do note "$p (no package owns it)"; done
-	[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
-}
+# my window adds --plain: "kind: text" lines and pkexec for the password
+GUI=0
+if [ "${1:-}" = --plain ]; then
+    PLAIN=1
+    GUI=1
+    shift
+fi
 
-old_count() { echo $((${#OLD_PKGS[@]} + ${#OLD_HOME[@]} + ${#OLD_SYSTEM[@]} + ${#OLD_SUDOERS[@]} + ${#OLD_PIDS[@]})); }
-
-remove_old() {
-	local count
-	count=$(old_count)
-	[ ${#OLD_PIDS[@]} -gt 0 ] && kill "${OLD_PIDS[@]}" 2>/dev/null
-	systemctl --user stop 'dnf-updater-*' 'linuxtweaks-dnf-updater-*' \
-		linuxtweaks.timer linuxtweaks.service linuxtweaks-autostart.service \
-		linuxtweaks-tray.service linuxtweaks-resume.service >/dev/null 2>&1
-	# my old hand made system timers can still be running. switch off only
-	# the ones whose file is on the list, so never anything a package owns
-	local u
-	for u in linuxtweaks-flatpak-cleanup.timer linuxtweaks-podman-prune.timer; do
-		printf '%s\n' "${OLD_SYSTEM[@]}" | grep -qx "/etc/systemd/system/$u" &&
-			sudo systemctl disable --now "$u" >/dev/null 2>&1
-	done
-	# by exact name and version, never just "linuxtweaks"
-	[ ${#OLD_PKGS[@]} -gt 0 ] && sudo dnf remove -y "${OLD_PKGS[@]}"
-	[ ${#OLD_SUDOERS[@]} -gt 0 ] && sudo rm -f "${OLD_SUDOERS[@]}"
-	[ ${#OLD_HOME[@]} -gt 0 ] && rm -rf "${OLD_HOME[@]}"
-	if [ ${#OLD_SYSTEM[@]} -gt 0 ]; then
-		sudo rm -rf "${OLD_SYSTEM[@]}"
-		sudo systemctl daemon-reload 2>/dev/null
-		sudo gtk-update-icon-cache -q /usr/share/icons/hicolor 2>/dev/null
-	fi
-	systemctl --user daemon-reload 2>/dev/null
-	systemctl --user reset-failed 2>/dev/null
-	ok "removed ${count} old leftover(s)"
-}
-
-# say why these matter, only for what was really found
-explain_old() {
-	# things systemd or the desktop can start: units, their enable links, autostart
-	local starts='systemd/user/|systemd/system/|\.wants/|autostart|user-preset' p live=0 inert=0
-	for p in "${OLD_HOME[@]}" "${OLD_SYSTEM[@]}"; do
-		if echo "$p" | grep -qE "$starts"; then live=1; else inert=1; fi
-	done
-	echo "  These are from my older apps:"
-	[ ${#OLD_PKGS[@]} -gt 0 ] && echo "    an old package is still installed, the new one replaces it"
-	[ ${#OLD_PIDS[@]} -gt 0 ] && echo "    an old tray is still running next to the new one"
-	[ ${#OLD_SUDOERS[@]} -gt 0 ] && echo -e "    ${RED}old sudo rules that give out root without a password${NC}"
-	[ "$live" = 1 ] && echo "    old timers or autostart entries that can start the old app again"
-	[ "$inert" = 1 ] && echo "    leftover files nothing uses any more"
-	echo "  Found:"
-}
-
-# look, show, ask, then clean
-cleanup_old() {
-	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
-	find_old
-	if [ "$(old_count)" -eq 0 ]; then
-		ok "none found"
-		[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
-		return
-	fi
-	explain_old
-	show_old
-	if ask "Remove them?"; then
-		remove_old
-	else
-		note "left them alone. run this again with --cleanup when you want them gone"
-	fi
-}
-
-# ---- status -----------------------------------------------------------------
-
-repo_reachable() {
-	curl -fsS -m 10 -o /dev/null "${REPO_URL}/repodata/repomd.xml" 2>/dev/null
-}
-
-tray_running() { pgrep -u "$(id -u)" -f "$TRAY_PATTERN" >/dev/null; }
-
-status() {
-	step "My repo"
-	if repo_reachable; then ok "reachable at ${REPO_URL}"; else bad "can't reach ${REPO_URL}"; fi
-	if [ -f "$REPO_FILE" ]; then
-		if grep -q '^gpgcheck=1' "$REPO_FILE"; then ok "$REPO_FILE checks my signature"; else bad "$REPO_FILE doesn't check my signature, run the install again to fix it"; fi
-	else
-		note "$REPO_FILE isn't there yet"
-	fi
-	if [ -f "$IO_REPO_FILE" ] && grep -q '^gpgcheck=0' "$IO_REPO_FILE"; then
-		note "$IO_REPO_FILE doesn't check signatures, the install switches that on"
-	fi
-
-	step "LinuxTweaks Updater"
-	if rpm -q "$PACKAGE" >/dev/null 2>&1; then
-		ok "installed: $(rpm -q "$PACKAGE")"
-	else
-		note "not installed"
-		return
-	fi
-	if tray_running; then ok "tray running"; else note "tray not running, start it with: linuxtweaks-updater"; fi
-	if systemctl --user is-enabled linuxtweaks-updater-check.timer >/dev/null 2>&1; then
-		ok "update check timer is on"
-	else
-		note "update check timer switches on the first time the tray starts"
-	fi
-	if systemctl is-enabled linuxtweaks-updater-maintenance.timer >/dev/null 2>&1; then
-		ok "weekly maintenance is on"
-	else
-		note "weekly maintenance is off. switch it on in the tray menu if you want it"
-	fi
-	if [ -e /etc/sudoers.d/linuxtweaks-updater ]; then
-		bad "/etc/sudoers.d/linuxtweaks-updater is still there. versions before 7.4.0 had it, update to get rid of it"
-	else
-		ok "no sudo rules from me"
-	fi
-}
-
-# ---- install / update -------------------------------------------------------
-
-install() {
-	header "🫟  LinuxTweaks Updater install"
-
-	step "Can I reach my repo?"
-	if ! repo_reachable; then
-		bad "no answer from ${REPO_URL}"
-		echo "  My repo runs on my own server over Tailscale."
-		# say which bit is missing, not just "it failed"
-		if ! command -v tailscale >/dev/null 2>&1; then
-			echo "  Tailscale isn't installed here. The README shows how, it takes 5 minutes."
-		elif ! tailscale status >/dev/null 2>&1; then
-			echo "  Tailscale is installed but not connected. Run: sudo tailscale up"
-		else
-			echo "  You're on Tailscale but my server isn't shared with you yet. Send me"
-			echo "  the email you log in to Tailscale with and I'll share it."
-		fi
-		echo "  Nothing was changed."
-		exit 1
-	fi
-	ok "yes"
-
-	step "Repo file"
-	# always written fresh, older copies didn't check the signature
-	sudo tee "$REPO_FILE" >/dev/null <<EOF
-[linuxtweaks]
-name=LinuxTweaks Repository
-baseurl=${REPO_URL}/
-enabled=1
-gpgcheck=1
-gpgkey=${REPO_URL}/RPM-GPG-KEY
-# check for new uploads at least hourly
-metadata_expire=1h
-EOF
-	ok "$REPO_FILE written, packages must carry my signature"
-	# linuxtweaks-io is signed with the same key, so it can check too
-	if [ -f "$IO_REPO_FILE" ] && grep -q '^gpgcheck=0' "$IO_REPO_FILE"; then
-		sudo sed -i "s|^gpgcheck=0|gpgcheck=1\ngpgkey=${REPO_URL}/RPM-GPG-KEY|" "$IO_REPO_FILE"
-		ok "$IO_REPO_FILE now checks my signature too"
-	fi
-
-	# my older apps, the packages included. say no and dnf still swaps
-	# linuxtweaks 6.x and linuxtweaks-dnf-updater for the new one anyway
-	cleanup_old
-
-	step "Installing"
-	echo "  dnf may ask to import my signing key. Its ID is ${KEY_ID}."
-	local was=""
-	rpm -q "$PACKAGE" >/dev/null 2>&1 && was=$(rpm -q --qf '%{VERSION}' "$PACKAGE")
-	if [ -n "$was" ]; then
-		# only my package, the rest of your system is your call
-		sudo dnf upgrade --refresh -y "$PACKAGE" || { bad "dnf couldn't update it"; exit 1; }
-	else
-		sudo dnf install --refresh -y "$PACKAGE" || { bad "dnf couldn't install it"; exit 1; }
-	fi
-	local now
-	now=$(rpm -q --qf '%{VERSION}' "$PACKAGE")
-	if [ -z "$was" ]; then
-		ok "installed ${now}"
-	elif [ "$was" = "$now" ]; then
-		ok "already on the latest, ${now}"
-	else
-		ok "updated ${was} to ${now}"
-	fi
-
-	step "Tray"
-	if [ -z "${DISPLAY}${WAYLAND_DISPLAY}" ]; then
-		note "no desktop here, the tray starts by itself next time you log in"
-	else
-		if tray_running && [ -n "$was" ] && [ "$was" != "$now" ]; then
-			# still running the old code, swap it for the new
-			pkill -TERM -u "$(id -u)" -f "$TRAY_PATTERN"
-			sleep 2
-		fi
-		linuxtweaks-updater >/dev/null 2>&1
-		sleep 3
-		if tray_running; then ok "running, look for the icon"; else bad "didn't start, try: linuxtweaks-updater --foreground"; fi
-	fi
-
-	status
-
-	echo ""
-	header "✅ LinuxTweaks Updater ${now} is ready"
-	echo "  • Right click the tray icon for the menu. Help is under About."
-	echo "  • It checks every 30 minutes and starts by itself when you log in."
-	echo "  • Click a package in the DNF list to see what changed in it. A 🔴"
-	echo "    means it's a security fix."
-	echo "  • Weekly maintenance is off until you switch it on in the menu."
-	echo "  • New versions come with a normal: sudo dnf upgrade"
-	echo ""
-}
-
-# ---- remove -----------------------------------------------------------------
-
-remove() {
-	header "🫟  LinuxTweaks Updater remove"
-	if ! rpm -q "$PACKAGE" >/dev/null 2>&1; then
-		ok "not installed, nothing to do"
-	else
-		echo "  This removes the app, its timers and its settings for every user"
-		echo "  on this PC. Your packages and updates stay as they are."
-		if ask "Remove LinuxTweaks Updater?"; then
-			sudo dnf remove -y "$PACKAGE" && ok "removed"
-		else
-			note "kept it"
-			exit 0
-		fi
-	fi
-	if [ -f "$REPO_FILE" ] && ask "Remove my repo file too ($REPO_FILE)?"; then
-		sudo rm -f "$REPO_FILE" && ok "repo file removed"
-	fi
-}
-
-# ---- fake updates for testing the tray ----------------------------------------
-
-# the tray only notices a file that's replaced, not one edited in place, so
-# everything here is written next to it and moved over
-put() { cat >"$STATE/.$1.new" && mv -f "$STATE/.$1.new" "$STATE/$1"; }
-
-FAKE_FILES="last_updates_check_packages last_updates_check_flatpak last_updates_check_security current_updates_check"
-
-fake() {
-	local dnf_count="${1:-1}" flatpak_count="${2:-500}" i f
-	[ -d "$STATE" ] || { bad "the tray hasn't run here yet, start it first: linuxtweaks-updater"; exit 1; }
-	# back up the real lists once, a second run mustn't back up the fakes
-	if [ ! -d "$BACKUP" ]; then
-		mkdir -p "$BACKUP"
-		for f in $FAKE_FILES; do [ -f "$STATE/$f" ] && cp "$STATE/$f" "$BACKUP/$f"; done
-	fi
-	for i in $(seq 1 "$dnf_count"); do echo "fake-package-${i}: 1.0.0-1 → 1.0.1-1"; done | put last_updates_check_packages
-	for i in $(seq 1 "$flatpak_count"); do
-		printf 'Fake App %d\torg.linuxtweaks.FakeApp%d\t1.0.%d\tstable\tx86_64\tflathub\n' "$i" "$i" "$i"
-	done | put last_updates_check_flatpak
-	# the first fake package is a pretend security fix, so you see the 🔴 too
-	if [ "$dnf_count" -gt 0 ]; then
-		printf 'fake-package-1\tImportant\tFAKE-0001\n' | put last_updates_check_security
-	else
-		: | put last_updates_check_security
-	fi
-	echo $((dnf_count + flatpak_count)) | put current_updates_check
-	ok "fake updates in the tray: ${dnf_count} dnf + ${flatpak_count} flatpak"
-	echo "  Hover the icon and right click it to see how they look."
-	echo -e "  ${YELLOW}Don't press Install${NC}, that runs a real update."
-	echo "  The next check puts the real list back anyway, or run this with --restore"
-}
-
-restore() {
-	local f
-	[ -d "$BACKUP" ] || { ok "no fake test running, nothing to restore"; exit 0; }
-	for f in $FAKE_FILES; do
-		if [ -f "$BACKUP/$f" ]; then put "$f" <"$BACKUP/$f"; else : | put "$f"; fi
-	done
-	rm -rf "$BACKUP"
-	ok "real update list is back"
-}
-
-# ---- go -----------------------------------------------------------------------
-
-case "$1" in
-"") install ;;
---check)
-	header "🫟  LinuxTweaks Updater check (only looking)"
-	status
-	step "Old leftovers (dnf-updater, linuxtweaks-dnf-updater, LinuxTweaks 6.x)"
-	find_old
-	if [ "$(old_count)" -eq 0 ]; then
-		ok "none found"
-		# say so when sudoers wasn't looked at, "none" shouldn't cover a place I couldn't see
-		[ -z "$SUDOERS_LOOKED" ] && note "couldn't look in /etc/sudoers.d without your password"
-	else
-		show_old
-		echo "  Remove them with: bash install-linuxtweaks.sh --cleanup"
-	fi
-	echo ""
-	;;
---cleanup) cleanup_old ;;
---remove) remove ;;
---fake) fake "$2" "$3" ;;
---restore) restore ;;
-*)
-	# $0 is just "bash" when this comes through curl, so the list lives here
-	echo "  bash install-linuxtweaks.sh               install it, or update it"
-	echo "  bash install-linuxtweaks.sh --check       only look, changes nothing"
-	echo "  bash install-linuxtweaks.sh --cleanup     only clear out what my older apps left behind"
-	echo "  bash install-linuxtweaks.sh --remove      uninstall it"
-	echo "  bash install-linuxtweaks.sh --fake 3 20   3 dnf + 20 flatpak fake updates in the tray"
-	echo "  bash install-linuxtweaks.sh --restore     put the real update list back"
-	exit 1
-	;;
+case "${1:-}" in
+    --info) info ;;
+    --check)
+        # download and check the signature, installs nothing
+        newest || die "couldn't reach my GitHub, check your internet"
+        download "$WORK"
+        verify
+        say done "$NEW_NAME is mine and good to go, nothing installed"
+        ;;
+    --install) ACTION=install; do_install "${2:-}" ;;
+    --update) ACTION=update; do_install "" ;;
+    --remove-list) remove_list ;;
+    --remove) do_remove ;;
+    --wipe) wipe_settings ;;
+    --terminal) terminal ;;
+    "")
+        # my window when there's a desktop and PyQt, the terminal if not
+        py=""
+        if [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] && command -v python3 >/dev/null 2>&1; then
+            python3 -c 'import PyQt6.QtWidgets' 2>/dev/null && py=6
+            [ -z "$py" ] && python3 -c 'import PyQt5.QtWidgets' 2>/dev/null && py=5
+        fi
+        if [ -n "$py" ]; then
+            gui="$HERE/install-linuxtweaks-gui.py"
+            if [ -z "$HERE" ] || [ ! -f "$gui" ]; then
+                gui="$WORK/install-linuxtweaks-gui.py"
+                curl -fsSL -A "$UA" -o "$gui" "$RAW/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-gui.py" || gui=""
+            fi
+            if [ -n "$gui" ]; then
+                python3 "$gui" "$SELF"
+                exit $?
+            fi
+        fi
+        [ "$DISTRO" != unknown ] && say log "no Qt on here yet, so I'll do it in the terminal. same steps"
+        terminal
+        ;;
+    *)
+        echo "install-linuxtweaks.sh [--terminal | --check]" >&2
+        exit 2
+        ;;
 esac

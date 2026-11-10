@@ -154,7 +154,7 @@ moss pkg --help >/dev/null 2>&1 && echo "new moss" || echo "old moss"
 
 ## 📥 Quick install and the volatile repo
 
-`LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh` asks if you want volatile, adds my repo and installs it, with `pkg add` or `install` depending on your moss. Volatile only gets asked on the new moss, the old one has no `--root-index`. Some 0.26.10 builds won't `repo add` without `-c`, so it always passes one.
+The [one line installer](README.md#-one-line-any-distro) (`LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh`, it took over from `install-linuxtweaks-aerynos.sh` on 10 Nov) asks if you want volatile, adds my repo and installs it, with `pkg add` or `install` depending on your moss. Some 0.26.10 builds won't `repo add` without `-c`, so it always passes one. Updating goes through LinuxTweaks' own About update, moss can't update one package on its own, a `sync` moves the whole system. Taking it off shows what `moss pkg remove --dry-run` says first, moss takes python-pyqt6-svg along with it.
 
 | Source | What I took from it |
 |---|---|
@@ -162,11 +162,15 @@ moss pkg --help >/dev/null 2>&1 && echo "new moss" || echo "old moss"
 | [repository/manager.rs](https://github.com/AerynOS/os-tools/blob/main/moss/src/repository/manager.rs) | channel `main` is the default, the old `.../stream/volatile/x86_64/stone.index` url still maps to the same thing |
 | [cli/sync.rs](https://github.com/AerynOS/os-tools/blob/main/moss/src/cli/sync.rs) | sync takes the highest priority repo, so volatile at 10 beats unstable at 0, `-u` reads the new index first |
 | [March 2026 update](https://aerynos.com/blog/2026/03/31/march-2026-project-update/) | volatile moved onto the CDN |
+| [os-release(5)](https://www.freedesktop.org/software/systemd/man/latest/os-release.html) | `ID=` says which distro, read `/etc/os-release` and only fall back to `/usr/lib/os-release` |
+| [pkexec(1)](https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html) | the one password box from the window, full paths only, 126 is the box closed, 127 a wrong password |
+| [GitHub contents API](https://docs.github.com/en/rest/repos/contents) | a folder comes back as a list with name, size and download_url, 60 asks an hour without logging in |
+| [gpgv(1)](https://gnupg.org/documentation/manuals/gnupg/gpgv.html) | the `.asc` next to the stone, exit 0 only for a good signature |
 
 ### Try it yourself
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks-aerynos.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tolgaerok/linuxtweaks/main/LINUXTWEAKS/POST-INSTALL/install-linuxtweaks.sh | bash
 moss repo list    # volatile [10] if you said y, linuxtweaks [10]
 ```
 
