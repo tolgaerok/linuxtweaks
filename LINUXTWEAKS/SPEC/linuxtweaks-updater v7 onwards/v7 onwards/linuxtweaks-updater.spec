@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.96
+Version:        8.2.97
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -343,6 +343,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.97-1
+- Browser in RAM saves straight away again, no more minute wait
+
 * Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.96-1
 - Browser in RAM kicks in the second Firefox closes, and at login
 
