@@ -8,7 +8,7 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.98-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Fedora](https://img.shields.io/badge/Version-8.2.99-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
 [![Solus](https://img.shields.io/badge/Solus-8.2.87-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![AerynOS](https://img.shields.io/badge/AerynOS-1.0.28-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
@@ -97,7 +97,7 @@ Every real drive on a card, with its I/O scheduler and read-ahead and a dropdown
 
 ### 🧠 Memory
 
-Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, a safety net for kernel crashes, and **No freeze when RAM runs out**, which keeps what you used in the last second in RAM so a full RAM closes the biggest app instead of locking up the PC. At the bottom, **Browser in RAM**: one switch moves your Firefox or LibreWolf profile into RAM, so cookies, history and tabs stop hitting the disk. It's saved back the moment you close the browser, every minute while it's open and when you log out, no password, and turning it off puts the profile back where it was.
+Compressed swap in RAM (zram) and how eagerly Linux uses it: size, compression and swappiness, with **Recommended for this pc** and a **What these mean** button that explains every setting in plain words. Under it, **Desktop tweaks**: smooth big file copies, more file watchers for big projects, a safety net for kernel crashes, and **No freeze when RAM runs out**, which keeps what you used in the last second in RAM so a full RAM closes the biggest app instead of locking up the PC. At the bottom, **Browser in RAM**: one switch moves your Firefox or LibreWolf profile into RAM, so cookies, history and tabs stop hitting the disk. It's saved back the moment you close the browser, every minute while it's open and when you log out, no password, and turning it off puts the profile back where it was. Flatpak Firefox and LibreWolf work too, it gives them access to /dev/shm and takes it back off when you switch off. **Cache in RAM too**, under a browser that's in RAM, keeps its page cache in RAM and saves open tabs every minute instead of every 15 seconds, so even less hits the disk. The card shows what's been written to disk this week.
 
 ### 🌐 Network
 

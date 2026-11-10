@@ -370,6 +370,11 @@ New card at the bottom of the Memory tab, one switch for Firefox and one for Lib
 | [plasma-core.target](https://lxr.kde.org/source/plasma/plasma-workspace/startkde/systemd/plasma-core.target) | Plasma waits for `graphical-session-pre.target` first, so the profile's in RAM before Firefox comes back with the session (10 Nov, Alex's never moved in) |
 | [org.freedesktop.systemd1(5)](https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.systemd1.html) | `NeedDaemonReload` says a unit's file changed on disk, so after a LinuxTweaks upgrade it reloads and restarts the watcher and timer by itself |
 | [systemctl(1)](https://www.freedesktop.org/software/systemd/man/latest/systemctl.html) | `try-restart` only restarts units that are already running, the Fedora RPM uses it after an upgrade |
+| [flatpak-override(1)](https://docs.flatpak.org/en/latest/flatpak-command-reference.html) | `--device=shm` gives a flatpak the host's /dev/shm (1.6.1 and up), `--nodevice=shm` takes it back, only if I set it |
+| [LibreWolf settings](https://librewolf.net/docs/settings/) | `librewolf.overrides.cfg` next to profiles.ini, read at every start, flatpak profile in `~/.var/app/io.gitlab.librewolf-community/.librewolf` |
+| [StaticPrefList.yaml](https://raw.githubusercontent.com/mozilla-firefox/firefox/main/modules/libpref/init/StaticPrefList.yaml) | the 4 Cache in RAM too prefs and their defaults, memory cache size is in KB, session interval in ms (15000) |
+| [Mozilla bug 77975](https://bugzilla.mozilla.org/show_bug.cgi?id=77975) | user.js values land in prefs.js and stay, so off takes them out of prefs.js too |
+| [rsync(1)](https://download.samba.org/pub/rsync/rsync.1) | `--inplace` leaves a half written file if it's cut off and clashes with `--delay-updates`, so saves stay whole files |
 
 ## 📥 One line installer (10 Nov)
 

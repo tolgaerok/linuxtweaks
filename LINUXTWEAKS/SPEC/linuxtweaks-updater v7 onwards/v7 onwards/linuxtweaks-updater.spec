@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.98
+Version:        8.2.99
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -347,6 +347,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.99-1
+- Browser in RAM can keep the cache in RAM too, and works with flatpak browsers
+
 * Tue Nov 10 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.98-1
 - Browser in RAM saves every minute and fixes itself after an update
 
