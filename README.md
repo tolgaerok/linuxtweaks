@@ -8,8 +8,8 @@
 
 **My one app for keeping Fedora and Solus up to date and running well.**
 
-[![Fedora](https://img.shields.io/badge/Version-8.2.99-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
-[![Solus](https://img.shields.io/badge/Solus-8.2.88-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
+[![Fedora](https://img.shields.io/badge/Version-8.2.100-51A2DA?label=Fedora%2044%2B&logo=fedora&logoColor=white)](#-fedora)
+[![Solus](https://img.shields.io/badge/Solus-8.2.89-5294E2?label=Solus%204.9&logo=solus&logoColor=white)](#-solus)
 [![AerynOS](https://img.shields.io/badge/AerynOS-1.0.29-b48ead?label=AerynOS&logoColor=white)](#-aerynos)
 [![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-6-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop)
 [![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -66,7 +66,7 @@ It runs on **Fedora** and on **Solus**. Same app, same tabs, same look. Undernea
 | 🧠 **Memory** | zram, swappiness, a few desktop tweaks and Browser in RAM, explained in plain words |
 | 🌐 **Network** | BBR, bigger buffers, CAKE, Wi-Fi power saving, IPv6, network shares |
 | 🐧 **Kernels** | Pick the default kernel, remove old ones safely |
-| 🎮 **GPU** | Fedora only: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships |
+| 🎮 **GPU** | Fedora: where the NVIDIA driver comes from, the right branch for your card, and the tweaks Solus ships. All 3 with NVIDIA: the VRAM limit |
 | 📦 **Boxes** | Fedora, Debian or Arch in a box with distrobox. On Fedora, LumineCapture for screenshots with OCR too |
 | ❄️ **Nix** | The Nix package manager next to yours: install a program for good, or try it without installing |
 | 🧩 **Extras** | Fixes and apps for one job each. WPS Office's crashing cloud helper, and on Solus LumineCapture and MEGAsync |
@@ -113,13 +113,15 @@ On aerynOS, the **States** card lists your moss states. **Name it** gives a stat
 
 There are two more tabs. **📊 Disk space** shows how full each disk is, from duf, with a bar that goes yellow past 75% and red past 90%. Network shares show too if you flick **Look at shares too** on. **📶 Traffic** is live, from bandwhich: which app is sending and getting what right now, who it talks to, and every connection if you want them. It stops when you leave the tab. No password, it runs as root through my helper. Fedora has duf but no bandwhich in its own repos. On Fedora the Traffic tab has a **⬇ Get bandwhich** button: one password, it adds Terra (Fyra Labs) and installs bandwhich, then LinuxTweaks restarts on the Traffic tab ready to go.
 
-### 🎮 GPU (Fedora only)
+### 🎮 GPU
 
 NVIDIA on Fedora comes from a third party repo: Negativo17 or RPM Fusion. Never both, they ship the same things under different names, and the tab warns you with a red box if both are on and moves you over to one cleanly. It picks the right driver branch for your card (the 580 branch for GTX 900 and 10 series, the newest for everything after), switches Negativo17's multimedia repo on or off, and has the tweaks Solus ships in its own NVIDIA package, with **Apply all tweaks** to turn them on with one password. Each one says *Needs reboot* or *Needs log out*, and greys out when your driver doesn't have it.
 
 The **egl-wayland 1** switch keeps your desktop on the older Wayland bridge, the one Solus uses. Up to 8.2.80 it didn't really work: the driver loads every bridge it finds, so both got loaded and egl-wayland2 still came first. Since 8.2.81 it points the driver at a folder with every bridge except egl-wayland2, and updating to 8.2.81 moves you over by itself. A driver update that adds a new bridge gets picked up on its own. Log out and back in, then check: `grep -o 'libnvidia-egl-wayland[^ /]*' /proc/$(pgrep -nx plasmashell)/maps | sort -u` should only show `libnvidia-egl-wayland.so`. Flatpak apps keep their own bridges, the switch doesn't touch them. On the G4 (GTX 1650) the desktop felt quicker after the switch.
 
-Solus doesn't get this tab. Solus packages its own NVIDIA driver, you install it from the Software Center the way the [Solus NVIDIA guide](https://help.getsol.us/docs/user/hardware/nvidia-gpu-drivers) says, and it already has those tweaks.
+Solus doesn't get the driver part. Solus packages its own NVIDIA driver, you install it from the Software Center the way the [Solus NVIDIA guide](https://help.getsol.us/docs/user/hardware/nvidia-gpu-drivers) says, and it already has those tweaks.
+
+**🟩 NVIDIA VRAM limit**, on all 3, only with the NVIDIA driver (Solus and AerynOS get a GPU tab with just this). Browsers, chat apps and terminals stop sitting on spare video memory, so games get more of it. It's the same setting NVIDIA's driver already uses for plasmashell and kwin. Flick it on, take apps off the list or add what's on the GPU right now with **+ Add**, it shows how much each one uses. Restart an app for it to kick in, the card says which ones still need it. OpenGL apps only, Vulkan apps and games ignore it. Got a `limit-vram-usage` file from nvidia-all or aeryn already? The card offers to take its apps over. Idea from Frogging-Family's nvidia-all.
 
 ### 📦 Boxes
 
@@ -314,7 +316,7 @@ Uninstalling takes the app, its timers, the menu launcher and its settings. Your
 | **🧠 Memory** | What zram and swappiness are now, change them, Recommended for this pc, What these mean. Desktop tweaks switches under it |
 | **🌐 Network** | Your connection right now, switches for BBR, buffers, CAKE, Wi-Fi power saving, IPv6 and network shares |
 | **🐧 Kernels** | Every kernel, Show which one boots, Boot by default, Remove, and on Fedora which new kernels take over. Under them the CPU scheduler: scx scheduler and mode, Apply, Keep it after a reboot, Back to the default |
-| **🎮 GPU** | Fedora only. Where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks |
+| **🎮 GPU** | Fedora: where the driver comes from, the branch, multimedia, and the tweaks with Apply all tweaks. All 3 with NVIDIA: NVIDIA VRAM limit, its switch, the list, on the GPU right now with + Add, Apply |
 | **📦 Boxes** | Distrobox: what's set up, My boxes with their logos and Open terminal, Update, Stop and Delete, New box. On Fedora, Apps like LumineCapture |
 | **❄️ Nix** | Install a program for good or try it without installing, Look it up, what's installed with Remove, Update them, Free up space, and nix-shell with your ~/default.nix. Refreshes by itself, Fix Nix when part of it's missing |
 | **🧩 Extras** | One switch per fix, with what it does and how. WPS Office's cloud helper, and on Solus LumineCapture and MEGAsync |
@@ -377,6 +379,7 @@ Turning a switch off in the app is the easy way. By hand, delete the file and re
 | WPS Office's cloud helper | `linuxtweaks-wps-mask-boot.service` and `linuxtweaks-wps-mask.path` in `/etc/systemd/system`, `sudo systemctl disable --now` them first |
 | Background extras (Fedora) | Undo on the Health card. By hand: `sudo systemctl enable --now dnf-makecache.timer` (or `abrtd`, `pmcd`), and delete `~/.config/autostart/org.kde.discover.notifier.desktop` for Discover's notifier. KMail, on both: Put it back on the card, or `sudo dnf install kmail kontact` / `sudo eopkg it kmail kontact` |
 | Wake from sleep | **Let everything wake it again** on the Health card. By hand: `sudo rm /etc/udev/rules.d/90-linuxtweaks-wake.rules` and reboot |
+| NVIDIA VRAM limit | `/etc/nvidia/nvidia-application-profiles-rc.d/linuxtweaks-vram-limit`, delete it and restart the apps |
 | GPU tweaks (Fedora) | `/etc/modprobe.d/linuxtweaks-nvidia.conf`, and `preempt=full` / `transparent_hugepage=always` come off with `sudo grubby --update-kernel=ALL --remove-args="preempt transparent_hugepage"` |
 
 The same files on Fedora and Solus.

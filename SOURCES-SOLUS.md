@@ -388,6 +388,18 @@ New card at the bottom of the Memory tab, one switch for Firefox and one for Lib
 | [pkexec(1)](https://www.freedesktop.org/software/polkit/docs/latest/pkexec.1.html) | the one password box from the window, full paths only, 126 is the box closed, 127 a wrong password |
 | [GitHub contents API](https://docs.github.com/en/rest/repos/contents) | a folder comes back as a list with name, size and download_url, 60 asks an hour without logging in |
 
+## 🟩 NVIDIA VRAM limit
+
+On the 🎮 GPU tab, NVIDIA only. Browsers, chat apps and terminals stop sitting on spare video memory, so games get more of it. One switch, a list you can edit, and what's on the GPU right now with **+ Add**. It's one file, `/etc/nvidia/nvidia-application-profiles-rc.d/linuxtweaks-vram-limit`.
+
+| Source | What I took from it |
+|---|---|
+| [NVIDIA README, Application Profiles](https://download.nvidia.com/XFree86/Linux-x86_64/570.169/README/profiles.html) | the driver reads `/etc/nvidia/nvidia-application-profiles-rc.d` when an OpenGL app starts, `procname` has to be the program's file name exactly, JSON with `#` comments |
+| [Frogging-Family nvidia-all, limit-vram-usage](https://github.com/Frogging-Family/nvidia-all/blob/master/nvidia-all-config/system/limit-vram-usage) | the idea and the starting app list |
+| [aerynOS nvidia-graphics-driver recipe](https://github.com/AerynOS/recipes/blob/main/n/nvidia-graphics-driver/pkg/limit-vram-usage) | aeryn ships the same list with code, coolercontrol, electron and yakuake added, so those are in mine too |
+| [KDE bug 499560](https://bugs.kde.org/show_bug.cgi?id=499560) | plasmashell grabbing 500 MB and more of VRAM on NVIDIA, why the driver's own profile already limits it |
+| [Solus nvidia-580-glx-driver](https://github.com/getsolus/packages/blob/main/packages/n/nvidia-580-glx-driver/pspec_x86_64.xml) | Solus ships NVIDIA's own profile file, the setting is there. Solus has no GPU tab, it gets one with just this card |
+
 <div align="center">
 
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🪨 AerynOS sources](SOURCES-AERYNOS.md) · [⬆ Back to top](#top)

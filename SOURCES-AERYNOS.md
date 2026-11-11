@@ -417,6 +417,18 @@ These are written up once, on the [Fedora page](SOURCES-FEDORA.md):
 
 ---
 
+## 🟩 NVIDIA VRAM limit
+
+On the 🎮 GPU tab, NVIDIA only. Browsers, chat apps and terminals stop sitting on spare video memory, so games get more of it. One switch, a list you can edit, and what's on the GPU right now with **+ Add**. It's one file, `/etc/nvidia/nvidia-application-profiles-rc.d/linuxtweaks-vram-limit`.
+
+| Source | What I took from it |
+|---|---|
+| [NVIDIA README, Application Profiles](https://download.nvidia.com/XFree86/Linux-x86_64/570.169/README/profiles.html) | the driver reads `/etc/nvidia/nvidia-application-profiles-rc.d` when an OpenGL app starts, `procname` has to be the program's file name exactly, JSON with `#` comments |
+| [Frogging-Family nvidia-all, limit-vram-usage](https://github.com/Frogging-Family/nvidia-all/blob/master/nvidia-all-config/system/limit-vram-usage) | the idea and the starting app list |
+| [aerynOS nvidia-graphics-driver recipe](https://github.com/AerynOS/recipes/blob/main/n/nvidia-graphics-driver/pkg/limit-vram-usage) | aeryn ships the same list with code, coolercontrol, electron and yakuake added, so those are in mine too |
+| [KDE bug 499560](https://bugs.kde.org/show_bug.cgi?id=499560) | plasmashell grabbing 500 MB and more of VRAM on NVIDIA, why the driver's own profile already limits it |
+| [aerynOS nvidia-graphics-driver stone.yaml](https://github.com/AerynOS/recipes/blob/main/n/nvidia-graphics-driver/stone.yaml) | aeryn's copy goes in a `/usr/share/nvidia/...-rc.d` folder NVIDIA's README doesn't list, so mine goes in `/etc` where the driver does look. aeryn gets a GPU tab with just this card |
+
 <div align="center">
 
 [⬅ Back to the README](README.md) · [📚 All sources](SOURCES.md) · [🎩 Fedora sources](SOURCES-FEDORA.md) · [🌀 Solus sources](SOURCES-SOLUS.md) · [⬆ Back to top](#top)
