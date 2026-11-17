@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.101
+Version:        8.2.102
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -347,6 +347,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Nov 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.102-1
+- update window title says what really happened now, it said installed when nothing went in
+- gpu tab sees rpm fusion and terra again on fedora 45, the repo files moved
+
 * Tue Nov 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.101-1
 - Errors card counts a burst as one event now, 148 lines can be 1 line
 - network drop or wake from sleep is named and stays green
