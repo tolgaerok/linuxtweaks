@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.102
+Version:        8.2.103
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -249,6 +249,13 @@ echo ""
 # ---------------------------------------------------------------------------
 # stop the old user maintenance timer in logged in sessions (pre 7.4.0)
 %posttrans
+# old scheduler lines failed every boot on a kernel without that scheduler (adios on stock fedora).
+# give them the grep so they only set it when the kernel has it
+r=/etc/udev/rules.d/99-linuxtweaks-io-schedulers.rules
+if [ -f "$r" ] && grep -q 'ATTR{queue/scheduler}' "$r" && ! grep -q 'PROGRAM=="/usr/bin/grep' "$r"; then
+	sed -i -E 's#, ATTR\{queue/scheduler\}="([a-z][a-z0-9-]*)"#, PROGRAM=="/usr/bin/grep -qw \1 /sys/block/%%k/queue/scheduler", ATTR{queue/scheduler}="\1"#' "$r"
+	udevadm control --reload >/dev/null 2>&1 || :
+fi
 for run in /run/user/[0-9]*; do
 	user=$(id -nu "${run##*/}" 2>/dev/null) || continue
 	timeout 10 systemctl --user -M "$user@" stop %{name}-maintenance.timer >/dev/null 2>&1
@@ -347,6 +354,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Nov 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.103-1
+- drives tab survives kernel switches, a scheduler the kernel doesn't have gets skipped, no more boot errors
+- drives tab says when your pick isn't in this kernel and what it's on instead
+
 * Wed Nov 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.102-1
 - update window title says what really happened now, it said installed when nothing went in
 - gpu tab sees rpm fusion and terra again on fedora 45, the repo files moved
