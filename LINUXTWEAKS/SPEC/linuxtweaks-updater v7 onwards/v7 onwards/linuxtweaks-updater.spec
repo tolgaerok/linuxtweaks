@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.100
+Version:        8.2.101
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -347,6 +347,11 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.101-1
+- Errors card counts a burst as one event now, 148 lines can be 1 line
+- network drop or wake from sleep is named and stays green
+- orange only when the same error keeps coming back
+
 * Wed Nov 11 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.100-1
 - nvidia vram limit on the gpu tab, browsers and chat apps give spare video memory back
 - take apps off the list or add whatever's on the gpu right now
