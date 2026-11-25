@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.104
+Version:        8.2.105
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -354,6 +354,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Nov 25 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.105-1
+- checks are fast with a big pile of updates too
+
 * Wed Nov 25 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.104-1
 - checks finish way quicker now
 
