@@ -1,5 +1,5 @@
 Name:           linuxtweaks-updater
-Version:        8.2.103
+Version:        8.2.104
 Release:        1%{?dist}
 Summary:       🛡️ Tolga's personal System tray for 📦 dnf/flatpak updates
 License:        GPL-3.0-or-later
@@ -354,6 +354,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Wed Nov 25 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.104-1
+- checks finish way quicker now
+
 * Wed Nov 18 2026 Tolga Erok <kingtolga@gmail.com> - 8.2.103-1
 - drives tab survives kernel switches, a scheduler the kernel doesn't have gets skipped, no more boot errors
 - drives tab says when your pick isn't in this kernel and what it's on instead
